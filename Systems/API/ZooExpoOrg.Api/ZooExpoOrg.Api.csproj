@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
+    <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Settings\ZooExpoOrg.Services.Settings.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+  </ItemGroup>
+
+</Project>
