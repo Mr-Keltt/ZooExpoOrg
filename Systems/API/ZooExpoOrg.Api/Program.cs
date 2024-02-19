@@ -19,6 +19,8 @@ services.AddAppValidator();
 services.AddAppCors();
 services.AddAppControllerAndViews();
 
+services.AddAppVersioning();
+
 services.AddAppHealthChecks();
 services.AddAppSwagger(mainSettings, swaggerSettings);
 

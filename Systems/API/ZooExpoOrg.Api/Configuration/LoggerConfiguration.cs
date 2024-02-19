@@ -1,8 +1,8 @@
 ﻿namespace ZooExpoOrg.Api.Configuration;
 
+using ZooExpoOrg.Services.Settings;
 using Serilog;
 using Serilog.Events;
-using ZooExpoOrg.Services.Settings;
 
 /// <summary>
 /// Logger Configuration

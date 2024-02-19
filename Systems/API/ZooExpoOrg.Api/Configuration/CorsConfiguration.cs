@@ -2,8 +2,8 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using ZooExpoOrg.Services.Settings;
+using System.Linq;
 
 /// <summary>
 /// CORS configuration
