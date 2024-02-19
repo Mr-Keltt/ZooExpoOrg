@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "TrainingProject.Services.Logger": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:49336;http://localhost:49337"
+    }
+  }
+}
