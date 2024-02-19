@@ -1,24 +1,35 @@
+using ZooExpoOrg.Api;
+using ZooExpoOrg.Api.Configuration;
+using ZooExpoOrg.Common.Settings;
+using ZooExpoOrg.Services.Settings;
+
+var mainSettings = Settings.Load<MainSettings>("Main");
+var logSettings = Settings.Load<LogSettings>("Log");
+var swaggerSettings = Settings.Load<SwaggerSettings>("Swagger");
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+builder.AddAppLogger(mainSettings, logSettings);
 
+var services = builder.Services;
 
+services.AddAppAutoMappers();
+services.AddAppValidator();
 
+services.AddAppCors();
+services.AddAppControllerAndViews();
+
+services.AddAppHealthChecks();
+services.AddAppSwagger(mainSettings, swaggerSettings);
+
+services.RegisterServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-}
-app.UseStaticFiles();
+app.UseAppCors();
+app.UseAppControllerAndViews();
 
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
+app.UseAppHealthChecks();
+app.UseAppSwagger();
 
 app.Run();

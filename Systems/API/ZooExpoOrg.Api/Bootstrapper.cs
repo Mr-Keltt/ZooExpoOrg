@@ -1,16 +1,17 @@
-﻿using System.Runtime.CompilerServices;
-using ZooExpoOrg.Settings;
+﻿using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.Settings;
 
 namespace ZooExpoOrg.Api;
 
-public class Bootstrapper
+public static class Bootstrapper
 {
-    public static IServiceCollection RegisterServices(IServiceCollection service)
+    public static IServiceCollection RegisterServices(this IServiceCollection service)
     {
         service
             .AddMainSettings()
             .AddSwaggerSettings()
-            .AddLogSettings();
+            .AddLogSettings()
+            .AddAppLogger();
 
         return service;
     }

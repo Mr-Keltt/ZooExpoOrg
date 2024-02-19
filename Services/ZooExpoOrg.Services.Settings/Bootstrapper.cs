@@ -1,6 +1,6 @@
 ﻿namespace ZooExpoOrg.Services.Settings;
 
-using ZooExpoOrg.Settings;
+using ZooExpoOrg.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
