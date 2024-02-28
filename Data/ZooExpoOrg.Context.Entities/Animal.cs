@@ -23,7 +23,7 @@ public class Animal : BaseEntity
 
     public ICollection<AnimalPhoto> Photos { get; set; }
 
-    public ICollection<string>? Achievemen { get; set; }
+    public ICollection<Achievement>? Achievements { get; set; }
 
     public Animal? Mother { get; set; }
 
