@@ -2,6 +2,7 @@
 
 namespace ZooExpoOrg.Context.Entities;
 
-public class ExpoPhoto : BasePhoto
+public class AnimalSpecie : BaseEntity
 {
+    public string Name { get; set; }
 }

@@ -8,8 +8,8 @@ public class Animal : BaseEntity
 
     public string? Description { get; set; }
 
-    public AnimalSpecies AnimalSpeciesId { get; set; }
-    public virtual AnimalSpecies AnimalSpecies { get; set; }
+    public int AnimalSpecieId { get; set; }
+    public virtual AnimalSpecie AnimalSpecie { get; set; }
 
     public string? Breed { get; set; }
 
@@ -25,7 +25,9 @@ public class Animal : BaseEntity
 
     public ICollection<Achievement>? Achievements { get; set; }
 
-    public Animal? Mother { get; set; }
+    public int MotherId { get; set; }
+    public Animal Mother { get; set; }
 
-    public Animal? Father { get; set; }
+    public int FatherId { get; set; }
+    public Animal Father { get; set; }
 }

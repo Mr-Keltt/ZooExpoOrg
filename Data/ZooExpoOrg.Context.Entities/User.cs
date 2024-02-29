@@ -20,7 +20,7 @@ public class User : BaseEntity
 
     public DateTime? BirthDate { get; set; }
 
-    public UserPhoto? PhotoId { get; set; }
+    public int? PhotoId { get; set; }
     public virtual UserPhoto Photo { get; set; }
 
     public virtual ICollection<Exposition>? Subscriptions { get; set; }
@@ -28,4 +28,6 @@ public class User : BaseEntity
     public virtual ICollection<Exposition>? OrganizedExpositions { get; set; }
 
     public virtual ICollection<Pet>? Pets { get; set; }
+
+    public virtual ICollection<Comment>? Comments { get; set; }
 }

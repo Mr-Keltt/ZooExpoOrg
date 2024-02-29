@@ -9,7 +9,7 @@ namespace ZooExpoOrg.Context.Entities;
 
 public class Comment : BaseEntity
 {
-    public User AuthorId { get; set; }
+    public int AuthorId { get; set; }
     public virtual User User { get; set; }
 
     public string Text { get; set; }

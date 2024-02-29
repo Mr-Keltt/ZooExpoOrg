@@ -9,7 +9,10 @@ public class Exposition : BaseEntity
 
     public string Description { get; set; }
 
-    public ICollection<AnimalSpecies> AnimalSpecies { get; set; }
+    public int OrganizersId { get; set; }
+    public virtual User User { get; set; }
+
+    public ICollection<AnimalSpecie> AnimalsSpecies { get; set; }
 
     public string Country { get; set; }
 
@@ -25,7 +28,7 @@ public class Exposition : BaseEntity
 
     public DateTime DateEnd { get; set; }
 
-    public ICollection<ExpoPhoto>? Photos { get; set; }
+    public ICollection<ExpositionPhoto>? Photos { get; set; }
 
     public ICollection<Comment>? Comments { get; set; }
 
