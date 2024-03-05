@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Context.Entities.Common;
 
 namespace ZooExpoOrg.Context;
 
@@ -7,13 +8,13 @@ public class MainDbContext : DbContext
 {
     public DbSet<Achievement> Achievements { get; set; }
     public DbSet<Animal> Animals { get; set; }
+    public DbSet<AnimalComment> AnimalComments { get; set; }
     public DbSet<AnimalPhoto> AnimalsPhotos { get; set; }
     public DbSet<AnimalSpecie> AnimalsSpecies { get; set; }
-    public DbSet<Comment> Comments { get; set; }
     public DbSet<ConfirmationAchievement> ConfirmationsAchievements { get; set; }
-    public DbSet<ExpositionPhoto> ExpositionsPhotos { get; set; }
     public DbSet<Exposition> Expositions { get; set; }
-    public DbSet<Pet> Pets { get; set; }
+    public DbSet<ExpositionComment> ExpositionComments { get; set; }
+    public DbSet<ExpositionPhoto> ExpositionsPhotos { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserPhoto> UsersPhotos { get; set; }
 
@@ -26,13 +27,13 @@ public class MainDbContext : DbContext
 
         modelBuilder.ConfigureAchievements();
         modelBuilder.ConfigureAnimals();
+        modelBuilder.ConfigureAnimalsComments();
         modelBuilder.ConfigureAnimalsPhotos();
         modelBuilder.ConfigureAnimalsSpecies();
-        modelBuilder.ConfigureComments();
         modelBuilder.ConfigureConfirmationsAchievements();
+        modelBuilder.ConfigureExpositionsComments();
         modelBuilder.ConfigureExpositionsPhotos();
         modelBuilder.ConfigureExpositions();
-        modelBuilder.ConfigurePets();
         modelBuilder.ConfigureUsers();
         modelBuilder.ConfigureUsersPhotos();
     }

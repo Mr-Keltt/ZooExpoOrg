@@ -35,9 +35,10 @@ public static class ExpositionsContextConfiguration
                 .HasForeignKey(ph => ph.ExpositionId);
 
             entity
-                .HasMany(e => e.Comments)
-                .WithOne()
-                .HasForeignKey(c => c.Id);
+                .HasMany(p => p.Comments)
+                .WithOne(c => c.Exposition)
+                .HasForeignKey(c => c.ExpositionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(e => e.Subscribers)

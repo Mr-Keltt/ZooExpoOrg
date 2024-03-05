@@ -37,7 +37,7 @@ public static class UsersContextConfiguration
                 .HasForeignKey(e => e.OrganizersId);
 
             entity
-                .HasMany(u => u.Pets)
+                .HasMany(u => u.Animals)
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId);
 

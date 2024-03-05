@@ -12,7 +12,7 @@ public class Exposition : BaseEntity
     public int OrganizersId { get; set; }
     public virtual User User { get; set; }
 
-    public ICollection<AnimalSpecie> AnimalsSpecies { get; set; }
+    public virtual ICollection<AnimalSpecie> AnimalsSpecies { get; set; }
 
     public string Country { get; set; }
 
@@ -22,15 +22,15 @@ public class Exposition : BaseEntity
 
     public string? HouseNumber { get; set; }
 
-    public ICollection<Pet>? Participants { get; set; }
+    public virtual ICollection<Animal>? Participants { get; set; }
 
     public DateTime DateStart { get; set; }
 
     public DateTime DateEnd { get; set; }
 
-    public ICollection<ExpositionPhoto>? Photos { get; set; }
+    public virtual ICollection<ExpositionPhoto>? Photos { get; set; }
 
-    public ICollection<Comment>? Comments { get; set; }
+    public virtual ICollection<ExpositionComment>? Comments { get; set; }
 
-    public ICollection<User>? Subscribers { get; set; }
+    public virtual ICollection<User>? Subscribers { get; set; }
 }

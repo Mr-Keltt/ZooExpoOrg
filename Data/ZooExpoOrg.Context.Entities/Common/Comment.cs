@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZooExpoOrg.Context.Entities.Common;
-
-namespace ZooExpoOrg.Context.Entities;
+﻿namespace ZooExpoOrg.Context.Entities.Common;
 
 public class Comment : BaseEntity
 {

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Data\ZooExpoOrg.Context.Migrations\ZooExpoOrg.Context.Migrations.PgSql\ZooExpoOrg.Context.Migrations.PgSql.csproj" />
     <ProjectReference Include="..\..\..\Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Settings\ZooExpoOrg.Services.Settings.csproj" />

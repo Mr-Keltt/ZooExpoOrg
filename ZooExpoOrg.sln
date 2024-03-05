@@ -41,6 +41,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_docker", "_docker", "{74BC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context", "Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj", "{F3937351-DD12-43CC-9A83-D2428D72BDFB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{70D3E8EB-99FD-4370-895F-1F1988484215}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context.Migrations.PgSql", "Data\ZooExpoOrg.Context.Migrations\ZooExpoOrg.Context.Migrations.PgSql\ZooExpoOrg.Context.Migrations.PgSql.csproj", "{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,10 @@ Global
 		{F3937351-DD12-43CC-9A83-D2428D72BDFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3937351-DD12-43CC-9A83-D2428D72BDFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3937351-DD12-43CC-9A83-D2428D72BDFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +98,8 @@ Global
 		{D6448A6A-2D5C-437F-A13C-D667F3115D21} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{639F885C-4EAC-4A68-97CE-25D36BB49DD4} = {12CBF372-F79E-4B11-A52C-523348C24BA4}
 		{F3937351-DD12-43CC-9A83-D2428D72BDFB} = {12CBF372-F79E-4B11-A52C-523348C24BA4}
+		{70D3E8EB-99FD-4370-895F-1F1988484215} = {12CBF372-F79E-4B11-A52C-523348C24BA4}
+		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783} = {70D3E8EB-99FD-4370-895F-1F1988484215}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}

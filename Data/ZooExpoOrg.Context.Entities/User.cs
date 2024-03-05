@@ -27,7 +27,7 @@ public class User : BaseEntity
 
     public virtual ICollection<Exposition>? OrganizedExpositions { get; set; }
 
-    public virtual ICollection<Pet>? Pets { get; set; }
+    public virtual ICollection<Animal>? Animals { get; set; }
 
     public virtual ICollection<Comment>? Comments { get; set; }
 }

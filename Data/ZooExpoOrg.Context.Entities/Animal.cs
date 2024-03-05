@@ -21,13 +21,12 @@ public class Animal : BaseEntity
 
     public int? Weight { get; set; }
 
-    public ICollection<AnimalPhoto> Photos { get; set; }
+    public int UserId { get; set; }
+    public virtual User User { get; set; }
 
-    public ICollection<Achievement>? Achievements { get; set; }
+    public virtual ICollection<AnimalComment>? Comments { get; set; }
 
-    public int MotherId { get; set; }
-    public Animal Mother { get; set; }
+    public virtual ICollection<AnimalPhoto> Photos { get; set; }
 
-    public int FatherId { get; set; }
-    public Animal Father { get; set; }
+    public virtual ICollection<Achievement>? Achievements { get; set; }
 }

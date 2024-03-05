@@ -33,19 +33,13 @@ public static class AnimalsContextConfiguration
 
             entity
                 .HasMany(a => a.Achievements)
-                .WithOne(ach => ach.Animal)
-                .HasForeignKey(ach => ach.AnimalId);
+                .WithOne(a => a.Animal)
+                .HasForeignKey(a => a.AnimalId);
 
             entity
-                .HasOne(a => a.Mother)
-                .WithMany()
-                .HasForeignKey(a => a.MotherId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity
-                .HasOne(a => a.Father)
-                .WithMany()
-                .HasForeignKey(a => a.FatherId)
+                .HasMany(a => a.Comments)
+                .WithOne(a => a.Animal)
+                .HasForeignKey(a => a.AnimalId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
