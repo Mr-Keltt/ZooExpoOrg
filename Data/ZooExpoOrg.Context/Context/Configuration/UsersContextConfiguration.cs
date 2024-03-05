@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Context.Entities.Common;
 
-namespace ZooExpoOrg.Context.Context;
+namespace ZooExpoOrg.Context;
 
 public static class UsersContextConfiguration
 {
@@ -16,7 +17,14 @@ public static class UsersContextConfiguration
             entity.Property(e => e.Email).IsRequired();
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Surname).IsRequired();
-            entity.Property(e => e.Gender).IsRequired();
+            entity
+                .Property(a => a.Gender)
+                .HasConversion<string>()
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (Gender)Enum.Parse(typeof(Gender), v)
+                    )
+                .IsRequired();
 
             entity
                 .HasOne(u => u.Photo)

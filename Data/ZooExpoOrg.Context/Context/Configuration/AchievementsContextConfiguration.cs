@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 
-namespace ZooExpoOrg.Context.Context;
+namespace ZooExpoOrg.Context;
 
 public static class AchievementsContextConfiguration
 {
@@ -17,6 +17,6 @@ public static class AchievementsContextConfiguration
                 .HasOne(a => a.ConfirmationAchievement)
                 .WithOne(ca => ca.Achievement)
                 .HasForeignKey<ConfirmationAchievement>(c => c.AchievementId);
-        })
+        });
     }
 }

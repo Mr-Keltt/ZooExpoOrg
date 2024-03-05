@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using ZooExpoOrg.Context.Settings;
-using ZooExpoOrg.Services.Settings;
+using ZooExpoOrg.Common.Settings;
 
 namespace ZooExpoOrg.Context;
 

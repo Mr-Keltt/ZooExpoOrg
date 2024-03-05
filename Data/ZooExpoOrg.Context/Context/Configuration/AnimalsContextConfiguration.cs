@@ -3,7 +3,7 @@ using System;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context.Entities.Common;
 
-namespace ZooExpoOrg.Context.Context;
+namespace ZooExpoOrg.Context;
 
 public static class AnimalsContextConfiguration
 {

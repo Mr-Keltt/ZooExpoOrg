@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using ZooExpoOrg.Context.Entities;
 
-namespace ZooExpoOrg.Context.Context;
+namespace ZooExpoOrg.Context;
 
 public static class CommentsContextConfiguration
 {

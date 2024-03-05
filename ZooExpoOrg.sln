@@ -39,7 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_docker", "_docker", "{74BC
 		env.api = env.api
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Context", "Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj", "{F3937351-DD12-43CC-9A83-D2428D72BDFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context", "Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj", "{F3937351-DD12-43CC-9A83-D2428D72BDFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

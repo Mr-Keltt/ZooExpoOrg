@@ -1,4 +1,4 @@
-﻿namespace ZooExpoOrg.Context.Settings;
+﻿namespace ZooExpoOrg.Context;
 
 public class DbSettings
 {

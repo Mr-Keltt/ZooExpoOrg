@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 
-namespace ZooExpoOrg.Context.Context;
+namespace ZooExpoOrg.Context;
 
 public static class PetsContextConfiguration
 {
