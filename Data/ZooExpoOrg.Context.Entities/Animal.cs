@@ -8,7 +8,7 @@ public class Animal : BaseEntity
 
     public string? Description { get; set; }
 
-    public string? Breed { get; set; }
+    public string Breed { get; set; }
 
     public Gender Gender { get; set; }
 
