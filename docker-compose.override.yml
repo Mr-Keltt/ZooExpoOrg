@@ -1,17 +1,18 @@
 version: '3.9'
 
 services:
+    
   zooexpoorg_postgresql:
     environment:
-      - POSTGRES_NAME=ZooExpoOrgDB
-      - POSTGRES_USER=ZooExpoOrg
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=Passw0rd
+      - POSTGRES_DB=ZooExpoOrgDB
     ports:
       - "45432:5432"
     networks:
       - shared_zooexpoorg_net
     volumes:      
-      - ~/.docker-conf/postgresql/data/:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     
 
   zooexpoorg_api:
@@ -26,3 +27,6 @@ networks:
   shared_zooexpoorg_net:
     name: zoo_expo_org
     driver: bridge
+
+volumes:
+  postgres-data:

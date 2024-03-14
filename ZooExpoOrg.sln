@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context.Migrations.PgSql", "Data\ZooExpoOrg.Context.Migrations\ZooExpoOrg.Context.Migrations.PgSql\ZooExpoOrg.Context.Migrations.PgSql.csproj", "{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Context.Migrations.MSSQL", "Data\ZooExpoOrg.Context.Migrations\ZooExpoOrg.Context.Migrations.MSSQL\ZooExpoOrg.Context.Migrations.MSSQL.csproj", "{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{F3937351-DD12-43CC-9A83-D2428D72BDFB} = {12CBF372-F79E-4B11-A52C-523348C24BA4}
 		{70D3E8EB-99FD-4370-895F-1F1988484215} = {12CBF372-F79E-4B11-A52C-523348C24BA4}
 		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783} = {70D3E8EB-99FD-4370-895F-1F1988484215}
+		{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8} = {70D3E8EB-99FD-4370-895F-1F1988484215}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}

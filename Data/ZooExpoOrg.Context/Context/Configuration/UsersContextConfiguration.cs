@@ -18,33 +18,33 @@ public static class UsersContextConfiguration
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Surname).IsRequired();
             entity
-                .Property(a => a.Gender)
+                .Property(e => e.Gender)
                 .HasConversion<string>()
                 .HasConversion(
-                    v => v.ToString(),
-                    v => (Gender)Enum.Parse(typeof(Gender), v)
+                    e => e.ToString(),
+                    e => (Gender)Enum.Parse(typeof(Gender), e)
                     )
                 .IsRequired();
 
             entity
-                .HasOne(u => u.Photo)
-                .WithOne(p => p.User)
-                .HasForeignKey<User>(u => u.PhotoId);
-
-            entity
-                .HasMany(u => u.OrganizedExpositions)
+                .HasMany(e => e.OrganizedExpositions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.OrganizersId);
 
             entity
-                .HasMany(u => u.Animals)
-                .WithOne(p => p.User)
-                .HasForeignKey(p => p.UserId);
+                .HasMany(e => e.Animals)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.OwnerId);
 
             entity
-                .HasMany(u => u.Comments)
-                .WithOne(c => c.User)
-                .HasForeignKey(c => c.AuthorId);
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.AuthorId);
+
+            entity
+                .HasOne(e => e.Photo)
+                .WithOne(e => e.User)
+                .HasPrincipalKey<User>(e => e.Id);
         });
     }
 }

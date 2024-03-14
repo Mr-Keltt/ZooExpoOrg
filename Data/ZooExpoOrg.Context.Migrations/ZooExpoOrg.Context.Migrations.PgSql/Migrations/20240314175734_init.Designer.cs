@@ -12,7 +12,7 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20240305212622_init")]
+    [Migration("20240314175734_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -109,7 +109,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Weight")
@@ -122,7 +122,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasIndex("AnimalSpecieId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("uid")
                         .IsUnique();
@@ -386,9 +386,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PhotoId")
-                        .IsUnique();
-
                     b.HasIndex("uid")
                         .IsUnique();
 
@@ -418,6 +415,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.HasIndex("uid")
                         .IsUnique();
@@ -491,7 +491,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasOne("ZooExpoOrg.Context.Entities.User", "User")
                         .WithMany("Animals")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -564,13 +564,15 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Exposition");
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.User", b =>
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserPhoto", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserPhoto", "Photo")
-                        .WithOne("User")
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.User", "PhotoId");
+                    b.HasOne("ZooExpoOrg.Context.Entities.User", "User")
+                        .WithOne("Photo")
+                        .HasForeignKey("ZooExpoOrg.Context.Entities.UserPhoto", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Photo");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalComment", b =>
@@ -628,11 +630,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("OrganizedExpositions");
-                });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserPhoto", b =>
-                {
-                    b.Navigation("User")
+                    b.Navigation("Photo")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

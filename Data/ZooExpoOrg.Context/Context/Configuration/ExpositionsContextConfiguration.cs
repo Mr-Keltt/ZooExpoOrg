@@ -20,11 +20,6 @@ public static class ExpositionsContextConfiguration
             entity.Property(e => e.DateEnd).IsRequired();
 
             entity
-                .HasMany(e => e.AnimalsSpecies)
-                .WithOne()
-                .HasForeignKey(e => e.Id);
-
-            entity
                 .HasMany(e => e.Participants)
                 .WithOne()
                 .HasForeignKey(p => p.Id);
@@ -32,7 +27,8 @@ public static class ExpositionsContextConfiguration
             entity
                 .HasMany(e => e.Photos)
                 .WithOne(ph => ph.Exposition)
-                .HasForeignKey(ph => ph.ExpositionId);
+                .HasForeignKey(ph => ph.ExpositionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(p => p.Comments)
@@ -43,7 +39,7 @@ public static class ExpositionsContextConfiguration
             entity
                 .HasMany(e => e.Subscribers)
                 .WithMany(u => u.Subscriptions)
-                .UsingEntity(j => j.ToTable("exposition_subscribers"));
+                .UsingEntity(j => j.ToTable("expositions_subscribers"));
         });
     }
 }

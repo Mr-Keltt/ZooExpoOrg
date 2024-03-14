@@ -12,8 +12,6 @@ public class Exposition : BaseEntity
     public int OrganizersId { get; set; }
     public virtual User User { get; set; }
 
-    public virtual ICollection<AnimalSpecie> AnimalsSpecies { get; set; }
-
     public string Country { get; set; }
 
     public string City { get; set; }

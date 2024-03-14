@@ -14,6 +14,8 @@ builder.AddAppLogger(mainSettings, logSettings);
 
 var services = builder.Services;
 
+services.AddHttpContextAccessor();
+
 services.AddAppDbContext();
 
 services.AddAppAutoMappers();

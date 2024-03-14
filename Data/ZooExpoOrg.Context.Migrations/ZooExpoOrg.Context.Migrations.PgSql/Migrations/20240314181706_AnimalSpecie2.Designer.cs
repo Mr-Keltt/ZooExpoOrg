@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240314181706_AnimalSpecie2")]
+    partial class AnimalSpecie2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +40,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasIndex("SubscriptionsId");
 
-                    b.ToTable("expositions_subscribers", (string)null);
+                    b.ToTable("exposition_subscribers", (string)null);
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Achievement", b =>
@@ -83,6 +86,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    b.Property<int>("AnimalSpecieId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -113,6 +119,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AnimalSpecieId");
 
                     b.HasIndex("OwnerId");
 
@@ -151,7 +159,28 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasIndex("uid")
                         .IsUnique();
 
-                    b.ToTable("animals_photos", (string)null);
+                    b.ToTable("animal_photo", (string)null);
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalSpecie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("uid")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("uid")
+                        .IsUnique();
+
+                    b.ToTable("animals_species", (string)null);
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Common.Comment", b =>
@@ -168,6 +197,10 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Property<DateTime>("DateWriting")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
@@ -182,9 +215,11 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasIndex("uid")
                         .IsUnique();
 
-                    b.ToTable("Comment");
+                    b.ToTable("expositions_comments", (string)null);
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Comment");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ConfirmationAchievement", b =>
@@ -399,7 +434,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasIndex("AnimalId");
 
-                    b.ToTable("animals_comments", (string)null);
+                    b.HasDiscriminator().HasValue("AnimalComment");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionComment", b =>
@@ -411,7 +446,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasIndex("ExpositionId");
 
-                    b.ToTable("expositions_comments", (string)null);
+                    b.HasDiscriminator().HasValue("ExpositionComment");
                 });
 
             modelBuilder.Entity("ExpositionUser", b =>
@@ -442,6 +477,12 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Animal", b =>
                 {
+                    b.HasOne("ZooExpoOrg.Context.Entities.AnimalSpecie", "AnimalSpecie")
+                        .WithMany()
+                        .HasForeignKey("AnimalSpecieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ZooExpoOrg.Context.Entities.Exposition", null)
                         .WithMany("Participants")
                         .HasForeignKey("Id")
@@ -453,6 +494,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AnimalSpecie");
 
                     b.Navigation("User");
                 });
@@ -466,6 +509,15 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired();
 
                     b.Navigation("Animal");
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalSpecie", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.Exposition", null)
+                        .WithMany("AnimalsSpecies")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Common.Comment", b =>
@@ -531,12 +583,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ZooExpoOrg.Context.Entities.Common.Comment", null)
-                        .WithOne()
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.AnimalComment", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Animal");
                 });
 
@@ -545,12 +591,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasOne("ZooExpoOrg.Context.Entities.Exposition", "Exposition")
                         .WithMany("Comments")
                         .HasForeignKey("ExpositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZooExpoOrg.Context.Entities.Common.Comment", null)
-                        .WithOne()
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.ExpositionComment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -574,6 +614,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Exposition", b =>
                 {
+                    b.Navigation("AnimalsSpecies");
+
                     b.Navigation("Comments");
 
                     b.Navigation("Participants");

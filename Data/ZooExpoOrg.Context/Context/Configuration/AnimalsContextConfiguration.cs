@@ -23,8 +23,7 @@ public static class AnimalsContextConfiguration
                     )
                 .IsRequired();
             entity.Property(a => a.BirthDate).IsRequired();
-            entity.Property(a => a.Name).IsRequired();
-
+            entity.Property(a => a.OwnerId).IsRequired();
 
             entity
                 .HasMany(a => a.Photos)

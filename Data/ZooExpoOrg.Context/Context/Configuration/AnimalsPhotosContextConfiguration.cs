@@ -9,7 +9,7 @@ public static class AnimalsPhotosContextConfiguration
     {
         modelBuilder.Entity<AnimalPhoto>(entity =>
         {
-            entity.ToTable("animal_photo");
+            entity.ToTable("animals_photos");
 
             entity.Property(ap => ap.ImageData).IsRequired();
         });
