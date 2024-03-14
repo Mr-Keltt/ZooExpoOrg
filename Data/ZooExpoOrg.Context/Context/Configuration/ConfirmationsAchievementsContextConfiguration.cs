@@ -10,6 +10,11 @@ public static class ConfirmationsAchievementsContextConfiguration
         modelBuilder.Entity<ConfirmationAchievement>(entity =>
         {
             entity.ToTable("confirmations_achievements");
+
+            entity
+                .HasOne(a => a.Achievement)
+                .WithOne(ca => ca.ConfirmationAchievement)
+                .HasForeignKey<Achievement>(a => a.ConfirmationAchievementId);
         });
     }
 }

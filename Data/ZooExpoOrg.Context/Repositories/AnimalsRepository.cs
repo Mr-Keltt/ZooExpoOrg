@@ -28,29 +28,29 @@ public class AnimalsRepository
     }
 
     public async Task Add(
-        int OwnerId,
-        string Name,
-        string? Description,
-        string Breed,
-        Gender Gender,
-        DateTime BirthDate,
-        int? Height,
-        int? Weight,
-        List<AnimalPhoto> Photos,
-        List<Achievement>? Achievements)
+        int ownerId,
+        string name,
+        string? description,
+        string breed,
+        Gender gender,
+        DateTime birthDate,
+        int? height,
+        int? weight,
+        List<AnimalPhoto> photos,
+        List<Achievement>? achievements)
     {
         Animal animal = new Animal
         {
-            Name = Name,
-            Description = Description,
-            Breed = Breed,
-            Gender = Gender,
-            BirthDate = BirthDate,
-            Height = Height,
-            Weight = Weight,
-            OwnerId = OwnerId,
-            Photos = Photos,
-            Achievements = Achievements
+            Name = name,
+            Description = description,
+            Breed = breed,
+            Gender = gender,
+            BirthDate = birthDate,
+            Height = height,
+            Weight = weight,
+            OwnerId = ownerId,
+            Photos = photos,
+            Achievements = achievements
         };
 
         await _dbContext.AddAsync(animal);
@@ -68,7 +68,8 @@ public class AnimalsRepository
         int? weight,
         int ownerId,
         List<AnimalPhoto> photos,
-        List<Achievement>? achievements)
+        List<Achievement>? achievements,
+        List<AnimalComment>? comments)
     {
         await _dbContext.Animals
             .Where(a => a.Id == id)
@@ -83,6 +84,7 @@ public class AnimalsRepository
                 .SetProperty(a => a.OwnerId, ownerId)
                 .SetProperty(a => a.Photos, photos)
                 .SetProperty(a => a.Achievements, achievements)
+                .SetProperty(a => a.Comments, comments)
             );
     }
 

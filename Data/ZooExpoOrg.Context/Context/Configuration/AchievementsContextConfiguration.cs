@@ -12,11 +12,6 @@ public static class AchievementsContextConfiguration
             entity.ToTable("achievements");
             entity.Property(a => a.Name).IsRequired();
             entity.Property(a => a.DateAward).IsRequired();
-
-            entity
-                .HasOne(a => a.ConfirmationAchievement)
-                .WithOne(ca => ca.Achievement)
-                .HasForeignKey<ConfirmationAchievement>(c => c.AchievementId);
         });
     }
 }
