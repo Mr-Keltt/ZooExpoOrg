@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.RabbitMq\ZooExpoOrg.Services.RabbitMq.csproj" />
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Settings\ZooExpoOrg.Services.Settings.csproj" />
     <ProjectReference Include="..\..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+    <ProjectReference Include="..\ZooExpoOrg.Api.Settings\ZooExpoOrg.Api.Settings.csproj" />
   </ItemGroup>
 
   <ItemGroup>
