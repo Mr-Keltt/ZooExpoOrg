@@ -1,4 +1,5 @@
 ﻿using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.RabbitMq;
 using ZooExpoOrg.Services.Settings;
 
 namespace ZooExpoOrg.Api;
@@ -11,7 +12,8 @@ public static class Bootstrapper
             .AddMainSettings()
             .AddSwaggerSettings()
             .AddLogSettings()
-            .AddAppLogger();
+            .AddAppLogger()
+            .AddRabbitMq();
 
         return service;
     }

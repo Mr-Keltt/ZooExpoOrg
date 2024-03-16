@@ -4,6 +4,9 @@ services:
 
   zooexpoorg_postgresql:
     image: postgres:14.1
+
+  zooexpoorg_rabbitmq:
+    image: rabbitmq:management
             
   zooexpoorg_api:
     image: ${DOCKER_REGISTRY-}zoo-expo-org-api
@@ -12,3 +15,24 @@ services:
       dockerfile: Systems/Api/ZooExpoOrg.Api/Dockerfile
     depends_on:
       - zooexpoorg_postgresql
+      - zooexpoorg_rabbitmq
+
+  zooexpoorg_worker_1:
+    image: ${DOCKER_REGISTRY-}zoo-expo-org-worker
+    build:
+      context: .
+      dockerfile: Systems/Workers/ZooExpoOrg.Worker/Dockerfile
+    depends_on:
+      - zooexpoorg_postgresql
+      - zooexpoorg_rabbitmq
+      - zooexpoorg_api
+
+  zooexpoorg_worker_2:
+    image: ${DOCKER_REGISTRY-}zoo-expo-org-worker
+    build:
+      context: .
+      dockerfile: Systems/Workers/ZooExpoOrg.Worker/Dockerfile
+    depends_on:
+      - zooexpoorg_postgresql
+      - zooexpoorg_rabbitmq
+      - zooexpoorg_api

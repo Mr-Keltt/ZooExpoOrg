@@ -1,34 +1,55 @@
+﻿using ZooExpoOrg.Worker.Configuration;
+using ZooExpoOrg.Common.Settings;
+using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.Settings;
+using ZooExpoOrg.Worker;
+
+var mainSettings = Settings.Load<MainSettings>("Main");
+var logSettings = Settings.Load<LogSettings>("Log");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var app = builder.Build();
+builder.AddAppLogger(mainSettings, logSettings);
+
+// Configure services
+var services = builder.Services;
+
+services.AddHttpContextAccessor();
+
+services.AddAppHealthChecks();
+
+services.RegisterAppServices();
+
 
 // Configure the HTTP request pipeline.
 
-app.UseHttpsRedirection();
+var app = builder.Build();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+var logger = app.Services.GetRequiredService<IAppLogger>();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-});
+
+app.UseAppHealthChecks();
+
+
+logger.Information("Worker has started");
+
+
+// Start task executor
+
+logger.Information("Try to connect to RabbitMq");
+
+app.Services.GetRequiredService<ITaskExecutor>().Start();
+
+logger.Information("RabbitMq connected");
+
+
+// Run app
+
+logger.Information("Worker started");
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+logger.Information("Worker has stopped");
+
