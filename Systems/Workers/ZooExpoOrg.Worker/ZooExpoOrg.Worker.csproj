@@ -4,6 +4,26 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>13bdbf46-be85-43f6-b7a0-519f42cac221</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
+    <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
+    <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.RabbitMq\ZooExpoOrg.Services.RabbitMq.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+  </ItemGroup>
 
 </Project>
