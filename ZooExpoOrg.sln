@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context.Migratio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.RabbitMq", "Services\ZooExpoOrg.Services.RabbitMq\ZooExpoOrg.Services.RabbitMq.csproj", "{591401A0-A46A-4945-ACA1-4FAFA784C2AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Api.Settings", "Systems\API\ZooExpoOrg.Api.Settings\ZooExpoOrg.Api.Settings.csproj", "{C594FA07-123C-4AF5-9969-CE2E3B806616}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{591401A0-A46A-4945-ACA1-4FAFA784C2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{591401A0-A46A-4945-ACA1-4FAFA784C2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{591401A0-A46A-4945-ACA1-4FAFA784C2AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C594FA07-123C-4AF5-9969-CE2E3B806616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C594FA07-123C-4AF5-9969-CE2E3B806616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C594FA07-123C-4AF5-9969-CE2E3B806616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C594FA07-123C-4AF5-9969-CE2E3B806616}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +121,7 @@ Global
 		{00C3AB84-2E4E-4B05-A2C2-5D5D285D0783} = {70D3E8EB-99FD-4370-895F-1F1988484215}
 		{35DF0D2C-CBBE-4375-8BF7-7962D6C230D8} = {70D3E8EB-99FD-4370-895F-1F1988484215}
 		{591401A0-A46A-4945-ACA1-4FAFA784C2AE} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
+		{C594FA07-123C-4AF5-9969-CE2E3B806616} = {908B8E1C-1B1B-40F6-BEA8-E9E1143C43F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}
