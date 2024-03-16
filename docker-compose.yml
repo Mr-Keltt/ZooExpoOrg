@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+
+  zooexpoorg_postgresql:
+    image: postgres:14.1
+            
+  zooexpoorg_api:
+    image: ${DOCKER_REGISTRY-}zoo-expo-org-api
+    build:
+      context: .
+      dockerfile: Systems/Api/ZooExpoOrg.Api/Dockerfile
+    depends_on:
+      - zooexpoorg_postgresql
