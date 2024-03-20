@@ -9,7 +9,7 @@ public static class ExpositionsCommentsContextConfiguration
 {
     public static void ConfigureExpositionsComments(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ExpositionComment>(entity =>
+        modelBuilder.Entity<ExpositionCommentEntity>(entity =>
         {
             entity.ToTable("expositions_comments");
 

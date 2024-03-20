@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320184352_editBaseEntity")]
+    partial class editBaseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -74,7 +77,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasIndex("ConfirmationAchievementId")
                         .IsUnique();
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("achievements", (string)null);
@@ -110,17 +113,17 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid");
-
                     b.Property<int?>("Weight")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("uid")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("animals", (string)null);
@@ -145,14 +148,14 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AnimalId");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("animals_photos", (string)null);
@@ -176,14 +179,14 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("Comment");
@@ -210,12 +213,12 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("confirmations_achievements", (string)null);
@@ -261,14 +264,14 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrganizersId");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("expositions", (string)null);
@@ -293,14 +296,14 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExpositionId");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("expositions_photos", (string)null);
@@ -347,12 +350,12 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
+                    b.Property<Guid>("uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("users", (string)null);
@@ -374,18 +377,18 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("uid")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("uid")
                         .IsUnique();
 
                     b.ToTable("users_photos", (string)null);

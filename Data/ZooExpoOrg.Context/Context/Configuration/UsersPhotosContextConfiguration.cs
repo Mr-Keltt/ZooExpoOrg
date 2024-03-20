@@ -7,7 +7,7 @@ public static class UsersPhotosContextConfiguration
 {
     public static void ConfigureUsersPhotos(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserPhoto>(entity =>
+        modelBuilder.Entity<UserPhotoEntity>(entity =>
         {
             entity.ToTable("users_photos");
 

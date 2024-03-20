@@ -8,7 +8,7 @@ public static class AnimalsCommentsContextConfiguration
 {
     public static void ConfigureAnimalsComments(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AnimalComment>(entity =>
+        modelBuilder.Entity<AnimalCommentEntity>(entity =>
         {
             entity.ToTable("animals_comments");
 

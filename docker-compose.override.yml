@@ -22,7 +22,7 @@ services:
     networks:
       - shared_zooexpoorg_net
     volumes:      
-      - ./rabbitmq:/var/lib/rabbitmq
+      - rabbitmq-data:/var/lib/rabbitmq
 
   zooexpoorg_api:
     ports:
@@ -55,3 +55,4 @@ networks:
 
 volumes:
   postgres-data:
+  rabbitmq-data:

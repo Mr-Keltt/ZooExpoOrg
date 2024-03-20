@@ -5,16 +5,16 @@ namespace ZooExpoOrg.Context;
 
 public class MainDbContext : DbContext
 {
-    public DbSet<Achievement> Achievements { get; set; }
-    public DbSet<Animal> Animals { get; set; }
-    public DbSet<AnimalComment> AnimalsComments { get; set; }
-    public DbSet<AnimalPhoto> AnimalsPhotos { get; set; }
-    public DbSet<ConfirmationAchievement> ConfirmationsAchievements { get; set; }
-    public DbSet<Exposition> Expositions { get; set; }
-    public DbSet<ExpositionComment> ExpositionsComments { get; set; }
-    public DbSet<ExpositionPhoto> ExpositionsPhotos { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<UserPhoto> UsersPhotos { get; set; }
+    public DbSet<AchievementEntity> Achievements { get; set; }
+    public DbSet<AnimalEntity> Animals { get; set; }
+    public DbSet<AnimalCommentEntity> AnimalsComments { get; set; }
+    public DbSet<AnimalPhotoEntity> AnimalsPhotos { get; set; }
+    public DbSet<ConfirmationAchievementEntity> ConfirmationsAchievements { get; set; }
+    public DbSet<ExpositionEntity> Expositions { get; set; }
+    public DbSet<ExpositionCommentEntity> ExpositionsComments { get; set; }
+    public DbSet<ExpositionPhotoEntity> ExpositionsPhotos { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
+    public DbSet<UserPhotoEntity> UsersPhotos { get; set; }
 
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }

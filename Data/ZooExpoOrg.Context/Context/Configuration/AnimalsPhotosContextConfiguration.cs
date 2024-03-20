@@ -7,7 +7,7 @@ public static class AnimalsPhotosContextConfiguration
 {
     public static void ConfigureAnimalsPhotos(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AnimalPhoto>(entity =>
+        modelBuilder.Entity<AnimalPhotoEntity>(entity =>
         {
             entity.ToTable("animals_photos");
 

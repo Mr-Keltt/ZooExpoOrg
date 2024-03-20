@@ -7,14 +7,14 @@ public static class ConfirmationsAchievementsContextConfiguration
 {
     public static void ConfigureConfirmationsAchievements(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ConfirmationAchievement>(entity =>
+        modelBuilder.Entity<ConfirmationAchievementEntity>(entity =>
         {
             entity.ToTable("confirmations_achievements");
 
             entity
                 .HasOne(a => a.Achievement)
                 .WithOne(ca => ca.ConfirmationAchievement)
-                .HasForeignKey<Achievement>(a => a.ConfirmationAchievementId);
+                .HasForeignKey<AchievementEntity>(a => a.ConfirmationAchievementId);
         });
     }
 }

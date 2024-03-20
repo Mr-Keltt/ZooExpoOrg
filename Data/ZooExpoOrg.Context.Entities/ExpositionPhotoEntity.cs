@@ -2,8 +2,8 @@
 
 namespace ZooExpoOrg.Context.Entities;
 
-public class ExpositionPhoto : BasePhoto
+public class ExpositionPhotoEntity : BasePhoto
 {
     public int ExpositionId { get; set; }
-    public virtual Exposition Exposition { get; set; }
+    public virtual ExpositionEntity Exposition { get; set; }
 }
