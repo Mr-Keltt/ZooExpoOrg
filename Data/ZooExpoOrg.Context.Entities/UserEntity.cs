@@ -2,7 +2,7 @@
 
 namespace ZooExpoOrg.Context.Entities;
 
-public class User : BaseEntity
+public class UserEntity : BaseEntity
 {
     public string Login { get; set; }
 
@@ -21,13 +21,13 @@ public class User : BaseEntity
     public DateTime? BirthDate { get; set; }
 
     public int? PhotoId { get; set; }
-    public virtual UserPhoto Photo { get; set; }
+    public virtual UserPhotoEntity Photo { get; set; }
 
-    public virtual ICollection<Exposition>? Subscriptions { get; set; }
+    public virtual ICollection<ExpositionEntity>? Subscriptions { get; set; }
 
-    public virtual ICollection<Exposition>? OrganizedExpositions { get; set; }
+    public virtual ICollection<ExpositionEntity>? OrganizedExpositions { get; set; }
 
-    public virtual ICollection<Animal>? Animals { get; set; }
+    public virtual ICollection<AnimalEntity>? Animals { get; set; }
 
     public virtual ICollection<Comment>? Comments { get; set; }
 }

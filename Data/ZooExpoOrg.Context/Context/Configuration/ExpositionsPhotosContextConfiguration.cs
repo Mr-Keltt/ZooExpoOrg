@@ -7,7 +7,7 @@ public static class ExpositionsPhotosContextConfiguration
 {
     public static void ConfigureExpositionsPhotos(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ExpositionPhoto>(entity =>
+        modelBuilder.Entity<ExpositionPhotoEntity>(entity =>
         {
             entity.ToTable("expositions_photos");
 

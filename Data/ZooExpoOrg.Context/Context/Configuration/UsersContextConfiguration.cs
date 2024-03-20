@@ -8,7 +8,7 @@ public static class UsersContextConfiguration
 {
     public static void ConfigureUsers(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.ToTable("users");
 
@@ -44,7 +44,7 @@ public static class UsersContextConfiguration
             entity
                 .HasOne(e => e.Photo)
                 .WithOne(e => e.User)
-                .HasPrincipalKey<User>(e => e.Id);
+                .HasPrincipalKey<UserEntity>(e => e.Id);
         });
     }
 }

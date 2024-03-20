@@ -7,7 +7,7 @@ public static class ExpositionsContextConfiguration
 {
     public static void ConfigureExpositions(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Exposition>(entity =>
+        modelBuilder.Entity<ExpositionEntity>(entity =>
         {
             entity.ToTable("expositions");
 

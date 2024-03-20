@@ -2,7 +2,7 @@
 
 namespace ZooExpoOrg.Context.Entities;
 
-public class Animal : BaseEntity
+public class AnimalEntity : BaseEntity
 {
     public string Name { get; set; }
 
@@ -19,11 +19,11 @@ public class Animal : BaseEntity
     public int? Weight { get; set; }
 
     public int OwnerId { get; set; }
-    public virtual User User { get; set; }
+    public virtual UserEntity User { get; set; }
 
-    public virtual ICollection<AnimalComment>? Comments { get; set; }
+    public virtual ICollection<AnimalCommentEntity>? Comments { get; set; }
 
-    public virtual ICollection<AnimalPhoto> Photos { get; set; }
+    public virtual ICollection<AnimalPhotoEntity> Photos { get; set; }
 
-    public virtual ICollection<Achievement>? Achievements { get; set; }
+    public virtual ICollection<AchievementEntity>? Achievements { get; set; }
 }
