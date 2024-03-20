@@ -55,4 +55,4 @@ networks:
 
 volumes:
   postgres-data:
-  rabbitmq-data:
+  rabbitmq:
