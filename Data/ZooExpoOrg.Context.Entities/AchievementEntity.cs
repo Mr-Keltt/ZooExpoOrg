@@ -2,7 +2,7 @@
 
 namespace ZooExpoOrg.Context.Entities;
 
-public class Achievement : BaseEntity
+public class AchievementEntity : BaseEntity
 {
     public string Name { get; set; }
 
@@ -11,9 +11,9 @@ public class Achievement : BaseEntity
     public DateTime DateAward { get; set; }
 
     public int AnimalId { get; set; }
-    public virtual Animal Animal { get; set; }
+    public virtual AnimalEntity Animal { get; set; }
 
     public int ConfirmationAchievementId { get; set; }
 
-    public virtual ConfirmationAchievement ConfirmationAchievement { get; set; }
+    public virtual ConfirmationAchievementEntity ConfirmationAchievement { get; set; }
 }

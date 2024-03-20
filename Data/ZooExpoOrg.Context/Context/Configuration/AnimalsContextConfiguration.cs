@@ -9,7 +9,7 @@ public static class AnimalsContextConfiguration
 {
     public static void ConfigureAnimals(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Animal>(entity =>
+        modelBuilder.Entity<AnimalEntity>(entity =>
         {
             entity.ToTable("animals");
 
