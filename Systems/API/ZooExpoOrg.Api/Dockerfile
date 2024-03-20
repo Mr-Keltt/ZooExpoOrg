@@ -8,11 +8,12 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Systems/API/ZooExpoOrg.Api/ZooExpoOrg.Api.csproj", "Systems/API/ZooExpoOrg.Api/"]
 COPY ["Data/ZooExpoOrg.Context.Entities/ZooExpoOrg.Context.Entities.csproj", "Data/ZooExpoOrg.Context.Entities/"]
+COPY ["Shared/ZooExpoOrg.Common/ZooExpoOrg.Common.csproj", "Shared/ZooExpoOrg.Common/"]
 COPY ["Data/ZooExpoOrg.Context.Migrations/ZooExpoOrg.Context.Migrations.MSSQL/ZooExpoOrg.Context.Migrations.MSSQL.csproj", "Data/ZooExpoOrg.Context.Migrations/ZooExpoOrg.Context.Migrations.MSSQL/"]
 COPY ["Data/ZooExpoOrg.Context/ZooExpoOrg.Context.csproj", "Data/ZooExpoOrg.Context/"]
 COPY ["Services/ZooExpoOrg.Services.Settings/ZooExpoOrg.Services.Settings.csproj", "Services/ZooExpoOrg.Services.Settings/"]
-COPY ["Shared/ZooExpoOrg.Common/ZooExpoOrg.Common.csproj", "Shared/ZooExpoOrg.Common/"]
 COPY ["Data/ZooExpoOrg.Context.Migrations/ZooExpoOrg.Context.Migrations.PgSql/ZooExpoOrg.Context.Migrations.PgSql.csproj", "Data/ZooExpoOrg.Context.Migrations/ZooExpoOrg.Context.Migrations.PgSql/"]
+COPY ["Services/ZooExpoOrg.Services.Animals/ZooExpoOrg.Services.Animals.csproj", "Services/ZooExpoOrg.Services.Animals/"]
 COPY ["Services/ZooExpoOrg.Services.Logger/ZooExpoOrg.Services.Logger.csproj", "Services/ZooExpoOrg.Services.Logger/"]
 COPY ["Services/ZooExpoOrg.Services.RabbitMq/ZooExpoOrg.Services.RabbitMq.csproj", "Services/ZooExpoOrg.Services.RabbitMq/"]
 COPY ["Systems/API/ZooExpoOrg.Api.Settings/ZooExpoOrg.Api.Settings.csproj", "Systems/API/ZooExpoOrg.Api.Settings/"]

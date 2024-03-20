@@ -1,5 +1,5 @@
 ﻿using ZooExpoOrg.Api.Settings;
-using ZooExpoOrg.Services.Animal;
+using ZooExpoOrg.Services.Animals;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.RabbitMq;
 using ZooExpoOrg.Services.Settings;

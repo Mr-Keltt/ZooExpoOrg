@@ -1,4 +1,8 @@
-﻿using ZooExpoOrg.Common.Enumerables;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Context;
+using ZooExpoOrg.Common.Extensions;
 
 namespace ZooExpoOrg.Services.Animals;
 
@@ -14,9 +18,15 @@ public class UpdateAnimalModel
 
     public int Weight { get; set; }
 
-    public Guid OwnerId { get; set; }
-
     //public virtual IEnumerable<PhotoModel> Photos { get; set; }
 
     //public virtual IEnumerable<AchievementModel> Achievements { get; set; }
+}
+
+public class UpdateAnimalModelProfile : Profile
+{
+    public UpdateAnimalModelProfile()
+    {
+        CreateMap<UpdateAnimalModel, AnimalEntity>();
+    }
 }
