@@ -11,5 +11,5 @@ public abstract class BaseEntity
     public virtual int Id { get; set; }
 
     [Required]
-    public virtual int uid { get; set; }
+    public virtual int Uid { get; set; }
 }
