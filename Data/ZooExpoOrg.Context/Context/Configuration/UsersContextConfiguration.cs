@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Context.Entities.Common;
+using ZooExpoOrg.Common.Enumerables;
+
 
 namespace ZooExpoOrg.Context;
 
@@ -33,12 +34,12 @@ public static class UsersContextConfiguration
 
             entity
                 .HasMany(e => e.Animals)
-                .WithOne(e => e.User)
+                .WithOne(e => e.Owner)
                 .HasForeignKey(e => e.OwnerId);
 
             entity
                 .HasMany(e => e.Comments)
-                .WithOne(e => e.User)
+                .WithOne(e => e.Author)
                 .HasForeignKey(e => e.AuthorId);
 
             entity

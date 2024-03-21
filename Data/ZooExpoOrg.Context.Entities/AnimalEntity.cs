@@ -1,4 +1,5 @@
-﻿using ZooExpoOrg.Context.Entities.Common;
+﻿using ZooExpoOrg.Common.Enumerables;
+using ZooExpoOrg.Context.Entities.Common;
 
 namespace ZooExpoOrg.Context.Entities;
 
@@ -19,7 +20,7 @@ public class AnimalEntity : BaseEntity
     public int? Weight { get; set; }
 
     public int OwnerId { get; set; }
-    public virtual UserEntity User { get; set; }
+    public virtual UserEntity Owner { get; set; }
 
     public virtual ICollection<AnimalCommentEntity>? Comments { get; set; }
 
