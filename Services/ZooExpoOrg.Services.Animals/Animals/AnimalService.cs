@@ -4,8 +4,6 @@ using System.Data;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Services.Animals;
-using static System.Collections.Specialized.BitVector32;
 
 namespace ZooExpoOrg.Services.Animals;
 
