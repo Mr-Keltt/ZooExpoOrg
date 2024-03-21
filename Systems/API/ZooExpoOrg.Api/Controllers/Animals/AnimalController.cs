@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Services.Animals;
 using ZooExpoOrg.Services.Logger;
 using Asp.Versioning;
+using ZooExpoOrg.Api.Controllers.Animals.Models;
+using AutoMapper;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -13,11 +15,13 @@ public class AnimalController : ControllerBase
 {
     private readonly IAppLogger logger;
     private readonly IAnimalService animalService;
+    private readonly IMapper mapper;
 
-    public AnimalController(IAppLogger logger, IAnimalService animalService)
+    public AnimalController(IAppLogger logger, IAnimalService animalService, IMapper mapper)
     {
         this.logger = logger;
         this.animalService = animalService;
+        this.mapper = mapper;
     }
 
     [HttpGet("")]
@@ -36,15 +40,15 @@ public class AnimalController : ControllerBase
         if (result == null)
             return NotFound();
 
-        return Ok(result);
+        return Ok(mapper.Map<IEnumerable<PresintationAnimalModel>>(result));
     }
 
     [HttpPost("")]
-    public async Task<AnimalModel> Create(CreateAnimalModel request)
+    public async Task<PresintationAnimalModel> Create(CreateAnimalModel request)
     {
         var result = await animalService.Create(request);
 
-        return result;
+        return mapper.Map<PresintationAnimalModel>(result);
     }
 
     [HttpPut("{id:Guid}")]
