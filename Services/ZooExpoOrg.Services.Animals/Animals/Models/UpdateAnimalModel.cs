@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Common.Extensions;
+using ZooExpoOrg.Services.Photos;
 
 namespace ZooExpoOrg.Services.Animals;
 
@@ -18,7 +19,7 @@ public class UpdateAnimalModel
 
     public int Weight { get; set; }
 
-    //public virtual IEnumerable<PhotoModel> Photos { get; set; }
+    public virtual IEnumerable<PhotoModel> Photos { get; set; }
 
     //public virtual IEnumerable<AchievementModel> Achievements { get; set; }
 }

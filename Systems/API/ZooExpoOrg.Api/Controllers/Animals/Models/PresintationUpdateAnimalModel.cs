@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ZooExpoOrg.Api.Controllers.Photos;
 using ZooExpoOrg.Services.Animals;
 
 namespace ZooExpoOrg.Api.Controllers.Animals.Models;
@@ -14,6 +15,8 @@ public class PresintationUpdateAnimalModel
     public int Height { get; set; }
 
     public int Weight { get; set; }
+
+    public ICollection<PresintationPhotoModel> Photos { get; set; }
 }
 
 public class PresintationUpdateAnimalModelProfile : Profile
