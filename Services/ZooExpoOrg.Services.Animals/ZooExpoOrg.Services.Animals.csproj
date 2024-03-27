@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\Data\ZooExpoOrg.Context.Entities\ZooExpoOrg.Context.Entities.csproj" />
     <ProjectReference Include="..\..\Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
     <ProjectReference Include="..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+    <ProjectReference Include="..\ZooExpoOrg.Services.Photos\ZooExpoOrg.Services.Photos.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Services.Animals;
 using ZooExpoOrg.Services.Logger;
 using Asp.Versioning;
-using ZooExpoOrg.Api.Controllers.Animals.Models;
 using AutoMapper;
+using ZooExpoOrg.Api.Controllers.Animals.Models;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -25,11 +25,11 @@ public class AnimalController : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IEnumerable<AnimalModel>> Get()
+    public async Task<IEnumerable<PresintationAnimalModel>> Get()
     {
         var result = await animalService.GetAll();
 
-        return result;
+        return mapper.Map<IEnumerable<PresintationAnimalModel>>(result);
     }
 
     [HttpGet("{id:Guid}")]
@@ -44,17 +44,17 @@ public class AnimalController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<PresintationAnimalModel> Create(CreateAnimalModel request)
+    public async Task<PresintationAnimalModel> Create(PresintationCreateAnimalModel request)
     {
-        var result = await animalService.Create(request);
+        var result = await animalService.Create(mapper.Map<CreateAnimalModel>(request));
 
         return mapper.Map<PresintationAnimalModel>(result);
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task Update([FromRoute] Guid id, UpdateAnimalModel request)
+    public async Task Update([FromRoute] Guid id, PresintationUpdateAnimalModel request)
     {
-        await animalService.Update(id, request);
+        await animalService.Update(id, mapper.Map<UpdateAnimalModel>(request));
     }
 
     [HttpDelete("{id:Guid}")]
