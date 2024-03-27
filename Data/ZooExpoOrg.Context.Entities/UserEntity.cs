@@ -24,11 +24,11 @@ public class UserEntity : BaseEntity
     public int? PhotoId { get; set; }
     public virtual UserPhotoEntity Photo { get; set; }
 
-    public virtual ICollection<ExpositionEntity>? Subscriptions { get; set; }
+    public virtual ICollection<ExpositionEntity> Subscriptions { get; set; }
 
-    public virtual ICollection<ExpositionEntity>? OrganizedExpositions { get; set; }
+    public virtual ICollection<ExpositionEntity> OrganizedExpositions { get; set; }
 
-    public virtual ICollection<AnimalEntity>? Animals { get; set; }
+    public virtual ICollection<AnimalEntity> Animals { get; set; }
 
-    public virtual ICollection<Comment>? Comments { get; set; }
+    public virtual ICollection<Comment> Comments { get; set; }
 }

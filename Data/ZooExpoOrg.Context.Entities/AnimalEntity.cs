@@ -22,9 +22,9 @@ public class AnimalEntity : BaseEntity
     public int OwnerId { get; set; }
     public virtual UserEntity Owner { get; set; }
 
-    public virtual ICollection<AnimalCommentEntity>? Comments { get; set; }
+    public virtual ICollection<AnimalCommentEntity> Comments { get; set; }
 
     public virtual ICollection<AnimalPhotoEntity> Photos { get; set; }
 
-    public virtual ICollection<AchievementEntity>? Achievements { get; set; }
+    public virtual ICollection<AchievementEntity> Achievements { get; set; }
 }
