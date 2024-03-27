@@ -8,7 +8,7 @@ using ZooExpoOrg.Context.Entities.Common;
 
 namespace ZooExpoOrg.Services.Photos;
 
-internal class PhotoService : IPhotoService
+public class PhotoService : IPhotoService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
