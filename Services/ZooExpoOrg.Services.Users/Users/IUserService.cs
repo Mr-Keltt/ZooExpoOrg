@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace ZooExpoOrg.Services.Users;
 
-public class IUserService
+public interface IUserService
 {
+    Task<IEnumerable<UserModel>> GetAll();
+    Task<UserModel> GetById(Guid id);
+    Task<UserModel> Create(CreateUserModel model);
+    Task Update(Guid id, UpdateUserModel model);
+    Task Delete(Guid id);
 }
