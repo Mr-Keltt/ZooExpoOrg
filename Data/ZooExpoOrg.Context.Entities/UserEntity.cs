@@ -18,7 +18,7 @@ public class UserEntity : BaseEntity
 
     public Gender Gender { get; set; }
 
-    public DateTime? BirthDate { get; set; }
+    public DateTime BirthDate { get; set; }
 
     public int? PhotoId { get; set; }
     public virtual UserPhotoEntity Photo { get; set; }
