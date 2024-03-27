@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
+using ZooExpoOrg.Services.Animals;
 
-namespace ZooExpoOrg.Api.Controllers.Animals.Models;
+namespace ZooExpoOrg.Api.Controllers.Animals;
 
 public class PresintationAnimalModel
 {
@@ -38,6 +39,7 @@ public class PresintationAnimalModelProfile : Profile
 {
     public PresintationAnimalModelProfile()
     {
-        CreateMap<PresintationAnimalModel, AnimalEntity>();
+        CreateMap<PresintationAnimalModel, AnimalModel>()
+            .ReverseMap();
     }
 }
