@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿namespace ZooExpoOrg.Services.Users;
+
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Animals;
-
-namespace ZooExpoOrg.Services.Users;
 
 public class UserService : IUserService
 {
