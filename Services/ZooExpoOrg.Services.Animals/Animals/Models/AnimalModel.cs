@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Common.Extensions;
+using ZooExpoOrg.Services.Photos;
 
 public class AnimalModel
 {
@@ -29,7 +30,7 @@ public class AnimalModel
 
     //public virtual IEnumerable<CommentModel> Comments { get; set; }
 
-    //public virtual IEnumerable<PhotoModel> Photos { get; set; }
+    public virtual IEnumerable<PhotoModel> Photos { get; set; }
 
     //public virtual IEnumerable<AchievementModel> Achievements { get; set; }
 }

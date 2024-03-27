@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
+using ZooExpoOrg.Services.Animals;
+using ZooExpoOrg.Api.Controllers.Photos;
 
-namespace ZooExpoOrg.Api.Controllers.Animals.Models;
+namespace ZooExpoOrg.Api.Controllers.Animals;
 
 public class PresintationAnimalModel
 {
@@ -28,7 +30,7 @@ public class PresintationAnimalModel
 
     //public virtual IEnumerable<CommentModel> Comments { get; set; }
 
-    //public virtual IEnumerable<PhotoModel> Photos { get; set; }
+    public virtual IEnumerable<PresintationPhotoModel> Photos { get; set; }
 
     //public virtual IEnumerable<AchievementModel> Achievements { get; set; }
 }
@@ -38,6 +40,7 @@ public class PresintationAnimalModelProfile : Profile
 {
     public PresintationAnimalModelProfile()
     {
-        CreateMap<PresintationAnimalModel, AnimalEntity>();
+        CreateMap<PresintationAnimalModel, AnimalModel>()
+            .ReverseMap();
     }
 }

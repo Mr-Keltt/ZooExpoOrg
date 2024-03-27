@@ -25,8 +25,6 @@ public class CreateAnimalModel
     public int? Weight { get; set; }
 
     public Guid OwnerId { get; set; }
-
-    //public virtual IEnumerable<PhotoModel> Photos { get; set; }
 }
 
 public class CreateAnimalModelProfile : Profile
