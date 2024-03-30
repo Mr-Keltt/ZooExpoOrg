@@ -1,6 +1,7 @@
-﻿using ZooExpoOrg.Context.Entities.Common;
+﻿namespace ZooExpoOrg.Context.Entities;
 
-namespace ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Context.Entities.Common;
+
 public class ExpositionCommentEntity : Comment
 {
     public int ExpositionId { get; set; }
