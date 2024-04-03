@@ -12,15 +12,15 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20240327201047_DeletNullCollections")]
-    partial class DeletNullCollections
+    [Migration("20240403190027_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.16")
+                .HasAnnotation("ProductVersion", "7.0.17")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -28,7 +28,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ExpositionEntityUserEntity", b =>
+            modelBuilder.Entity("ClientEntityExpositionEntity", b =>
                 {
                     b.Property<int>("SubscribersId")
                         .HasColumnType("integer");
@@ -41,6 +41,136 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasIndex("SubscriptionsId");
 
                     b.ToTable("expositions_subscribers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("user_roles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("user_role_claims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("user_claims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("user_logins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("user_role_owners", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("user_tokens", (string)null);
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AchievementEntity", b =>
@@ -137,8 +267,80 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AnimalId")
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("ImageMimeType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OwnerId")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("Uid")
+                        .IsUnique();
+
+                    b.ToTable("animals_photos", (string)null);
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ClientEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Uid")
+                        .IsUnique();
+
+                    b.ToTable("clients", (string)null);
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ClientPhotoEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<byte[]>("ImageData")
                         .IsRequired()
@@ -148,17 +350,21 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("Uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnimalId");
+                    b.HasIndex("OwnerId")
+                        .IsUnique();
 
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.ToTable("animals_photos", (string)null);
+                    b.ToTable("clients_photos", (string)null);
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Common.Comment", b =>
@@ -253,7 +459,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Property<string>("HouseNumber")
                         .HasColumnType("text");
 
-                    b.Property<int>("OrganizersId")
+                    b.Property<int>("OrganizerId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Street")
@@ -269,7 +475,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizersId");
+                    b.HasIndex("OrganizerId");
 
                     b.HasIndex("Uid")
                         .IsUnique();
@@ -285,9 +491,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ExpositionId")
-                        .HasColumnType("integer");
-
                     b.Property<byte[]>("ImageData")
                         .IsRequired()
                         .HasColumnType("bytea");
@@ -296,12 +499,15 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("Uid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExpositionId");
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("Uid")
                         .IsUnique();
@@ -311,87 +517,73 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
-                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<string>("Login")
-                        .IsRequired()
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Patronymic")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PhotoId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Uid")
+                    b.HasIndex("ClientId")
                         .IsUnique();
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("users", (string)null);
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserPhotoEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("ImageData")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("ImageMimeType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Uid")
-                        .IsUnique();
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("users_photos", (string)null);
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalCommentEntity", b =>
@@ -418,9 +610,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.ToTable("expositions_comments", (string)null);
                 });
 
-            modelBuilder.Entity("ExpositionEntityUserEntity", b =>
+            modelBuilder.Entity("ClientEntityExpositionEntity", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", null)
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", null)
                         .WithMany()
                         .HasForeignKey("SubscribersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -429,6 +621,57 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", null)
                         .WithMany()
                         .HasForeignKey("SubscriptionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -460,68 +703,80 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", "User")
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Owner")
                         .WithMany("Animals")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalPhotoEntity", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.AnimalEntity", "Animal")
+                    b.HasOne("ZooExpoOrg.Context.Entities.AnimalEntity", "Owner")
                         .WithMany("Photos")
-                        .HasForeignKey("AnimalId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Animal");
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ClientPhotoEntity", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Owner")
+                        .WithOne("Photo")
+                        .HasForeignKey("ZooExpoOrg.Context.Entities.ClientPhotoEntity", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.Common.Comment", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", "User")
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionEntity", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", "User")
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Organizer")
                         .WithMany("OrganizedExpositions")
-                        .HasForeignKey("OrganizersId")
+                        .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionPhotoEntity", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", "Exposition")
+                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", "Owner")
                         .WithMany("Photos")
-                        .HasForeignKey("ExpositionId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Exposition");
+                    b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserPhotoEntity", b =>
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserEntity", b =>
                 {
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", "User")
-                        .WithOne("Photo")
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.UserPhotoEntity", "UserId")
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Client")
+                        .WithOne("User")
+                        .HasForeignKey("ZooExpoOrg.Context.Entities.UserEntity", "ClientId")
+                        .HasPrincipalKey("ZooExpoOrg.Context.Entities.ClientEntity", "Uid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalCommentEntity", b =>
@@ -567,6 +822,21 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Photos");
                 });
 
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ClientEntity", b =>
+                {
+                    b.Navigation("Animals");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("OrganizedExpositions");
+
+                    b.Navigation("Photo")
+                        .IsRequired();
+
+                    b.Navigation("User")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ConfirmationAchievementEntity", b =>
                 {
                     b.Navigation("Achievement")
@@ -580,18 +850,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Participants");
 
                     b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserEntity", b =>
-                {
-                    b.Navigation("Animals");
-
-                    b.Navigation("Comments");
-
-                    b.Navigation("OrganizedExpositions");
-
-                    b.Navigation("Photo")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,29 +1,17 @@
-﻿namespace ZooExpoOrg.Api.Controllers.Users;
-
+﻿using AutoMapper;
 using ZooExpoOrg.Common.Enumerables;
+using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Animals;
-using AutoMapper;
-using ZooExpoOrg.Services.Users;
 
-public class PresintationUserModel
+namespace ZooExpoOrg.Services.Clients; 
+
+public class UpdateClientModel 
 {
-    public Guid Id { get; set; }
-
-    public string Login { get; set; }
-
-    public string Password { get; set; }
-
-    public string Email { get; set; }
-
     public string Name { get; set; }
 
     public string Surname { get; set; }
 
     public string Patronymic { get; set; }
-
-    public Gender Gender { get; set; }
-
-    public DateTime BirthDate { get; set; }
 
     public Guid PhotoId { get; set; }
 
@@ -36,11 +24,10 @@ public class PresintationUserModel
     //public virtual ICollection<Comment> Comments { get; set; }
 }
 
-public class PresintationUserModelProfile : Profile
+public class UpdateClientModelProfile : Profile
 {
-    public PresintationUserModelProfile()
+    public UpdateClientModelProfile()
     {
-        CreateMap<PresintationUserModel, UserModel>()
-            .ReverseMap();
+        CreateMap<UpdateClientModel, ClientEntity>();
     }
 }

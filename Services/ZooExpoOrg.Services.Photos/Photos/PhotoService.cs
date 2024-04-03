@@ -24,23 +24,23 @@ public class PhotoService : IPhotoService
         using var db = dbContextFactory.CreateDbContext();
 
         var animalPhotos = await db.AnimalsPhotos
-                                .Include(x => x.Animal)
-                                .Where(x => x.Animal.Uid == OwnerId)
+                                .Include(x => x.Owner)
+                                .Where(x => x.Owner.Uid == OwnerId)
                                 .ToListAsync();
 
         var expositionPhotos = await db.ExpositionsPhotos
-                                    .Include(x => x.Exposition)
-                                    .Where(x => x.Exposition.Uid == OwnerId)
+                                    .Include(x => x.Owner)
+                                    .Where(x => x.Owner.Uid == OwnerId)
                                     .ToListAsync();
 
-        var userPhotos = await db.UsersPhotos
-                            .Include(x => x.User)
-                            .Where(x => x.User.Uid == OwnerId)
+        var clientPhotos = await db.ClientsPhotos
+                            .Include(x => x.Owner)
+                            .Where(x => x.Owner.Uid == OwnerId)
                             .ToListAsync();
 
         var result = mapper.Map<IEnumerable<PhotoModel>>(animalPhotos)
             .Concat(mapper.Map<IEnumerable<PhotoModel>>(expositionPhotos))
-            .Concat(mapper.Map<IEnumerable<PhotoModel>>(userPhotos));
+            .Concat(mapper.Map<IEnumerable<PhotoModel>>(clientPhotos));
 
         return result;
     }
@@ -50,23 +50,23 @@ public class PhotoService : IPhotoService
         using var db = dbContextFactory.CreateDbContext();
 
         var animalPhotos = await db.AnimalsPhotos
-                                .Include(x => x.Animal)
+                                .Include(x => x.Owner)
                                 .FirstOrDefaultAsync(x => x.Uid == id);
 
         var expositionPhotos = await db.ExpositionsPhotos
-                                    .Include(x => x.Exposition)
+                                    .Include(x => x.Owner)
                                     .FirstOrDefaultAsync(x => x.Uid == id);
 
-        var userPhotos = await db.UsersPhotos
-                            .Include(x => x.User)
+        var clientPhotos = await db.ClientsPhotos
+                            .Include(x => x.Owner)
                             .FirstOrDefaultAsync(x => x.Uid == id);
 
         if (animalPhotos != null)
             return mapper.Map<PhotoModel>(animalPhotos);
         else if (expositionPhotos != null)
             return mapper.Map<PhotoModel>(expositionPhotos);
-        else if (userPhotos != null)
-            return mapper.Map<PhotoModel>(userPhotos);
+        else if (clientPhotos != null)
+            return mapper.Map<PhotoModel>(clientPhotos);
         else
             return null;
     }
@@ -81,7 +81,7 @@ public class PhotoService : IPhotoService
         var exposition = await context.Expositions
             .FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
 
-        var user = await context.Users
+        var client = await context.Clients
             .FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
 
         PhotoModel result = null;
@@ -100,10 +100,10 @@ public class PhotoService : IPhotoService
 
             result = mapper.Map<PhotoModel>(photo);
         }
-        else if (user != null)
+        else if (client != null)
         {
-            var photo = mapper.Map<UserPhotoEntity>(model);
-            await context.UsersPhotos.AddAsync(photo);
+            var photo = mapper.Map<ClientPhotoEntity>(model);
+            await context.ClientsPhotos.AddAsync(photo);
 
             result = mapper.Map<PhotoModel>(photo);
         }
@@ -126,7 +126,7 @@ public class PhotoService : IPhotoService
         var exposition = await context.ExpositionsPhotos
             .FirstOrDefaultAsync(x => x.Uid == id);
 
-        var user = await context.UsersPhotos
+        var client = await context.ClientsPhotos
             .FirstOrDefaultAsync(x => x.Uid == id);
 
         if (animal != null)
@@ -137,9 +137,9 @@ public class PhotoService : IPhotoService
         {
             context.ExpositionsPhotos.Remove(exposition);
         }
-        else if (user != null)
+        else if (client != null)
         {
-            context.UsersPhotos.Remove(user);
+            context.ClientsPhotos.Remove(client);
         }
         else
         {

@@ -7,17 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Common.Extensions;
 
-namespace ZooExpoOrg.Services.Users;
+namespace ZooExpoOrg.Services.Clients;
 
-public class UserModel
+public class ClientModel
 {
     public Guid Id { get; set; }
-
-    public string Login { get; set; }
-
-    public string Password { get; set; }
-
-    public string Email { get; set; }
 
     public string Name { get; set; }
 
@@ -40,38 +34,38 @@ public class UserModel
     //public virtual ICollection<Comment> Comments { get; set; }
 }
 
-public class UserModelProfile : Profile
+public class ClientModelProfile : Profile
 {
-    public UserModelProfile()
+    public ClientModelProfile()
     {
-        CreateMap<UserEntity, UserModel>()
-            .BeforeMap<UserModelActions>()
+        CreateMap<ClientEntity, ClientModel>()
+            .BeforeMap<ClientModelActions>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Patronymic, opt => opt.Ignore());
     }
 
-    public class UserModelActions : IMappingAction<UserEntity, UserModel>
+    public class ClientModelActions : IMappingAction<ClientEntity, ClientModel>
     {
         private readonly IDbContextFactory<MainDbContext> contextFactory;
 
-        public UserModelActions(IDbContextFactory<MainDbContext> contextFactory)
+        public ClientModelActions(IDbContextFactory<MainDbContext> contextFactory)
         {
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(UserEntity source, UserModel destination, ResolutionContext context)
+        public async void Process(ClientEntity source, ClientModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var user = await db.Users
+            var client = await db.Clients
                 .Include(x => x.Subscriptions).ThenInclude(x => x.Photos)
                 .Include(x => x.OrganizedExpositions).ThenInclude(x => x.Photos)
                 .Include(x => x.Comments)
                 .Include(x => x.Photo)
                 .FirstOrDefaultAsync(x => x.Id == source.Id);
 
-            destination.Id = user.Uid;
-            destination.Patronymic = !user.Patronymic.IsNullOrEmpty() ? user.Patronymic : "";
+            destination.Id = client.Uid;
+            destination.Patronymic = !client.Patronymic.IsNullOrEmpty() ? client.Patronymic : "";
         }
     }
 }

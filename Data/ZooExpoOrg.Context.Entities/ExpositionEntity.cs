@@ -9,8 +9,8 @@ public class ExpositionEntity : BaseEntity
 
     public string Description { get; set; }
 
-    public int OrganizersId { get; set; }
-    public virtual UserEntity User { get; set; }
+    public int OrganizerId { get; set; }
+    public virtual ClientEntity Organizer { get; set; }
 
     public string Country { get; set; }
 
@@ -30,5 +30,5 @@ public class ExpositionEntity : BaseEntity
 
     public virtual ICollection<ExpositionCommentEntity> Comments { get; set; }
 
-    public virtual ICollection<UserEntity> Subscribers { get; set; }
+    public virtual ICollection<ClientEntity> Subscribers { get; set; }
 }

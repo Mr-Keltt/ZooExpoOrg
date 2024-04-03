@@ -1,4 +1,4 @@
-﻿namespace ZooExpoOrg.Services.Users;
+﻿namespace ZooExpoOrg.Services.Clients;
 
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -7,70 +7,70 @@ using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Animals;
 
-public class UserService : IUserService
+public class ClientService : IClientService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
 
-    public UserService(IDbContextFactory<MainDbContext> dbContextFactory, IMapper mapper)
+    public ClientService(IDbContextFactory<MainDbContext> dbContextFactory, IMapper mapper)
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
     }
 
-    public async Task<IEnumerable<UserModel>> GetAll()
+    public async Task<IEnumerable<ClientModel>> GetAll()
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var users = await context.Users
+        var clients = await context.Clients
             .Include(x => x.Subscriptions).ThenInclude(x => x.Photos)
             .Include(x => x.OrganizedExpositions).ThenInclude(x => x.Photos)
             .Include(x => x.Comments)
             .Include(x => x.Photo)
             .ToListAsync();
 
-        var result = mapper.Map<IEnumerable<UserModel>>(users);
+        var result = mapper.Map<IEnumerable<ClientModel>>(clients);
 
         return result;
     }
 
-    public async Task<UserModel> GetById(Guid id)
+    public async Task<ClientModel> GetById(Guid id)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var users = await context.Users
+        var clients = await context.Clients
             .Include(x => x.Subscriptions).ThenInclude(x => x.Photos)
             .Include(x => x.OrganizedExpositions).ThenInclude(x => x.Photos)
             .Include(x => x.Comments)
             .Include(x => x.Photo)
             .FirstOrDefaultAsync(x => x.Uid == id);
 
-        var result = mapper.Map<UserModel>(users);
+        var result = mapper.Map<ClientModel>(clients);
 
         return result;
     }
 
-    public async Task<UserModel> Create(CreateUserModel model)
+    public async Task<ClientModel> Create(CreateClientModel model)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var user = mapper.Map<UserEntity>(model);
+        var client = mapper.Map<ClientEntity>(model);
 
-        await context.Users.AddAsync(user);
+        await context.Clients.AddAsync(client);
         await context.SaveChangesAsync();
 
-        return mapper.Map<UserModel>(user);
+        return mapper.Map<ClientModel>(client);
     }
 
-    public async Task Update(Guid id, UpdateUserModel model)
+    public async Task Update(Guid id, UpdateClientModel model)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Uid == id);
+        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == id);
 
-        user = mapper.Map(model, user);
+        client = mapper.Map(model, client);
 
-        context.Users.Update(user);
+        context.Clients.Update(client);
 
         await context.SaveChangesAsync();
     }
@@ -79,12 +79,12 @@ public class UserService : IUserService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var user = await context.Users.Where(x => x.Uid == id).FirstOrDefaultAsync();
+        var client = await context.Clients.Where(x => x.Uid == id).FirstOrDefaultAsync();
 
-        if (user == null)
-            throw new ProcessException($"Userl (ID = {id}) not found.");
+        if (client == null)
+            throw new ProcessException($"Client (ID = {id}) not found.");
 
-        context.Users.Remove(user);
+        context.Clients.Remove(client);
 
         await context.SaveChangesAsync();
     }

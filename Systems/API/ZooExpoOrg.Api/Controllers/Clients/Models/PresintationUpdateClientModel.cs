@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Animals;
-using ZooExpoOrg.Services.Users;
+using ZooExpoOrg.Services.Clients;
 
-namespace ZooExpoOrg.Api.Controllers.Users; 
+namespace ZooExpoOrg.Api.Controllers.Clients; 
 
-public class PresintationUpdateUserModel 
+public class PresintationUpdateClientModel 
 {
     public string Login { get; set; }
 
@@ -30,11 +30,11 @@ public class PresintationUpdateUserModel
     //public virtual ICollection<Comment> Comments { get; set; }
 }
 
-public class UpdateUserModelProfile : Profile
+public class UpdateClientModelProfile : Profile
 {
-    public UpdateUserModelProfile()
+    public UpdateClientModelProfile()
     {
-        CreateMap<PresintationUpdateUserModel, UserModel>()
+        CreateMap<PresintationUpdateClientModel, ClientModel>()
             .ReverseMap();
     }
 }

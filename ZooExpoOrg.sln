@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_docker", "_docker", "{74BC
 		docker-compose.override.yml = docker-compose.override.yml
 		docker-compose.yml = docker-compose.yml
 		env.api = env.api
+		env.identity = env.identity
 		env.worker = env.worker
 	EndProjectSection
 EndProject
@@ -56,11 +57,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Animals
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Photos", "Services\ZooExpoOrg.Services.Photos\ZooExpoOrg.Services.Photos.csproj", "{FC446B59-83FE-4647-9132-334CBCFD58C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Users", "Services\ZooExpoOrg.Services.Users\ZooExpoOrg.Services.Users.csproj", "{63248E87-1048-49BD-8B09-36FE3786C1B8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{811FC9CE-3E5F-42D3-9FA0-8B970DCD0707}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Identity", "Systems\Identity\ZooExpoOrg.Identity\ZooExpoOrg.Identity.csproj", "{FC30F948-F266-448E-B443-77F3367995E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Identity", "Systems\Identity\ZooExpoOrg.Identity\ZooExpoOrg.Identity.csproj", "{FC30F948-F266-448E-B443-77F3367995E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Services.Client", "Services\ZooExpoOrg.Services.Client\ZooExpoOrg.Services.Client.csproj", "{3ADD8B3E-9B2B-4933-9524-528A2E1AEC4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,14 +121,14 @@ Global
 		{FC446B59-83FE-4647-9132-334CBCFD58C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC446B59-83FE-4647-9132-334CBCFD58C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC446B59-83FE-4647-9132-334CBCFD58C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63248E87-1048-49BD-8B09-36FE3786C1B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63248E87-1048-49BD-8B09-36FE3786C1B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63248E87-1048-49BD-8B09-36FE3786C1B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63248E87-1048-49BD-8B09-36FE3786C1B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC30F948-F266-448E-B443-77F3367995E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC30F948-F266-448E-B443-77F3367995E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC30F948-F266-448E-B443-77F3367995E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC30F948-F266-448E-B443-77F3367995E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ADD8B3E-9B2B-4933-9524-528A2E1AEC4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ADD8B3E-9B2B-4933-9524-528A2E1AEC4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ADD8B3E-9B2B-4933-9524-528A2E1AEC4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ADD8B3E-9B2B-4933-9524-528A2E1AEC4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,9 +151,9 @@ Global
 		{C594FA07-123C-4AF5-9969-CE2E3B806616} = {908B8E1C-1B1B-40F6-BEA8-E9E1143C43F2}
 		{C655B997-11E5-4A28-87AD-F909F391001D} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{FC446B59-83FE-4647-9132-334CBCFD58C7} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
-		{63248E87-1048-49BD-8B09-36FE3786C1B8} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{811FC9CE-3E5F-42D3-9FA0-8B970DCD0707} = {C6A01CFA-99E3-4157-8F9D-8D81A0C237E3}
 		{FC30F948-F266-448E-B443-77F3367995E5} = {811FC9CE-3E5F-42D3-9FA0-8B970DCD0707}
+		{3ADD8B3E-9B2B-4933-9524-528A2E1AEC4D} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}

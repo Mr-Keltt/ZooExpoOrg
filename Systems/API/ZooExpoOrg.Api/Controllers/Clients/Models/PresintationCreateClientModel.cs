@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Services.Users;
+using ZooExpoOrg.Services.Clients;
 
-namespace ZooExpoOrg.Api.Controllers.Users;
+namespace ZooExpoOrg.Api.Controllers.Clients;
 
-public class PresintationCreateUserModel
+public class PresintationCreateClientModel
 {
     public string Login { get; set; }
 
@@ -24,11 +24,11 @@ public class PresintationCreateUserModel
     public DateTime BirthDate { get; set; }
 }
 
-public class CreateUserModelProfile : Profile
+public class CreateClientModelProfile : Profile
 {
-    public CreateUserModelProfile()
+    public CreateClientModelProfile()
     {
-        CreateMap<PresintationCreateUserModel, UserModel>()
+        CreateMap<PresintationCreateClientModel, ClientModel>()
             .ReverseMap();
     }
 }
