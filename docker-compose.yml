@@ -17,17 +17,16 @@ services:
       - zooexpoorg_postgresql
       - zooexpoorg_rabbitmq
 
-  zooexpoorg_worker_1:
-    image: ${DOCKER_REGISTRY-}zoo-expo-org-worker
+  zooexpoorg_identity:
+    image: ${DOCKER_REGISTRY-}zoo-expo-org-identity
     build:
       context: .
-      dockerfile: Systems/Workers/ZooExpoOrg.Worker/Dockerfile
+      dockerfile: Systems/Identity/ZooExpoOrg.Identity/Dockerfile
     depends_on:
       - zooexpoorg_postgresql
-      - zooexpoorg_rabbitmq
       - zooexpoorg_api
 
-  zooexpoorg_worker_2:
+  zooexpoorg_worker_1:
     image: ${DOCKER_REGISTRY-}zoo-expo-org-worker
     build:
       context: .

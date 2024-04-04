@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.UserAccount\ZooExpoOrg.Services.UserAccount.csproj" />
+    <ProjectReference Include="..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+    <ProjectReference Include="..\ZooExpoOrg.Context.Entities\ZooExpoOrg.Context.Entities.csproj" />
+    <ProjectReference Include="..\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -17,7 +17,7 @@ public class DbInitSettings
 
 public class UserCredentials
 {
-    public string Name { get; private set; }
+    public string UserName { get; private set; }
     public string Email { get; private set; }
     public string Password { get; private set; }
 }

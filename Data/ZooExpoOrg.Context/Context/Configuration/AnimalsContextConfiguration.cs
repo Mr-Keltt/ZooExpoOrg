@@ -27,13 +27,15 @@ public static class AnimalsContextConfiguration
 
             entity
                 .HasMany(a => a.Photos)
-                .WithOne(p => p.Animal)
-                .HasForeignKey(p => p.AnimalId);
+                .WithOne(p => p.Owner)
+                .HasForeignKey(p => p.OwnerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(a => a.Achievements)
                 .WithOne(a => a.Animal)
-                .HasForeignKey(a => a.AnimalId);
+                .HasForeignKey(a => a.AnimalId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(a => a.Comments)

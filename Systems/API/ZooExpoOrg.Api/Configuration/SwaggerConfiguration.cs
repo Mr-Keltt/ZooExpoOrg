@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 using Asp.Versioning.ApiExplorer;
+using ZooExpoOrg.Common.Security;
 
 /// <summary>
 /// Swagger configuration
@@ -15,15 +16,10 @@ public static class SwaggerConfiguration
 {
     private static string AppTitle = "ZooExpoOrg API";
 
-    /// <summary>
-    /// Add OpenAPI to API
-    /// </summary>
-    /// <param name="services">Services collection</param>
-    /// <param name="mainSettings"></param>
-    /// <param name="swaggerSettings"></param>
     public static IServiceCollection AddAppSwagger(this IServiceCollection services, 
         MainSettings mainSettings, 
-        SwaggerSettings swaggerSettings
+        SwaggerSettings swaggerSettings,
+        IdentitySettings identitySettings
         )
     {
         if (!swaggerSettings.Enabled)
@@ -57,6 +53,49 @@ public static class SwaggerConfiguration
             if (File.Exists(xmlPath))
                 options.IncludeXmlComments(xmlPath);
 
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            {
+                Name = "Bearer",
+                Type = SecuritySchemeType.OAuth2,
+                Scheme = "oauth2",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Flows = new OpenApiOAuthFlows
+                {
+                    ClientCredentials = new OpenApiOAuthFlow
+                    {
+                        TokenUrl = new Uri($"{identitySettings.Url}/connect/token"),
+                        Scopes = new Dictionary<string, string>
+                        {
+
+                        }
+                    },
+
+                    Password = new OpenApiOAuthFlow
+                    {
+                        TokenUrl = new Uri($"{identitySettings.Url}/connect/token"),
+                        Scopes = new Dictionary<string, string>
+                        {
+
+                        }
+                    }
+                }
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "oauth2"
+                        }
+                    },
+                    new List<string>()
+                }
+            });
 
             options.UseOneOfForPolymorphism();
             options.EnableAnnotations(true, true);

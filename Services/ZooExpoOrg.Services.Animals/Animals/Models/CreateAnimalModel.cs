@@ -49,7 +49,7 @@ public class CreateAnimalModelProfile : Profile
         {
             using var db = contextFactory.CreateDbContext();
 
-            var owner = await db.Users.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
+            var owner = await db.Clients.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
 
             if (owner == null)
                 throw new ProcessException($"Owner (ID = {source.OwnerId}) not found.");

@@ -26,8 +26,8 @@ public static class ExpositionsContextConfiguration
 
             entity
                 .HasMany(e => e.Photos)
-                .WithOne(ph => ph.Exposition)
-                .HasForeignKey(ph => ph.ExpositionId)
+                .WithOne(ph => ph.Owner)
+                .HasForeignKey(ph => ph.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity

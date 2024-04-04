@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
+using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Services.Photos;
 
@@ -27,7 +27,7 @@ public class PhotoModelProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
 
-        CreateMap<UserPhotoEntity, PhotoModel>()
+        CreateMap<ClientPhotoEntity, PhotoModel>()
             .BeforeMap<PhotoModelActions>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
@@ -36,7 +36,7 @@ public class PhotoModelProfile : Profile
     public class PhotoModelActions : 
         IMappingAction<AnimalPhotoEntity, PhotoModel>,
         IMappingAction<ExpositionPhotoEntity, PhotoModel>,
-        IMappingAction<UserPhotoEntity, PhotoModel>
+        IMappingAction<ClientPhotoEntity, PhotoModel>
     {
         private readonly IDbContextFactory<MainDbContext> contextFactory;
 
@@ -50,11 +50,11 @@ public class PhotoModelProfile : Profile
             using var db = contextFactory.CreateDbContext();
 
             var photo = await db.AnimalsPhotos
-                .Include(x => x.Animal)
+                .Include(x => x.Owner)
                 .FirstOrDefaultAsync(x => x.Id == source.Id);
 
             destination.Id = photo.Uid;
-            destination.OwnerId = photo.Animal.Uid;
+            destination.OwnerId = photo.Owner.Uid;
         }
 
         public async void Process(ExpositionPhotoEntity source, PhotoModel destination, ResolutionContext context)
@@ -62,23 +62,23 @@ public class PhotoModelProfile : Profile
             using var db = contextFactory.CreateDbContext();
 
             var photo = await db.ExpositionsPhotos
-                .Include(x => x.Exposition)
+                .Include(x => x.Owner)
                 .FirstOrDefaultAsync(x => x.Id == source.Id);
 
             destination.Id = photo.Uid;
-            destination.OwnerId = photo.Exposition.Uid;
+            destination.OwnerId = photo.Owner.Uid;
         }
 
-        public async void Process(UserPhotoEntity source, PhotoModel destination, ResolutionContext context)
+        public async void Process(ClientPhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var photo = await db.UsersPhotos
-                .Include(x => x.User)
+            var photo = await db.ClientsPhotos
+                .Include(x => x.Owner)
                 .FirstOrDefaultAsync(x => x.Id == source.Id);
 
             destination.Id = photo.Uid;
-            destination.OwnerId = photo.User.Uid;
+            destination.OwnerId = photo.Owner.Uid;
         }
     }
 }

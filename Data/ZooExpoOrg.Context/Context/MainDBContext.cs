@@ -1,20 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Context;
 
-public class MainDbContext : DbContext
+public class MainDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, Guid>
 {
     public DbSet<AchievementEntity> Achievements { get; set; }
     public DbSet<AnimalEntity> Animals { get; set; }
     public DbSet<AnimalCommentEntity> AnimalsComments { get; set; }
     public DbSet<AnimalPhotoEntity> AnimalsPhotos { get; set; }
+    public DbSet<ClientEntity> Clients { get; set; }
+    public DbSet<ClientPhotoEntity> ClientsPhotos { get; set; }
     public DbSet<ConfirmationAchievementEntity> ConfirmationsAchievements { get; set; }
     public DbSet<ExpositionEntity> Expositions { get; set; }
     public DbSet<ExpositionCommentEntity> ExpositionsComments { get; set; }
     public DbSet<ExpositionPhotoEntity> ExpositionsPhotos { get; set; }
-    public DbSet<UserEntity> Users { get; set; }
-    public DbSet<UserPhotoEntity> UsersPhotos { get; set; }
 
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }
@@ -27,11 +29,12 @@ public class MainDbContext : DbContext
         modelBuilder.ConfigureAnimals();
         modelBuilder.ConfigureAnimalsComments();
         modelBuilder.ConfigureAnimalsPhotos();
+        modelBuilder.ConfigureClients();
+        modelBuilder.ConfigureClientsPhotos();
         modelBuilder.ConfigureConfirmationsAchievements();
         modelBuilder.ConfigureExpositionsComments();
         modelBuilder.ConfigureExpositionsPhotos();
         modelBuilder.ConfigureExpositions();
         modelBuilder.ConfigureUsers();
-        modelBuilder.ConfigureUsersPhotos();
     }
 }
