@@ -4,5 +4,5 @@ public interface IUserAccountService
 {
     Task<bool> IsEmpty();
 
-    Task<UserAccountModel> Create(RegisterUserAccountModel model);
+    Task<AccountModel> Create(RegisterAccountModel model);
 }

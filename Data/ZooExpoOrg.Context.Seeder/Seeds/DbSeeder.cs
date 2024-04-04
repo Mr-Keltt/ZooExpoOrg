@@ -64,7 +64,7 @@ public static class DbSeeder
             Console.WriteLine("Tabe is not empty");
             return;
 
-        await userAccountService.Create(new RegisterUserAccountModel()
+        await userAccountService.Create(new RegisterAccountModel()
         {
             UserName = settings.Init.Administrator.UserName,
             Email = settings.Init.Administrator.Email,

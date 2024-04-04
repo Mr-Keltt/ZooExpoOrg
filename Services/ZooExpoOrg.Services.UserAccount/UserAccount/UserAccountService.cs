@@ -11,12 +11,12 @@ public class UserAccountService : IUserAccountService
 {
     private readonly IMapper mapper;
     private readonly UserManager<UserEntity> userManager;
-    private readonly IModelValidator<RegisterUserAccountModel> registerUserAccountModelValidator;
+    private readonly IModelValidator<RegisterAccountModel> registerUserAccountModelValidator;
 
     public UserAccountService(
         IMapper mapper,
         UserManager<UserEntity> userManager,
-        IModelValidator<RegisterUserAccountModel> registerUserAccountModelValidator
+        IModelValidator<RegisterAccountModel> registerUserAccountModelValidator
     )
     {
         this.mapper = mapper;
@@ -29,7 +29,7 @@ public class UserAccountService : IUserAccountService
         return !(await userManager.Users.AnyAsync());
     }
 
-    public async Task<UserAccountModel> Create(RegisterUserAccountModel model)
+    public async Task<AccountModel> Create(RegisterAccountModel model)
     {
         registerUserAccountModelValidator.Check(model);
 
@@ -50,7 +50,7 @@ public class UserAccountService : IUserAccountService
         if (!result.Succeeded)
             throw new ProcessException($"Creating user account is wrong. {string.Join(", ", result.Errors.Select(s => s.Description))}");
 
-        return mapper.Map<UserAccountModel>(user);
+        return mapper.Map<AccountModel>(user);
     }
 }
 

@@ -7,6 +7,7 @@ using ZooExpoOrg.Services.Settings;
 var mainSettings = Settings.Load<MainSettings>("Main");
 var logSettings = Settings.Load<LogSettings>("Log");
 var swaggerSettings = Settings.Load<SwaggerSettings>("Swagger");
+var idetitySettings = Settings.Load<IdentitySettings>("Identity");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +31,9 @@ services.AddAppVersioning();
 
 services.AddAppHealthChecks();
 
-services.AddAppAuth();
+services.AddAppAuth(idetitySettings);
 
-services.AddAppSwagger(mainSettings, swaggerSettings);
+services.AddAppSwagger(mainSettings, swaggerSettings, idetitySettings);
 
 services.RegisterServices();
 

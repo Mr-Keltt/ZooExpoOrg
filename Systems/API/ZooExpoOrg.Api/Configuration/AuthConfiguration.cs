@@ -5,12 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Services.Settings;
 
 namespace ZooExpoOrg.Api.Configuration;
 
 public static class AuthConfiguration
 {
-    public static IServiceCollection AddAppAuth(this IServiceCollection services/*, IdentitySettings settings*/)
+    public static IServiceCollection AddAppAuth(this IServiceCollection services, 
+        IdentitySettings settings)
     {
         IdentityModelEventSource.ShowPII = true;
 
@@ -27,7 +29,7 @@ public static class AuthConfiguration
             .AddUserManager<UserManager<UserEntity>>()
             .AddDefaultTokenProviders();
 
-        /*services.AddAuthentication(options =>
+        services.AddAuthentication(options =>
         {
             options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
@@ -52,18 +54,17 @@ public static class AuthConfiguration
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(AppScopes.BooksRead, policy => policy.RequireClaim("scope", AppScopes.BooksRead));
-            options.AddPolicy(AppScopes.BooksWrite, policy => policy.RequireClaim("scope", AppScopes.BooksWrite));
-        });*/
+
+        });
 
         return services;
     }
 
     public static IApplicationBuilder UseAppAuth(this IApplicationBuilder app)
     {
-        /*app.UseAuthentication();
+        app.UseAuthentication();
 
-        app.UseAuthorization();*/
+        app.UseAuthorization();
 
         return app;
     }
