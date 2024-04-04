@@ -30,6 +30,8 @@ services.AddAppVersioning();
 
 services.AddAppHealthChecks();
 
+services.AddAppAuth();
+
 services.AddAppSwagger(mainSettings, swaggerSettings);
 
 services.RegisterServices();
@@ -44,8 +46,12 @@ app.UseAppControllerAndViews();
 
 app.UseAppHealthChecks();
 
+app.UseAppAuth();
+
 app.UseAppSwagger();
 
 DbInitializer.Execute(app.Services);
+
+DbSeeder.Execute(app.Services);
 
 app.Run();

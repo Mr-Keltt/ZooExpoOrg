@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240403191127_FixUserAndClientConnection")]
+    partial class FixUserAndClientConnection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -328,9 +331,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("clients", (string)null);
                 });
 
@@ -524,7 +524,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ClientId")
+                    b.Property<Guid>("ClientId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -572,6 +572,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -720,17 +723,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ClientEntity", b =>
-                {
-                    b.HasOne("ZooExpoOrg.Context.Entities.UserEntity", "User")
-                        .WithOne("Client")
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.ClientEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ClientPhotoEntity", b =>
                 {
                     b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Owner")
@@ -773,6 +765,18 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserEntity", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Client")
+                        .WithOne("User")
+                        .HasForeignKey("ZooExpoOrg.Context.Entities.UserEntity", "ClientId")
+                        .HasPrincipalKey("ZooExpoOrg.Context.Entities.ClientEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalCommentEntity", b =>
@@ -828,6 +832,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.Navigation("Photo")
                         .IsRequired();
+
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ConfirmationAchievementEntity", b =>
@@ -843,12 +850,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Participants");
 
                     b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.UserEntity", b =>
-                {
-                    b.Navigation("Client")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

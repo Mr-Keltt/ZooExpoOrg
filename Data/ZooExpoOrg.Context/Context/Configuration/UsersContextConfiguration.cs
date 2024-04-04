@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Common.Enumerables;
 using Microsoft.AspNetCore.Identity;
 
 namespace ZooExpoOrg.Context;
@@ -9,7 +8,16 @@ public static class UsersContextConfiguration
 {
     public static void ConfigureUsers(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserEntity>().ToTable("users");
+        modelBuilder.Entity<UserEntity>(entity =>
+        {
+            entity.ToTable("users");
+
+            entity
+                .HasOne(u => u.Client)
+                .WithOne(c => c.User)
+                .HasForeignKey<ClientEntity>(c => c.UserId);
+        });
+
         modelBuilder.Entity<IdentityRole<Guid>>().ToTable("user_roles");
         modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("user_tokens");
         modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("user_role_owners");

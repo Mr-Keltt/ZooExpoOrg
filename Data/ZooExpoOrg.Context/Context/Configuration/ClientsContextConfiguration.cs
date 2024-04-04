@@ -25,11 +25,6 @@ public static class ClientsContextConfiguration
                 .IsRequired();
 
             entity
-                .HasOne(e => e.User)
-                .WithOne(e => e.Client)
-                .HasPrincipalKey<ClientEntity>(e => e.Uid);
-
-            entity
                 .HasMany(e => e.OrganizedExpositions)
                 .WithOne(e => e.Organizer)
                 .HasForeignKey(e => e.OrganizerId);

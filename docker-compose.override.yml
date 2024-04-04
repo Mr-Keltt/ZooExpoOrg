@@ -48,14 +48,6 @@ services:
     env_file:
       - env.worker
 
-  zooexpoorg_worker_2:
-    networks:
-      - shared_zooexpoorg_net
-    ports:
-      - "10003:80"
-    env_file:
-      - env.worker
-
 networks:
   shared_zooexpoorg_net:
     name: zoo_expo_org
