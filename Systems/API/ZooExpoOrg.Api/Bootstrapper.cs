@@ -5,7 +5,7 @@ using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Photos;
 using ZooExpoOrg.Services.RabbitMq;
 using ZooExpoOrg.Services.Settings;
-using ZooExpoOrg.Services.UserAccount;
+using ZooExpoOrg.Services.Accounts;
 
 namespace ZooExpoOrg.Api;
 
@@ -23,7 +23,7 @@ public static class Bootstrapper
             .AddApiSpecialSettings()
             .AddAnimalService()
             .AddPhotoService()
-            .AddUserAccountService()
+            .AddAccountService()
             .AddDbSeeder();
 
         return service;

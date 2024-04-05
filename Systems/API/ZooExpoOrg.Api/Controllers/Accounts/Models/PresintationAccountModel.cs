@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ZooExpoOrg.Api.Controllers.Accounts;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Services.UserAccount;
+using ZooExpoOrg.Services.Accounts;
 
 namespace ZooExpoOrg.Api.Controllers.Accounts
 {

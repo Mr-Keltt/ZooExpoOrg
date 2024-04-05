@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ZooExpoOrg.Services.UserAccount;
+using ZooExpoOrg.Services.Accounts;
 
 namespace ZooExpoOrg.Context;
 
@@ -58,12 +58,12 @@ public static class DbSeeder
         if (!(settings.Init?.AddAdministrator ?? false))
             return;
 
-        var userAccountService = scope.ServiceProvider.GetService<IUserAccountService>();
+        var accountService = scope.ServiceProvider.GetService<IAccountService>();
 
-        if (!(await userAccountService.IsEmpty()))
+        if (!(await accountService.IsEmpty()))
             return;
 
-        await userAccountService.Create(new RegisterAccountModel()
+        await accountService.Create(new RegisterAccountModel()
         {
             UserName = settings.Init.Administrator.UserName,
             Email = settings.Init.Administrator.Email,
