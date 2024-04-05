@@ -4,10 +4,13 @@ using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Services.Animals;
 using AutoMapper;
 using ZooExpoOrg.Services.Clients;
+using ZooExpoOrg.Context.Entities;
 
 public class PresintationClientModel
 {
     public Guid Id { get; set; }
+
+    public Guid UserId { get; set; }
 
     public string Name { get; set; }
 
@@ -21,20 +24,17 @@ public class PresintationClientModel
 
     public Guid PhotoId { get; set; }
 
-    //public virtual ICollection<ExpositionEntity> Subscriptions { get; set; }
+    public virtual ICollection<Guid> Subscriptions { get; set; }
 
-    //public virtual ICollection<ExpositionEntity> OrganizedExpositions { get; set; }
+    public virtual ICollection<Guid> OrganizedExpositions { get; set; }
 
-    public virtual ICollection<AnimalModel> Animals { get; set; }
-
-    //public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<Guid> Animals { get; set; }
 }
 
 public class PresintationClientModelProfile : Profile
 {
     public PresintationClientModelProfile()
     {
-        CreateMap<PresintationClientModel, ClientModel>()
-            .ReverseMap();
+        CreateMap<ClientModel, PresintationClientModel>();
     }
 }

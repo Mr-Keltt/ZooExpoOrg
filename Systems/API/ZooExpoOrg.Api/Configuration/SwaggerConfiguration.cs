@@ -53,7 +53,7 @@ public static class SwaggerConfiguration
             if (File.Exists(xmlPath))
                 options.IncludeXmlComments(xmlPath);
 
-            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            /*options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
                 Name = "Bearer",
                 Type = SecuritySchemeType.OAuth2,
@@ -95,7 +95,7 @@ public static class SwaggerConfiguration
                     },
                     new List<string>()
                 }
-            });
+            });*/
 
             options.UseOneOfForPolymorphism();
             options.EnableAnnotations(true, true);

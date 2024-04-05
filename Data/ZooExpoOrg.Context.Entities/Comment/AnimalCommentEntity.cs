@@ -1,7 +1,6 @@
-﻿using ZooExpoOrg.Context.Entities.Common;
+﻿namespace ZooExpoOrg.Context.Entities;
 
-namespace ZooExpoOrg.Context.Entities;
-public class AnimalCommentEntity : Comment
+public class AnimalCommentEntity : CommentEntity
 {
     public int AnimalId { get; set; }
     public virtual AnimalEntity Animal { get; set; }

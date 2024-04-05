@@ -14,10 +14,6 @@ public static class ExpositionsCommentsContextConfiguration
 
             entity.Property(с => с.Text).IsRequired();
             entity.Property(с => с.DateWriting).IsRequired();
-
-            entity
-                .HasOne(a => a.Exposition)
-                .WithMany(a => a.Comments);
         });
     }
 }

@@ -27,22 +27,26 @@ public static class ClientsContextConfiguration
             entity
                 .HasMany(e => e.OrganizedExpositions)
                 .WithOne(e => e.Organizer)
-                .HasForeignKey(e => e.OrganizerId);
+                .HasForeignKey(e => e.OrganizerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(e => e.Animals)
                 .WithOne(e => e.Owner)
-                .HasForeignKey(e => e.OwnerId);
+                .HasForeignKey(e => e.OwnerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.Author)
-                .HasForeignKey(e => e.AuthorId);
+                .HasForeignKey(e => e.AuthorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasOne(e => e.Photo)
                 .WithOne(e => e.Owner)
-                .HasPrincipalKey<ClientEntity>(e => e.Id);
+                .HasPrincipalKey<ClientEntity>(e => e.Id)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

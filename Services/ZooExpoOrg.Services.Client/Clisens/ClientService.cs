@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Services.Animals;
 
 public class ClientService : IClientService
 {
@@ -22,12 +21,7 @@ public class ClientService : IClientService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var clients = await context.Clients
-            .Include(x => x.Subscriptions).ThenInclude(x => x.Photos)
-            .Include(x => x.OrganizedExpositions).ThenInclude(x => x.Photos)
-            .Include(x => x.Comments)
-            .Include(x => x.Photo)
-            .ToListAsync();
+        var clients = await context.Clients.ToListAsync();
 
         var result = mapper.Map<IEnumerable<ClientModel>>(clients);
 
@@ -38,12 +32,7 @@ public class ClientService : IClientService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var clients = await context.Clients
-            .Include(x => x.Subscriptions).ThenInclude(x => x.Photos)
-            .Include(x => x.OrganizedExpositions).ThenInclude(x => x.Photos)
-            .Include(x => x.Comments)
-            .Include(x => x.Photo)
-            .FirstOrDefaultAsync(x => x.Uid == id);
+        var clients = await context.Clients.FirstOrDefaultAsync(x => x.Uid == id);
 
         var result = mapper.Map<ClientModel>(clients);
 

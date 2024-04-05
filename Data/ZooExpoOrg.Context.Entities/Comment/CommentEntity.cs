@@ -1,6 +1,8 @@
-﻿namespace ZooExpoOrg.Context.Entities.Common;
+﻿using ZooExpoOrg.Context.Entities.Common;
 
-public class Comment : BaseEntity
+namespace ZooExpoOrg.Context.Entities;
+
+public class CommentEntity : BaseEntity
 {
     public int AuthorId { get; set; }
     public virtual ClientEntity Author { get; set; }

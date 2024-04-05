@@ -7,12 +7,6 @@ namespace ZooExpoOrg.Api.Controllers.Clients;
 
 public class PresintationUpdateClientModel 
 {
-    public string Login { get; set; }
-
-    public string Password { get; set; }
-
-    public string Email { get; set; }
-
     public string Name { get; set; }
 
     public string Surname { get; set; }
@@ -21,20 +15,17 @@ public class PresintationUpdateClientModel
 
     public Guid PhotoId { get; set; }
 
-    //public virtual ICollection<ExpositionEntity> Subscriptions { get; set; }
+    public virtual ICollection<Guid> Subscriptions { get; set; }
 
-    //public virtual ICollection<ExpositionEntity> OrganizedExpositions { get; set; }
+    public virtual ICollection<Guid> OrganizedExpositions { get; set; }
 
-    public virtual ICollection<AnimalModel> Animals { get; set; }
-
-    //public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<Guid> Animals { get; set; }
 }
 
 public class UpdateClientModelProfile : Profile
 {
     public UpdateClientModelProfile()
     {
-        CreateMap<PresintationUpdateClientModel, ClientModel>()
-            .ReverseMap();
+        CreateMap<PresintationUpdateClientModel, ClientModel>();
     }
 }

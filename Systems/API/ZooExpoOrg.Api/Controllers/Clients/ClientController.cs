@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Clients;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -24,11 +25,14 @@ public class ClientController : Controller
     }
 
     [HttpGet("")]
-    public async Task<IEnumerable<ClientModel>> Get()
+    public async Task<IActionResult> Get()
     {
-        var result = await clientService.GetAll();
+        var clients = await clientService.GetAll();
 
-        return result;
+        if (clients.IsNullOrEmpty())
+            return NotFound();
+
+        return Ok(mapper.Map<IEnumerable<PresintationClientModel>>(clients));
     }
 
     [HttpGet("{id:Guid}")]
@@ -39,21 +43,21 @@ public class ClientController : Controller
         if (result == null)
             return NotFound();
 
-        return Ok(mapper.Map<IEnumerable<PresintationClientModel>>(result));
+        return Ok(mapper.Map<PresintationClientModel>(result));
     }
 
     [HttpPost("")]
-    public async Task<PresintationClientModel> Create(CreateClientModel request)
+    public async Task<PresintationClientModel> Create(PresintationCreateClientModel request)
     {
-        var result = await clientService.Create(request);
+        var result = await clientService.Create(mapper.Map<CreateClientModel>(request));
 
         return mapper.Map<PresintationClientModel>(result);
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task Update([FromRoute] Guid id, UpdateClientModel request)
+    public async Task Update([FromRoute] Guid id, PresintationUpdateClientModel request)
     {
-        await clientService.Update(id, request);
+        await clientService.Update(id, mapper.Map<UpdateClientModel>(request));
     }
 
     [HttpDelete("{id:Guid}")]

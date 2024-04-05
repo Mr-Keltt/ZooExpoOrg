@@ -8,7 +8,7 @@ public static class Bootstrapper
     public static IServiceCollection AddUserAccountService(this IServiceCollection services)
     {
         services.AddScoped<IUserAccountService, UserAccountService>();
-        services.AddTransient<IValidator<RegisterAccountModel>, RegisterUserAccountModelValidator>();
+        //services.AddTransient<IValidator<RegisterAccountModel>, RegisterUserAccountModelValidator>();
 
         return services;
     }
