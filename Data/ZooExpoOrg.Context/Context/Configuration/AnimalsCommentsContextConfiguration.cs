@@ -13,10 +13,6 @@ public static class AnimalsCommentsContextConfiguration
 
             entity.Property(с => с.Text).IsRequired();
             entity.Property(с => с.DateWriting).IsRequired();
-
-            entity
-                .HasOne(a => a.Animal)
-                .WithMany(a => a.Comments);
         });
     }
 }

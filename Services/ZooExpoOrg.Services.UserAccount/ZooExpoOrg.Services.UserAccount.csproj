@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
     <ProjectReference Include="..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+    <ProjectReference Include="..\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
   </ItemGroup>
 
 </Project>

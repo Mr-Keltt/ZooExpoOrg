@@ -61,7 +61,6 @@ public static class DbSeeder
         var userAccountService = scope.ServiceProvider.GetService<IUserAccountService>();
 
         if (!(await userAccountService.IsEmpty()))
-            Console.WriteLine("Tabe is not empty");
             return;
 
         await userAccountService.Create(new RegisterAccountModel()

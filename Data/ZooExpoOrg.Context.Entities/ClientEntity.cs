@@ -27,5 +27,5 @@ public class ClientEntity : BaseEntity
 
     public virtual ICollection<AnimalEntity> Animals { get; set; }
 
-    public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<CommentEntity> Comments { get; set; }
 }

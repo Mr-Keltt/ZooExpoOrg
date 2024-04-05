@@ -367,7 +367,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.ToTable("clients_photos", (string)null);
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.Common.Comment", b =>
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.CommentEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -395,7 +395,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.ToTable("Comment");
+                    b.ToTable("comments", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -585,7 +585,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalCommentEntity", b =>
                 {
-                    b.HasBaseType("ZooExpoOrg.Context.Entities.Common.Comment");
+                    b.HasBaseType("ZooExpoOrg.Context.Entities.CommentEntity");
 
                     b.Property<int>("AnimalId")
                         .HasColumnType("integer");
@@ -597,7 +597,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionCommentEntity", b =>
                 {
-                    b.HasBaseType("ZooExpoOrg.Context.Entities.Common.Comment");
+                    b.HasBaseType("ZooExpoOrg.Context.Entities.CommentEntity");
 
                     b.Property<int>("ExpositionId")
                         .HasColumnType("integer");
@@ -742,7 +742,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.Common.Comment", b =>
+            modelBuilder.Entity("ZooExpoOrg.Context.Entities.CommentEntity", b =>
                 {
                     b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Author")
                         .WithMany("Comments")
@@ -783,7 +783,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ZooExpoOrg.Context.Entities.Common.Comment", null)
+                    b.HasOne("ZooExpoOrg.Context.Entities.CommentEntity", null)
                         .WithOne()
                         .HasForeignKey("ZooExpoOrg.Context.Entities.AnimalCommentEntity", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -800,7 +800,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ZooExpoOrg.Context.Entities.Common.Comment", null)
+                    b.HasOne("ZooExpoOrg.Context.Entities.CommentEntity", null)
                         .WithOne()
                         .HasForeignKey("ZooExpoOrg.Context.Entities.ExpositionCommentEntity", "Id")
                         .OnDelete(DeleteBehavior.Cascade)

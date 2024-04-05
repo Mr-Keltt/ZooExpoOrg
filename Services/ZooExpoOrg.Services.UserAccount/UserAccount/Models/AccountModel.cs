@@ -10,14 +10,13 @@ public class AccountModel
     public string Email { get; set; }
 }
 
-public class UserAccountModelProfile : Profile
+/*public class AccountModelProfile : Profile  TODO Разобраться почему не работает
 {
-    public UserAccountModelProfile()
+    public AccountModelProfile()
     {
         CreateMap<UserEntity, AccountModel>()
-            .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-            .ForMember(d => d.UserName, o => o.MapFrom(s => s.UserName))
-            .ForMember(d => d.Email, o => o.MapFrom(s => s.Email))
-            ;
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
     }
-}
+}*/ 

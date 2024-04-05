@@ -15,7 +15,8 @@ public static class UsersContextConfiguration
             entity
                 .HasOne(u => u.Client)
                 .WithOne(c => c.User)
-                .HasForeignKey<ClientEntity>(c => c.UserId);
+                .HasForeignKey<ClientEntity>(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<IdentityRole<Guid>>().ToTable("user_roles");

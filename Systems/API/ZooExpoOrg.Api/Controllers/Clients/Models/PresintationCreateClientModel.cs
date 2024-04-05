@@ -7,11 +7,7 @@ namespace ZooExpoOrg.Api.Controllers.Clients;
 
 public class PresintationCreateClientModel
 {
-    public string Login { get; set; }
-
-    public string Password { get; set; }
-
-    public string Email { get; set; }
+    public Guid UserId { get; set; }
 
     public string Name { get; set; }
 
@@ -28,7 +24,6 @@ public class CreateClientModelProfile : Profile
 {
     public CreateClientModelProfile()
     {
-        CreateMap<PresintationCreateClientModel, ClientModel>()
-            .ReverseMap();
+        CreateMap<PresintationCreateClientModel, ClientModel>();
     }
 }
