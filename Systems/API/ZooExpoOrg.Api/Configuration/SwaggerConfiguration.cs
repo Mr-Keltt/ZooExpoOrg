@@ -9,9 +9,6 @@ using System.Reflection;
 using Asp.Versioning.ApiExplorer;
 using ZooExpoOrg.Common.Security;
 
-/// <summary>
-/// Swagger configuration
-/// </summary>
 public static class SwaggerConfiguration
 {
     private static string AppTitle = "ZooExpoOrg API";
@@ -118,10 +115,6 @@ public static class SwaggerConfiguration
     }
 
 
-    /// <summary>
-    /// Start OpenAPI UI
-    /// </summary>
-    /// <param name="app">Web application</param>
     public static void UseAppSwagger(this WebApplication app)
     {
         var mainSettings = app.Services.GetService<MainSettings>();
