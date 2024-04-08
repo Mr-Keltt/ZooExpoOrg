@@ -6,12 +6,13 @@ using ZooExpoOrg.Services.Photos;
 using ZooExpoOrg.Services.RabbitMq;
 using ZooExpoOrg.Services.Settings;
 using ZooExpoOrg.Services.Accounts;
+using ZooExpoOrg.Services.Clients;
 
 namespace ZooExpoOrg.Api;
 
 public static class Bootstrapper
 {
-    public static IServiceCollection RegisterServices(this IServiceCollection service)
+    public static IServiceCollection RegisterServices(this IServiceCollection service, IConfiguration configuration = null)
     {
         service
             .AddMainSettings()
@@ -24,7 +25,8 @@ public static class Bootstrapper
             .AddAnimalService()
             .AddPhotoService()
             .AddAccountService()
-            .AddDbSeeder();
+            .AddDbSeeder()
+            .AddClienService();
 
         return service;
     }

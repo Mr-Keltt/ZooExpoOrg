@@ -14,7 +14,7 @@ COPY ["Data/ZooExpoOrg.Context/ZooExpoOrg.Context.csproj", "Data/ZooExpoOrg.Cont
 COPY ["Services/ZooExpoOrg.Services.Settings/ZooExpoOrg.Services.Settings.csproj", "Services/ZooExpoOrg.Services.Settings/"]
 COPY ["Data/ZooExpoOrg.Context.Migrations/ZooExpoOrg.Context.Migrations.PgSql/ZooExpoOrg.Context.Migrations.PgSql.csproj", "Data/ZooExpoOrg.Context.Migrations/ZooExpoOrg.Context.Migrations.PgSql/"]
 COPY ["Data/ZooExpoOrg.Context.Seeder/ZooExpoOrg.Context.Seeder.csproj", "Data/ZooExpoOrg.Context.Seeder/"]
-COPY ["Services/ZooExpoOrg.Services.UserAccount/ZooExpoOrg.Services.UserAccount.csproj", "Services/ZooExpoOrg.Services.UserAccount/"]
+COPY ["Services/ZooExpoOrg.Services.Accounts/ZooExpoOrg.Services.Accounts.csproj", "Services/ZooExpoOrg.Services.Accounts/"]
 COPY ["Services/ZooExpoOrg.Services.Logger/ZooExpoOrg.Services.Logger.csproj", "Services/ZooExpoOrg.Services.Logger/"]
 COPY ["Services/ZooExpoOrg.Services.Animals/ZooExpoOrg.Services.Animals.csproj", "Services/ZooExpoOrg.Services.Animals/"]
 COPY ["Services/ZooExpoOrg.Services.Photos/ZooExpoOrg.Services.Photos.csproj", "Services/ZooExpoOrg.Services.Photos/"]

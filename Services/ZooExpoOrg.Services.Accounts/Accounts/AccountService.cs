@@ -51,13 +51,7 @@ public class AccountService : IAccountService
         if (!result.Succeeded)
             throw new ProcessException($"Creating user account is wrong. {string.Join(", ", result.Errors.Select(s => s.Description))}");
 
-        //return mapper.Map<AccountModel>(user);
-        return new AccountModel
-        {
-            Id = user.Id,
-            UserName = user.UserName,
-            Email = user.Email
-        };
+        return mapper.Map<AccountModel>(user);
     }
 }
 

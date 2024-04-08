@@ -10,7 +10,7 @@ public class AccountModel
     public string Email { get; set; }
 }
 
-/*public class AccountModelProfile : Profile  TODO Разобраться почему не работает
+public class AccountModelProfile : Profile  
 {
     public AccountModelProfile()
     {
@@ -19,4 +19,4 @@ public class AccountModel
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
     }
-}*/ 
+}

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Accounts\ZooExpoOrg.Services.Accounts.csproj" />
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
     <ProjectReference Include="..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
     <ProjectReference Include="..\ZooExpoOrg.Context.Entities\ZooExpoOrg.Context.Entities.csproj" />
     <ProjectReference Include="..\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
