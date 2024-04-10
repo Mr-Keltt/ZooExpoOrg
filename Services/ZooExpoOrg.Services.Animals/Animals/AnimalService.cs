@@ -38,12 +38,7 @@ public class AnimalService : IAnimalService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var animal = context.Animals
-            .Include(x => x.Owner).ThenInclude(x => x.Photo)
-            .Include(x => x.Comments).ThenInclude(x => x.Author)
-            .Include(x => x.Photos)
-            .Include(x => x.Achievements).ThenInclude(x => x.ConfirmationAchievement)
-            .FirstOrDefaultAsync(x => x.Uid == id);
+        var animal = context.Animals.FirstOrDefaultAsync(x => x.Uid == id);
 
         var result = mapper.Map<AnimalModel>(animal);
 

@@ -28,11 +28,11 @@ public class AnimalModel
 
     public Guid OwnerId { get; set; }
 
-    //public virtual IEnumerable<CommentModel> Comments { get; set; }
+    public virtual IEnumerable<Guid> Comments { get; set; }
 
-    public virtual IEnumerable<PhotoModel> Photos { get; set; }
+    public virtual IEnumerable<Guid> Photos { get; set; }
 
-    //public virtual IEnumerable<AchievementModel> Achievements { get; set; }
+    public virtual IEnumerable<Guid> Achievements { get; set; }
 }
 
 
@@ -42,8 +42,14 @@ public class AnimalModelProfile : Profile
     {
         CreateMap<AnimalEntity, AnimalModel>()
             .BeforeMap<AnimalModelActions>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Description, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Breed, opt => opt.MapFrom(src => src.Breed))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
+            .ForMember(dest => dest.Height, opt => opt.MapFrom(src => src.Height))
+            .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Weight))
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
     }
 
@@ -60,16 +66,30 @@ public class AnimalModelProfile : Profile
         {
             using var db = contextFactory.CreateDbContext();
 
+            var owner = await db.Clients.FirstOrDefaultAsync(x => x.Id == source.OwnerId);
+
             var animal = await db.Animals
-                .Include(x => x.Owner).ThenInclude(x => x.Photo)
-                .Include(x => x.Comments).ThenInclude(x => x.Author)
                 .Include(x => x.Photos)
-                .Include(x => x.Achievements).ThenInclude(x => x.ConfirmationAchievement)
+                .Include(x => x.Comments)
+                .Include(x => x.Achievements)
                 .FirstOrDefaultAsync(x => x.Id == source.Id);
 
-            destination.Id = animal.Uid;
-            destination.Description = !animal.Description.IsNullOrEmpty() ? animal.Description : "";
-            destination.OwnerId = animal.Owner.Uid;
+            var commentsIds = animal.Comments
+                .Select(sub => sub.Uid)
+                .ToList();
+
+            var photosIds = animal.Photos
+                .Select(sub => sub.Uid)
+                .ToList();
+
+            var achievementsIds = animal.Achievements
+                .Select(sub => sub.Uid)
+                .ToList();
+
+            destination.OwnerId = owner.Uid;
+            destination.Comments = commentsIds;
+            destination.Photos = photosIds;
+            destination.Achievements = achievementsIds;
         }
     }
 }
