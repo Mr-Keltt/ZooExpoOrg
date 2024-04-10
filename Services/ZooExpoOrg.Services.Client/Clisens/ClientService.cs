@@ -2,19 +2,27 @@
 
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Services.Logger;
 
 public class ClientService : IClientService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
+    private readonly IAppLogger loger;
 
-    public ClientService(IDbContextFactory<MainDbContext> dbContextFactory, IMapper mapper)
+    public ClientService(
+        IDbContextFactory<MainDbContext> dbContextFactory, 
+        IMapper mapper, 
+        IAppLogger loger)
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
+        this.loger = loger;
+        loger.Information("ClientService create!!!");
     }
 
     public async Task<IEnumerable<ClientModel>> GetAll()
@@ -23,9 +31,7 @@ public class ClientService : IClientService
 
         var clients = await context.Clients.ToListAsync();
 
-        var result = mapper.Map<IEnumerable<ClientModel>>(clients);
-
-        return result;
+        return mapper.Map<IEnumerable<ClientModel>>(clients);
     }
 
     public async Task<ClientModel> GetById(Guid id)
@@ -34,18 +40,22 @@ public class ClientService : IClientService
 
         var clients = await context.Clients.FirstOrDefaultAsync(x => x.Uid == id);
 
-        var result = mapper.Map<ClientModel>(clients);
-
-        return result;
+        return mapper.Map<ClientModel>(clients);
     }
-
+    
     public async Task<ClientModel> Create(CreateClientModel model)
     {
+        loger.Information("Create method execute!!!");
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var client = mapper.Map<ClientEntity>(model);
 
         await context.Clients.AddAsync(client);
+        
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+
+        user.ClientId = client.Uid;
+
         await context.SaveChangesAsync();
 
         return mapper.Map<ClientModel>(client);

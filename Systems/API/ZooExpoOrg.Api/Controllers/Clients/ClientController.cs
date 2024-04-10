@@ -47,17 +47,17 @@ public class ClientController : Controller
     }
 
     [HttpPost("")]
-    public async Task<PresintationClientModel> Create(PresintationCreateClientModel request)
+    public async Task<PresintationClientModel> Create(CreateClientModel request)
     {
-        var result = await clientService.Create(mapper.Map<CreateClientModel>(request));
+        var result = await clientService.Create(request);
 
         return mapper.Map<PresintationClientModel>(result);
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task Update([FromRoute] Guid id, PresintationUpdateClientModel request)
+    public async Task Update([FromRoute] Guid id, UpdateClientModel request)
     {
-        await clientService.Update(id, mapper.Map<UpdateClientModel>(request));
+        await clientService.Update(id, request);
     }
 
     [HttpDelete("{id:Guid}")]

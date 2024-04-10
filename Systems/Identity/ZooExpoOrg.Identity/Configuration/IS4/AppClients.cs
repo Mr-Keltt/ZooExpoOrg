@@ -47,7 +47,7 @@ public static class AppClients
                 SlidingRefreshTokenLifetime = 1296000, // 15 days
 
                 AllowedScopes = {
-
+                    "api", "role"
                 }
             }
         };

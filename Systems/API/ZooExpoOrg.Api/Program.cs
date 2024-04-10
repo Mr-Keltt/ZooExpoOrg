@@ -35,7 +35,7 @@ services.AddAppAuth(idetitySettings);
 
 services.AddAppSwagger(mainSettings, swaggerSettings, idetitySettings);
 
-services.RegisterServices();
+services.RegisterServices(builder.Configuration);
 
 
 var app = builder.Build();
