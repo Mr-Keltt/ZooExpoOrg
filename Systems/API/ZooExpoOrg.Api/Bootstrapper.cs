@@ -26,9 +26,10 @@ public static class Bootstrapper
             .AddAnimalService()
             .AddPhotoService()
             .AddAccountService()
-            .AddDbSeeder()
             .AddClienService()
-            .AddExpositionService();
+            .AddExpositionService()
+            .AddDbSeeder()
+            ;
 
         return service;
     }

@@ -34,7 +34,6 @@ public class UpdateExpositionModelProfile : Profile
             .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Street))
             .ForMember(dest => dest.HouseNumber, opt => opt.MapFrom(src => src.HouseNumber))
             .ForMember(dest => dest.DateStart, opt => opt.MapFrom(src => src.DateStart))
-            .ForMember(dest => dest.DateEnd, opt => opt.MapFrom(src => src.DateEnd))
-            .ForAllOtherMembers(opt => opt.Ignore());
+            .ForMember(dest => dest.DateEnd, opt => opt.MapFrom(src => src.DateEnd));
     }
 }
