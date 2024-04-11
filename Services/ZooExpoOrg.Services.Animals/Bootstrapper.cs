@@ -7,7 +7,10 @@ public static class Bootstrapper
 {
     public static IServiceCollection AddAnimalService(this IServiceCollection services)
     {
-        return services
-            .AddSingleton<IAnimalService, AnimalService>();
+        services.AddSingleton<IAnimalService, AnimalService>();
+        services.AddAutoMapper(typeof(AnimalModelProfile));
+        services.AddAutoMapper(typeof(CreateAnimalModelProfile));
+
+        return services;
     }
 }

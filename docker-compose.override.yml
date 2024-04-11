@@ -32,13 +32,13 @@ services:
     env_file:
       - env.api
 
-  zooexpoorg_identity:
-    ports:
-      - "10001:80"
-    networks:
-      - shared_zooexpoorg_net
-    env_file:
-      - env.identity
+#  zooexpoorg_identity:
+#    ports:
+#      - "10001:80"
+#    networks:
+#      - shared_zooexpoorg_net
+#    env_file:
+#      - env.identity
 
 #  zooexpoorg_worker_1:
 #    networks:

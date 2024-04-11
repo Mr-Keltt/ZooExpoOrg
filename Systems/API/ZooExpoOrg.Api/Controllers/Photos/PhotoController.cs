@@ -3,8 +3,6 @@
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ZooExpoOrg.Api.Controllers.Animals.Models;
-using ZooExpoOrg.Services.Animals;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Photos;
 

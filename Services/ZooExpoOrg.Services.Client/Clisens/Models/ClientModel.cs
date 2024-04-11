@@ -1,7 +1,6 @@
 ﻿using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities.Common;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Services.Animals;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context;

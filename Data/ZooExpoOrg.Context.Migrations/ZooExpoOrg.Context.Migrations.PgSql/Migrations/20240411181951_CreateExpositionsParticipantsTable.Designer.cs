@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411181951_CreateExpositionsParticipantsTable")]
+    partial class CreateExpositionsParticipantsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,13 +30,13 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("AnimalEntityExpositionEntity", b =>
                 {
-                    b.Property<int>("ExpositionsId")
+                    b.Property<int>("ExhibitionsId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ParticipantsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ExpositionsId", "ParticipantsId");
+                    b.HasKey("ExhibitionsId", "ParticipantsId");
 
                     b.HasIndex("ParticipantsId");
 
@@ -628,7 +631,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 {
                     b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", null)
                         .WithMany()
-                        .HasForeignKey("ExpositionsId")
+                        .HasForeignKey("ExhibitionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
