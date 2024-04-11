@@ -1,10 +1,11 @@
-﻿using ZooExpoOrg.Context.Entities;
+﻿using AutoMapper;
+using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Services.Expositions;
 
 public class ExpositionModel
 {
-    Guid Id { get; set; }
+    public Guid Id { get; set; }
 
     public Guid OrganizerId { get; set; }
 
@@ -31,4 +32,22 @@ public class ExpositionModel
     public virtual ICollection<Guid> Comments { get; set; }
 
     public virtual ICollection<Guid> Subscribers { get; set; }
+}
+
+public class ExpositionModelProfile : Profile
+{
+    public ExpositionModelProfile()
+    {
+        CreateMap<ExpositionEntity, ExpositionModel>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
+            .ForMember(dest => dest.OrganizerId, opt => opt.MapFrom(src => src.Organizer.Uid))
+            .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.Participants.Select(p => p.Uid)))
+            .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(p => p.Uid)))
+            .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.Select(c => c.Uid)))
+            .ForMember(dest => dest.Subscribers, opt => opt.MapFrom(src => src.Subscribers.Select(s => s.Uid)));
+    }
+
+    protected internal ExpositionModelProfile(string profileName) : base(profileName)
+    {
+    }
 }

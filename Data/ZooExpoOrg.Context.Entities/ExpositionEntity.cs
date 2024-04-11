@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using AutoMapper;
+using System.Runtime.CompilerServices;
 using ZooExpoOrg.Context.Entities.Common;
 
 namespace ZooExpoOrg.Context.Entities;

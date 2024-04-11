@@ -1,4 +1,9 @@
-﻿namespace ZooExpoOrg.Api.Controllers.Expositions;
+﻿using AutoMapper;
+using ZooExpoOrg.Api.Controllers.Clients;
+using ZooExpoOrg.Services.Clients;
+using ZooExpoOrg.Services.Expositions;
+
+namespace ZooExpoOrg.Api.Controllers.Expositions;
 
 public class PresintationExpositionModel
 {
@@ -29,4 +34,12 @@ public class PresintationExpositionModel
     public virtual ICollection<Guid> Comments { get; set; }
 
     public virtual ICollection<Guid> Subscribers { get; set; }
+}
+
+public class PresintationExpositionModelProfile : Profile
+{
+    public PresintationExpositionModelProfile()
+    {
+        CreateMap<ExpositionModel, PresintationExpositionModel>();
+    }
 }
