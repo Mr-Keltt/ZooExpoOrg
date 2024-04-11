@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411165108_FixAnimalsId")]
+    partial class FixAnimalsId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,21 +27,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AnimalEntityExpositionEntity", b =>
-                {
-                    b.Property<int>("ExpositionsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ParticipantsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ExpositionsId", "ParticipantsId");
-
-                    b.HasIndex("ParticipantsId");
-
-                    b.ToTable("expositions_participants", (string)null);
-                });
 
             modelBuilder.Entity("ClientEntityExpositionEntity", b =>
                 {
@@ -230,8 +218,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("timestamp with time zone");
@@ -624,21 +610,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.ToTable("expositions_comments", (string)null);
                 });
 
-            modelBuilder.Entity("AnimalEntityExpositionEntity", b =>
-                {
-                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ExpositionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZooExpoOrg.Context.Entities.AnimalEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ParticipantsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ClientEntityExpositionEntity", b =>
                 {
                     b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", null)
@@ -726,6 +697,12 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalEntity", b =>
                 {
+                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", null)
+                        .WithMany("Participants")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Owner")
                         .WithMany("Animals")
                         .HasForeignKey("OwnerId")
@@ -865,6 +842,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionEntity", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Participants");
 
                     b.Navigation("Photos");
                 });

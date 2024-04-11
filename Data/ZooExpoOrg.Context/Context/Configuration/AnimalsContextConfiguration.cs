@@ -13,6 +13,9 @@ public static class AnimalsContextConfiguration
         {
             entity.ToTable("animals");
 
+            entity.Property(a => a.Id)
+                .ValueGeneratedOnAdd()
+                .IsRequired();
             entity.Property(a => a.Name).IsRequired();
             entity
                 .Property(a => a.Gender)

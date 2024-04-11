@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Common.Extensions;
-using ZooExpoOrg.Services.Photos;
 using static ZooExpoOrg.Services.Animals.CreateAnimalModelProfile;
 
 namespace ZooExpoOrg.Services.Animals;

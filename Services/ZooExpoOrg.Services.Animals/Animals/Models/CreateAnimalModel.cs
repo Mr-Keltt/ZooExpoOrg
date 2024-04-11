@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
+using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace ZooExpoOrg.Services.Animals;
 
@@ -56,7 +58,15 @@ public class CreateAnimalModelProfile : Profile
 
             var owner = await db.Clients.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
 
-            destination.OwnerId = owner.Id;
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            destination.OwnerId = owner.Id;     
+            destination.Comments = new List<AnimalCommentEntity>();
+            destination.Photos = new List<AnimalPhotoEntity>();
+            destination.Achievements = new List<AchievementEntity>();
         }
     }
 }

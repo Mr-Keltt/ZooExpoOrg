@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using ZooExpoOrg.Api.Controllers.Animals.Models;
-using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Photos;
 
 namespace ZooExpoOrg.Api.Controllers.Photos;

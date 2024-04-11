@@ -4,6 +4,7 @@ using System.Data;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Services.Logger;
 
 namespace ZooExpoOrg.Services.Animals;
 
@@ -11,34 +12,46 @@ public class AnimalService : IAnimalService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
+    private readonly IAppLogger logger;
 
-    public AnimalService(IDbContextFactory<MainDbContext> dbContextFactory, IMapper mapper)
+    public AnimalService(
+        IDbContextFactory<MainDbContext> dbContextFactory, 
+        IMapper mapper,
+        IAppLogger logger
+        )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
     public async Task<IEnumerable<AnimalModel>> GetAll()
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var animals = context.Animals
-            .Include(x => x.Owner).ThenInclude(x => x.Photo)
-            .Include(x => x.Comments).ThenInclude(x => x.Author)
-            .Include(x => x.Photos)
-            .Include(x => x.Achievements).ThenInclude(x => x.ConfirmationAchievement)
-            .ToListAsync();
+        var animals = await context.Animals.ToListAsync();
 
         var result = mapper.Map<IEnumerable<AnimalModel>>(animals);
 
         return result;
     }
 
+    public async Task<IEnumerable<AnimalModel>> GetOwned(Guid ownerId)
+    { 
+        using var context = await dbContextFactory.CreateDbContextAsync();
+
+        var owner = await context.Clients
+            .Include(x => x.Animals)
+            .FirstOrDefaultAsync(x => x.Uid == ownerId);
+
+        return mapper.Map<IEnumerable<AnimalModel>>(owner.Animals);
+    }
+
     public async Task<AnimalModel> GetById(Guid id)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var animal = context.Animals.FirstOrDefaultAsync(x => x.Uid == id);
+        var animal = await context.Animals.FirstOrDefaultAsync(x => x.Uid == id);
 
         var result = mapper.Map<AnimalModel>(animal);
 
@@ -52,6 +65,11 @@ public class AnimalService : IAnimalService
         var animal = mapper.Map<AnimalEntity>(model);
 
         await context.Animals.AddAsync(animal);
+
+        var user = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
+
+        user.Animals.Add(animal);
+
         await context.SaveChangesAsync();
 
         return mapper.Map<AnimalModel>(animal);

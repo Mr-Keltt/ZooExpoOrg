@@ -21,8 +21,8 @@ public static class ExpositionsContextConfiguration
 
             entity
                 .HasMany(e => e.Participants)
-                .WithOne()
-                .HasForeignKey(p => p.Id);
+                .WithMany(e => e.Expositions)
+                .UsingEntity(j => j.ToTable("expositions_participants"));
 
             entity
                 .HasMany(e => e.Photos)

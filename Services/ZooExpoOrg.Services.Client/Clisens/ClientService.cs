@@ -12,17 +12,17 @@ public class ClientService : IClientService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
-    private readonly IAppLogger loger;
+    private readonly IAppLogger logger;
 
     public ClientService(
         IDbContextFactory<MainDbContext> dbContextFactory, 
         IMapper mapper, 
-        IAppLogger loger)
+        IAppLogger logger
+        )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
-        this.loger = loger;
-        loger.Information("ClientService create!!!");
+        this.logger = logger;
     }
 
     public async Task<IEnumerable<ClientModel>> GetAll()
@@ -45,7 +45,6 @@ public class ClientService : IClientService
     
     public async Task<ClientModel> Create(CreateClientModel model)
     {
-        loger.Information("Create method execute!!!");
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var client = mapper.Map<ClientEntity>(model);
