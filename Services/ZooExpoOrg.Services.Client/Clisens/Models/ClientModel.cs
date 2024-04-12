@@ -40,12 +40,32 @@ public class ClientModelProfile : Profile
     public ClientModelProfile()
     {
         CreateMap<ClientEntity, ClientModel>()
+            .BeforeMap<ClientModelActions>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-            .ForMember(dest => dest.PhotoId, opt => opt.MapFrom(src => src.PhotoId))
             .ForMember(dest => dest.Subscriptions, opt => opt.MapFrom(src => src.Subscriptions.Select(e => e.Uid)))
             .ForMember(dest => dest.OrganizedExpositions, opt => opt.MapFrom(src => src.OrganizedExpositions.Select(e => e.Uid)))
             .ForMember(dest => dest.Animals, opt => opt.MapFrom(src => src.Animals.Select(e => e.Uid)))
-            .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.Select(e => e.Uid)));
+            .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.Select(e => e.Uid)))
+            .ForMember(dest => dest.PhotoId, opt => opt.Ignore());
+    }
+
+    public class ClientModelActions : IMappingAction<ClientEntity, ClientModel>
+    {
+        private readonly IDbContextFactory<MainDbContext> contextFactory;
+
+        public ClientModelActions(IDbContextFactory<MainDbContext> contextFactory)
+        {
+            this.contextFactory = contextFactory;
+        }
+
+        public async void Process(ClientEntity source, ClientModel destination, ResolutionContext context)
+        {
+            using var db = await contextFactory.CreateDbContextAsync();
+
+            var photo = await db.ClientsPhotos.FirstOrDefaultAsync(x => x.Id == source.PhotoId);
+
+            destination.PhotoId = photo != null ? photo.Uid : null;
+        }
     }
 }
