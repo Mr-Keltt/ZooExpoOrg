@@ -47,6 +47,11 @@ public class CreatePhotoModelProfile : Profile
 
             var owner = await db.Animals.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
 
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
             destination.OwnerId = owner.Id;
         }
 
@@ -56,6 +61,11 @@ public class CreatePhotoModelProfile : Profile
 
             var owner = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
 
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
             destination.OwnerId = owner.Id;
         }
 
@@ -64,6 +74,11 @@ public class CreatePhotoModelProfile : Profile
             using var db = contextFactory.CreateDbContext();
 
             var owner = await db.Clients.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
+
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
 
             destination.OwnerId = owner.Id;
         }

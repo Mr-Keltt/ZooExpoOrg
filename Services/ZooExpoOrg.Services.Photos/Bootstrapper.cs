@@ -6,7 +6,10 @@ public static class Bootstrapper
 {
     public static IServiceCollection AddPhotoService(this IServiceCollection services)
     {
-        return services
-            .AddSingleton<IPhotoService, PhotoService>();
+        services.AddSingleton<IPhotoService, PhotoService>();
+        services.AddAutoMapper(typeof(CreatePhotoModelProfile));
+        services.AddAutoMapper(typeof(PhotoModelProfile));
+
+        return services;
     }
 }

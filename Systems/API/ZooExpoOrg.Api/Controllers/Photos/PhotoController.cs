@@ -3,6 +3,7 @@
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Photos;
 
@@ -46,16 +47,32 @@ public class PhotoController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<PresintationPhotoModel> Create(PresintationCreatePhotoModel createModel)
+    public async Task<IActionResult> Create(CreatePhotoModel createModel)
     {
-        var result = await photoService.Create(mapper.Map<CreatePhotoModel>(createModel));
+        try
+        {
+            var result = await photoService.Create(createModel);
 
-        return mapper.Map<PresintationPhotoModel>(result);
+            return Ok(mapper.Map<PresintationPhotoModel>(result));
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpDelete("{id:Guid}")]
-    public async Task Delete([FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await photoService.Delete(id);
+        try
+        {
+            await photoService.Delete(id);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }

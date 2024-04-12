@@ -16,7 +16,6 @@ public class PresintationPhotoModelProfile : Profile
 {
     public PresintationPhotoModelProfile()
     {
-        CreateMap<PresintationPhotoModel, PhotoModel>()
-            .ReverseMap();
+        CreateMap<PhotoModel, PresintationPhotoModel>();
     }
 }

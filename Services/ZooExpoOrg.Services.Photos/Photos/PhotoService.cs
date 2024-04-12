@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
-using ZooExpoOrg.Context.Entities.Common;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Services.Logger;
 
 namespace ZooExpoOrg.Services.Photos;
 
@@ -12,35 +11,50 @@ public class PhotoService : IPhotoService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
+    private readonly IAppLogger logger;
 
-    public PhotoService(IDbContextFactory<MainDbContext> dbContextFactory, IMapper mapper)
+    public PhotoService(
+        IDbContextFactory<MainDbContext> dbContextFactory, 
+        IMapper mapper,
+        IAppLogger logger
+        )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
     public async Task<IEnumerable<PhotoModel>> GetAllOwnedById(Guid OwnerId)
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animalPhotos = await db.AnimalsPhotos
-                                .Include(x => x.Owner)
-                                .Where(x => x.Owner.Uid == OwnerId)
-                                .ToListAsync();
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == OwnerId);
+        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == OwnerId);
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Uid == OwnerId);
 
-        var expositionPhotos = await db.ExpositionsPhotos
-                                    .Include(x => x.Owner)
-                                    .Where(x => x.Owner.Uid == OwnerId)
-                                    .ToListAsync();
+        IEnumerable<PhotoModel> result = null;
 
-        var clientPhotos = await db.ClientsPhotos
-                            .Include(x => x.Owner)
-                            .Where(x => x.Owner.Uid == OwnerId)
-                            .ToListAsync();
+        if (animal != null)
+        {
+            result = mapper.Map<IEnumerable<PhotoModel>>(animal.Photos);
+        }
+        else if (exposition != null)
+        {
+            result = mapper.Map<IEnumerable<PhotoModel>>(exposition.Photos);
+        }
+        else if (client != null)
+        {
+            var photo = await db.ClientsPhotos.FirstOrDefaultAsync(x => x.Id == client.PhotoId);
 
-        var result = mapper.Map<IEnumerable<PhotoModel>>(animalPhotos)
-            .Concat(mapper.Map<IEnumerable<PhotoModel>>(expositionPhotos))
-            .Concat(mapper.Map<IEnumerable<PhotoModel>>(clientPhotos));
+            var curList = new List<ClientPhotoEntity>();
+            curList.Add(photo);
+
+            result = mapper.Map<IEnumerable<PhotoModel>>(curList);
+        }
+        else
+        {
+            throw new ProcessException($"Photo not found.");
+        }
 
         return result;
     }
@@ -49,17 +63,9 @@ public class PhotoService : IPhotoService
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animalPhotos = await db.AnimalsPhotos
-                                .Include(x => x.Owner)
-                                .FirstOrDefaultAsync(x => x.Uid == id);
-
-        var expositionPhotos = await db.ExpositionsPhotos
-                                    .Include(x => x.Owner)
-                                    .FirstOrDefaultAsync(x => x.Uid == id);
-
-        var clientPhotos = await db.ClientsPhotos
-                            .Include(x => x.Owner)
-                            .FirstOrDefaultAsync(x => x.Uid == id);
+        var animalPhotos = await db.AnimalsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
+        var expositionPhotos = await db.ExpositionsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
+        var clientPhotos = await db.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
 
         if (animalPhotos != null)
             return mapper.Map<PhotoModel>(animalPhotos);
@@ -68,7 +74,7 @@ public class PhotoService : IPhotoService
         else if (clientPhotos != null)
             return mapper.Map<PhotoModel>(clientPhotos);
         else
-            return null;
+            throw new ProcessException($"Photo (ID = {id}) not found.");
     }
 
     public async Task<PhotoModel> Create(CreatePhotoModel model)
@@ -91,6 +97,8 @@ public class PhotoService : IPhotoService
             var photo = mapper.Map<AnimalPhotoEntity>(model);
             await context.AnimalsPhotos.AddAsync(photo);
 
+            animal.Photos.Add(photo);
+
             result = mapper.Map<PhotoModel>(photo);
         }
         else if (exposition != null)
@@ -98,18 +106,34 @@ public class PhotoService : IPhotoService
             var photo = mapper.Map<ExpositionPhotoEntity>(model);
             await context.ExpositionsPhotos.AddAsync(photo);
 
+            exposition.Photos.Add(photo);
+
             result = mapper.Map<PhotoModel>(photo);
         }
         else if (client != null)
         {
             var photo = mapper.Map<ClientPhotoEntity>(model);
-            await context.ClientsPhotos.AddAsync(photo);
+            
+            var curPhoto = await context.ClientsPhotos.FirstOrDefaultAsync(x => x.Id == client.PhotoId);
+
+            if (curPhoto != null)
+            {
+                context.ClientsPhotos.Remove(curPhoto);
+            }
+
+            context.ClientsPhotos.Add(photo);
 
             result = mapper.Map<PhotoModel>(photo);
+
+            await context.SaveChangesAsync();
+
+            var newPhoto = await context.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == result.Id);
+
+            client.PhotoId = newPhoto.Id;
         }
         else
         {
-            return null;
+            throw new ProcessException($"Photo owner (ID = {model.OwnerId}) not found.");
         }
 
         await context.SaveChangesAsync();
@@ -120,26 +144,30 @@ public class PhotoService : IPhotoService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var animal = await context.AnimalsPhotos
-            .FirstOrDefaultAsync(x => x.Uid == id);
+        var animalPhoto = await context.AnimalsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
+        var expositionPhoto = await context.ExpositionsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
+        var clientPhoto = await context.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
 
-        var exposition = await context.ExpositionsPhotos
-            .FirstOrDefaultAsync(x => x.Uid == id);
-
-        var client = await context.ClientsPhotos
-            .FirstOrDefaultAsync(x => x.Uid == id);
-
-        if (animal != null)
+        if (animalPhoto != null)
         {
-            context.AnimalsPhotos.Remove(animal);
+            var owner = await context.Animals.FirstOrDefaultAsync(x => x.Id == animalPhoto.OwnerId);
+
+            owner.Photos.Remove(animalPhoto);
+            context.AnimalsPhotos.Remove(animalPhoto);
         }
-        else if (exposition != null)
+        else if (expositionPhoto != null)
         {
-            context.ExpositionsPhotos.Remove(exposition);
+            var owner = await context.Expositions.FirstOrDefaultAsync(x => x.Id == expositionPhoto.OwnerId);
+
+            owner.Photos.Remove(expositionPhoto);
+            context.ExpositionsPhotos.Remove(expositionPhoto);
         }
-        else if (client != null)
+        else if (clientPhoto != null)
         {
-            context.ClientsPhotos.Remove(client);
+            var owner = await context.Clients.FirstOrDefaultAsync(x => x.Id == clientPhoto.OwnerId);
+
+            owner.PhotoId = null;
+            context.ClientsPhotos.Remove(clientPhoto);
         }
         else
         {
