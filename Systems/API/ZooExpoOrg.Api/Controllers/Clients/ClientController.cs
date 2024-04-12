@@ -43,7 +43,7 @@ public class ClientController : Controller
         var result = await clientService.GetById(id);
 
         if (result == null)
-            return NotFound("Clients not found.");
+            return NotFound($"Clients (ID = {id}) not found.");
 
         return Ok(mapper.Map<PresintationClientModel>(result));
     }
