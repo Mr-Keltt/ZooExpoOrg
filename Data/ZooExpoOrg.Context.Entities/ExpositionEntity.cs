@@ -6,12 +6,12 @@ namespace ZooExpoOrg.Context.Entities;
 
 public class ExpositionEntity : BaseEntity
 {
+    public int OrganizerId { get; set; }
+    public virtual ClientEntity Organizer { get; set; }
+
     public string Title { get; set; }
 
     public string Description { get; set; }
-
-    public int OrganizerId { get; set; }
-    public virtual ClientEntity Organizer { get; set; }
 
     public string Country { get; set; }
 

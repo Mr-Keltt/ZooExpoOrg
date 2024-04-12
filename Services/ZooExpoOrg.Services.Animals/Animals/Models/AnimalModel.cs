@@ -71,7 +71,12 @@ public class AnimalModelProfile : Profile
             using var db = contextFactory.CreateDbContext();
 
             var owner = await db.Clients.FirstOrDefaultAsync(x => x.Id == source.OwnerId);
-            
+
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
             destination.OwnerId = owner.Uid;
         }
     }

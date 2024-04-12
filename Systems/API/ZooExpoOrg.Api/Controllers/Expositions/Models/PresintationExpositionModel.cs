@@ -7,7 +7,7 @@ namespace ZooExpoOrg.Api.Controllers.Expositions;
 
 public class PresintationExpositionModel
 {
-    Guid Id { get; set; }
+    public Guid Id { get; set; }
 
     public Guid OrganizerId { get; set; }
 

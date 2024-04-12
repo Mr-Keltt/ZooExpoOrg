@@ -24,9 +24,9 @@ public class UpdateExpositionModel
 
 public class UpdateExpositionModelProfile : Profile
 {
-    protected UpdateExpositionModelProfile()
+    public UpdateExpositionModelProfile()
     {
-        CreateMap<CreateExpositionModel, ExpositionEntity>()
+        CreateMap<UpdateExpositionModel, ExpositionEntity>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))

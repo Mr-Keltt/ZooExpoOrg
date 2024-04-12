@@ -46,11 +46,16 @@ public class ExpositionService : IExpositionService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
+        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OrganizerId);
+
+        if (client == null)
+        {
+            throw new ProcessException($"Client (ID = {model.OrganizerId}) not found.");
+        }
+
         var exposition = mapper.Map<ExpositionEntity>(model);
 
         await context.Expositions.AddAsync(exposition);
-
-        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OrganizerId);
 
         client.OrganizedExpositions.Append(exposition);
 
@@ -75,7 +80,7 @@ public class ExpositionService : IExpositionService
         await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Guid>> GetAllSubscribers(Guid id)
+    public async Task Subscribe(Guid id, Guid clientId)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
@@ -84,53 +89,21 @@ public class ExpositionService : IExpositionService
         if (exposition == null)
             throw new ProcessException($"Exposition (ID = {id}) not found.");
 
-        return mapper.Map<ExpositionModel>(exposition).Subscribers;
-    }
+        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == clientId);
 
-    public async Task Subscribe(Guid id, Guid userId)
-    {
-        using var context = await dbContextFactory.CreateDbContextAsync();
-
-        var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
-
-        if (exposition == null)
-            throw new ProcessException($"Exposition (ID = {id}) not found.");
-
-        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == userId);
+        if (client.Id == exposition.OrganizerId)
+            throw new ProcessException($"Client (ID = {clientId}) is the organizer");
 
         if (client == null)
-            throw new ProcessException($"Client (ID = {id}) not found.");
+            throw new ProcessException($"Client (ID = {clientId}) not found.");
 
-        exposition.Subscribers.Append(client);
-
-        client.Subscriptions.Append(exposition);
+        exposition.Subscribers.Add(client);
+        client.Subscriptions.Add(exposition);
 
         context.SaveChanges();
     }
 
-    public async Task Unsubscribe(Guid id, Guid userId)
-    {
-        /*using var context = await dbContextFactory.CreateDbContextAsync();
-
-        var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
-
-        if (exposition == null)
-            throw new ProcessException($"Exposition (ID = {id}) not found.");
-
-        var client = await exposition.Subscribers.FirstOrDefaultAsync(x => x.Uid == userId);
-
-        if (client == null)
-            throw new ProcessException($"Client (ID = {id}) is not subscribed to this exhibition.");
-
-        var subscription = client.Subscriptions.Fi(exposition);
-
-        exposition.Subscribers.Remove(client);
-
-        context.SaveChanges();*/
-        throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<Guid>> GetAllParticipants(Guid id)
+    public async Task Unsubscribe(Guid id, Guid clientId)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
@@ -139,17 +112,56 @@ public class ExpositionService : IExpositionService
         if (exposition == null)
             throw new ProcessException($"Exposition (ID = {id}) not found.");
 
-        return mapper.Map<ExpositionModel>(exposition).Participants;
+        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == clientId);
+
+        if (client == null)
+            throw new ProcessException($"Client (ID = {id}) not found.");
+
+
+        exposition.Subscribers.Remove(client);
+        client.Subscriptions.Remove(exposition);
+
+        context.SaveChanges();
     }
 
     public async Task AddParticipant(Guid id, Guid animalId)
     {
-        throw new NotImplementedException();
+        using var context = await dbContextFactory.CreateDbContextAsync();
+
+        var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (exposition == null)
+            throw new ProcessException($"Exposition (ID = {id}) not found.");
+
+        var animal = await context.Animals.FirstOrDefaultAsync(x => x.Uid == animalId);
+
+        if (animal == null)
+            throw new ProcessException($"Animal (ID = {animalId}) not found.");
+
+        exposition.Participants.Add(animal);
+        animal.Expositions.Add(exposition);
+
+        context.SaveChanges();
     }
 
     public async Task DeleteParticipant(Guid id, Guid animalId)
     {
-        throw new NotImplementedException();
+        using var context = await dbContextFactory.CreateDbContextAsync();
+
+        var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (exposition == null)
+            throw new ProcessException($"Exposition (ID = {id}) not found.");
+
+        var animal = await context.Animals.FirstOrDefaultAsync(x => x.Uid == animalId);
+
+        if (animal == null)
+            throw new ProcessException($"Animal (ID = {animalId}) not found.");
+
+        exposition.Participants.Remove(animal);
+        animal.Expositions.Remove(exposition);
+
+        context.SaveChanges();
     }
 
     public async Task Delete(Guid id)
