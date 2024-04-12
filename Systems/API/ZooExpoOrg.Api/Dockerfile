@@ -17,8 +17,9 @@ COPY ["Data/ZooExpoOrg.Context.Seeder/ZooExpoOrg.Context.Seeder.csproj", "Data/Z
 COPY ["Services/ZooExpoOrg.Services.Accounts/ZooExpoOrg.Services.Accounts.csproj", "Services/ZooExpoOrg.Services.Accounts/"]
 COPY ["Services/ZooExpoOrg.Services.Logger/ZooExpoOrg.Services.Logger.csproj", "Services/ZooExpoOrg.Services.Logger/"]
 COPY ["Services/ZooExpoOrg.Services.Animals/ZooExpoOrg.Services.Animals.csproj", "Services/ZooExpoOrg.Services.Animals/"]
-COPY ["Services/ZooExpoOrg.Services.Photos/ZooExpoOrg.Services.Photos.csproj", "Services/ZooExpoOrg.Services.Photos/"]
 COPY ["Services/ZooExpoOrg.Services.Client/ZooExpoOrg.Services.Client.csproj", "Services/ZooExpoOrg.Services.Client/"]
+COPY ["Services/ZooExpoOrg.Services.Expositions/ZooExpoOrg.Services.Expositions.csproj", "Services/ZooExpoOrg.Services.Expositions/"]
+COPY ["Services/ZooExpoOrg.Services.Photos/ZooExpoOrg.Services.Photos.csproj", "Services/ZooExpoOrg.Services.Photos/"]
 COPY ["Services/ZooExpoOrg.Services.RabbitMq/ZooExpoOrg.Services.RabbitMq.csproj", "Services/ZooExpoOrg.Services.RabbitMq/"]
 COPY ["Systems/API/ZooExpoOrg.Api.Settings/ZooExpoOrg.Api.Settings.csproj", "Systems/API/ZooExpoOrg.Api.Settings/"]
 RUN dotnet restore "Systems/API/ZooExpoOrg.Api/ZooExpoOrg.Api.csproj"
