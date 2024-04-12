@@ -12,8 +12,4 @@ public class AchievementEntity : BaseEntity
 
     public int AnimalId { get; set; }
     public virtual AnimalEntity Animal { get; set; }
-
-    public int ConfirmationAchievementId { get; set; }
-
-    public virtual ConfirmationAchievementEntity ConfirmationAchievement { get; set; }
 }

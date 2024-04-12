@@ -14,7 +14,6 @@ public class MainDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, G
     public DbSet<ClientEntity> Clients { get; set; }
     public DbSet<ClientPhotoEntity> ClientsPhotos { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
-    public DbSet<ConfirmationAchievementEntity> ConfirmationsAchievements { get; set; }
     public DbSet<ExpositionEntity> Expositions { get; set; }
     public DbSet<ExpositionCommentEntity> ExpositionsComments { get; set; }
     public DbSet<ExpositionPhotoEntity> ExpositionsPhotos { get; set; }
@@ -33,7 +32,6 @@ public class MainDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, G
         modelBuilder.ConfigureClients();
         modelBuilder.ConfigureClientsPhotos();
         modelBuilder.ConfigureComments();
-        modelBuilder.ConfigureConfirmationsAchievements();
         modelBuilder.ConfigureExpositionsComments();
         modelBuilder.ConfigureExpositionsPhotos();
         modelBuilder.ConfigureExpositions();
