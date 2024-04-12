@@ -1,6 +1,7 @@
 ﻿namespace ZooExpoOrg.Services.Clients;
 
 using AutoMapper;
+using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using ZooExpoOrg.Common.Exceptions;
@@ -47,11 +48,21 @@ public class ClientService : IClientService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+
+        if (user == null)
+        {
+            throw new ProcessException($"User (ID = {model.UserId}) not found.");
+        }
+
+        if (user.ClientId != null)
+        {
+            throw new ProcessException($"User (ID = {model.UserId}) is already in use");
+        }
+
         var client = mapper.Map<ClientEntity>(model);
 
         await context.Clients.AddAsync(client);
-        
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
 
         user.ClientId = client.Uid;
 
@@ -65,6 +76,11 @@ public class ClientService : IClientService
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (client == null)
+        {
+            throw new ProcessException($"Client (ID = {id}) not found.");
+        }
 
         client = mapper.Map(model, client);
 

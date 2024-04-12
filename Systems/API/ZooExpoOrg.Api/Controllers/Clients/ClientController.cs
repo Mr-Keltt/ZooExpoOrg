@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Clients;
 using Microsoft.IdentityModel.Tokens;
+using ZooExpoOrg.Common.Exceptions;
+using Azure.Core;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -30,7 +32,7 @@ public class ClientController : Controller
         var clients = await clientService.GetAll();
 
         if (clients.IsNullOrEmpty())
-            return NotFound();
+            return NotFound("Clients not found.");
 
         return Ok(mapper.Map<IEnumerable<PresintationClientModel>>(clients));
     }
@@ -41,28 +43,53 @@ public class ClientController : Controller
         var result = await clientService.GetById(id);
 
         if (result == null)
-            return NotFound();
+            return NotFound("Clients not found.");
 
         return Ok(mapper.Map<PresintationClientModel>(result));
     }
 
     [HttpPost("")]
-    public async Task<PresintationClientModel> Create(CreateClientModel request)
+    public async Task<IActionResult> Create(CreateClientModel request)
     {
-        var result = await clientService.Create(request);
+        try
+        {
+            var result = await clientService.Create(request);
 
-        return mapper.Map<PresintationClientModel>(result);
+            return Ok(mapper.Map<PresintationClientModel>(result));
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task Update([FromRoute] Guid id, UpdateClientModel request)
+    public async Task<IActionResult> Update([FromRoute] Guid id, UpdateClientModel model)
     {
-        await clientService.Update(id, request);
+        try
+        {
+            await clientService.Update(id, model);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpDelete("{id:Guid}")]
-    public async Task Delete([FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await clientService.Delete(id);
+        try
+        {
+            await clientService.Delete(id);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }
