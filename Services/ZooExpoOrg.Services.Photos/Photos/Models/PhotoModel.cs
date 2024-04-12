@@ -19,17 +19,17 @@ public class PhotoModelProfile : Profile
     {
         CreateMap<AnimalPhotoEntity, PhotoModel>()
             .BeforeMap<PhotoModelActions>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
 
         CreateMap<ExpositionPhotoEntity, PhotoModel>()
             .BeforeMap<PhotoModelActions>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
 
         CreateMap<ClientPhotoEntity, PhotoModel>()
             .BeforeMap<PhotoModelActions>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
     }
 
@@ -49,36 +49,48 @@ public class PhotoModelProfile : Profile
         {
             using var db = contextFactory.CreateDbContext();
 
-            var photo = await db.AnimalsPhotos
-                .Include(x => x.Owner)
-                .FirstOrDefaultAsync(x => x.Id == source.Id);
+            var owner = db.Animals.FirstOrDefault(x => x.Id == source.OwnerId);
 
-            destination.Id = photo.Uid;
-            destination.OwnerId = photo.Owner.Uid;
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            destination.OwnerId = owner.Uid;
+
+            db.Dispose();
         }
 
         public async void Process(ExpositionPhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var photo = await db.ExpositionsPhotos
-                .Include(x => x.Owner)
-                .FirstOrDefaultAsync(x => x.Id == source.Id);
+            var owner = db.Expositions.FirstOrDefault(x => x.Id == source.OwnerId);
 
-            destination.Id = photo.Uid;
-            destination.OwnerId = photo.Owner.Uid;
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            destination.OwnerId = owner.Uid;
+
+            db.Dispose();
         }
 
         public async void Process(ClientPhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var photo = await db.ClientsPhotos
-                .Include(x => x.Owner)
-                .FirstOrDefaultAsync(x => x.Id == source.Id);
+            var owner = db.Clients.FirstOrDefault(x => x.Id == source.OwnerId);
 
-            destination.Id = photo.Uid;
-            destination.OwnerId = photo.Owner.Uid;
+            if (owner == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            destination.OwnerId = owner.Uid;
+
+            db.Dispose();
         }
     }
 }
