@@ -71,7 +71,9 @@ public class ExpositionService : IExpositionService
         var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
 
         if (exposition == null)
+        {
             throw new ProcessException($"Exposition (ID = {id}) not found.");
+        }
 
         exposition = mapper.Map(model, exposition);
 
@@ -87,15 +89,21 @@ public class ExpositionService : IExpositionService
         var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
 
         if (exposition == null)
+        {
             throw new ProcessException($"Exposition (ID = {id}) not found.");
+        }
 
         var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == clientId);
 
         if (client.Id == exposition.OrganizerId)
+        {
             throw new ProcessException($"Client (ID = {clientId}) is the organizer");
-
+        }
+            
         if (client == null)
+        {
             throw new ProcessException($"Client (ID = {clientId}) not found.");
+        }
 
         exposition.Subscribers.Add(client);
         client.Subscriptions.Add(exposition);

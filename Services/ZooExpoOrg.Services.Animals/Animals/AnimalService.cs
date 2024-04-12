@@ -44,6 +44,11 @@ public class AnimalService : IAnimalService
             .Include(x => x.Animals)
             .FirstOrDefaultAsync(x => x.Uid == ownerId);
 
+        if (owner == null)
+        {
+            throw new ProcessException($"Client (ID = {ownerId}) not found.");
+        }
+
         return mapper.Map<IEnumerable<AnimalModel>>(owner.Animals);
     }
 
@@ -62,13 +67,18 @@ public class AnimalService : IAnimalService
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
+        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
+
+        if (client == null)
+        {
+            throw new ProcessException($"Client (ID = {model.OwnerId}) not found.");
+        }
+
         var animal = mapper.Map<AnimalEntity>(model);
 
         await context.Animals.AddAsync(animal);
 
-        var user = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
-
-        user.Animals.Add(animal);
+        client.Animals.Add(animal);
 
         await context.SaveChangesAsync();
 
@@ -80,6 +90,11 @@ public class AnimalService : IAnimalService
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var animal = await context.Animals.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (animal == null)
+        {
+            throw new ProcessException($"Animal (ID = {id}) not found.");
+        }
 
         animal = mapper.Map(model, animal);
 
@@ -95,7 +110,9 @@ public class AnimalService : IAnimalService
         var animal = await context.Animals.Where(x => x.Uid == id).FirstOrDefaultAsync();
 
         if (animal == null)
+        {
             throw new ProcessException($"Animal (ID = {id}) not found.");
+        }
 
         context.Animals.Remove(animal);
 
