@@ -24,10 +24,10 @@ public class PhotoController : ControllerBase
         this.mapper = mapper;
     }
 
-    [HttpGet("owned/{ownedId:Guid}")]
-    public async Task<IActionResult> GetAllOwnedById([FromRoute] Guid ownedId)
+    [HttpGet("owned/{ownerId:Guid}")]
+    public async Task<IActionResult> GetAllOwnedById([FromRoute] Guid ownerId)
     {
-        var result = await photoService.GetAllOwnedById(ownedId);
+        var result = await photoService.GetAllOwnedById(ownerId);
 
         if (result == null)
             return NotFound();

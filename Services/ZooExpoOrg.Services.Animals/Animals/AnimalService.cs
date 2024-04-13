@@ -6,7 +6,7 @@ using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
 
-namespace ZooExpoOrg.Services.Animals;
+namespace ZooExpoOrg.Services.Animals.Animals;
 
 public class AnimalService : IAnimalService
 {

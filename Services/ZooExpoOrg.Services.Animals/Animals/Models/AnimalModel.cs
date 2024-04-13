@@ -1,4 +1,4 @@
-﻿namespace ZooExpoOrg.Services.Animals;
+﻿namespace ZooExpoOrg.Services.Animals.Animals;
 
 using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
