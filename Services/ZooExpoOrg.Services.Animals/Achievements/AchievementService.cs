@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
+using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
 
 namespace ZooExpoOrg.Services.Animals.Achievements;
@@ -22,28 +24,87 @@ public class AchievementService : IAchievementService
         this.logger = logger;
     }
 
-    public Task<IEnumerable<AchievementModel>> GetAllOwnedById(Guid OwnerId)
+    public async Task<IEnumerable<AchievementModel>> GetAllOwnedById(Guid OwnerId)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == OwnerId);
+
+        if (animal == null)
+        {
+            throw new ProcessException($"Animal (ID={OwnerId}) not found.");
+        }
+        
+        return mapper.Map<IEnumerable<AchievementModel>>(animal.Achievements);
     }
 
-    public Task<AchievementModel> GetById(Guid id)
+    public async Task<AchievementModel> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (achievement == null)
+        {
+            throw new ProcessException($"Achievement (ID={id}) not found.");
+        }
+
+        return mapper.Map<AchievementModel>(achievement);
     }
 
-    public Task<AchievementModel> Create(CreateAchievementModel model)
+    public async Task<AchievementModel> Create(CreateAchievementModel model)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == model.AnimalId);
+
+        if (animal == null)
+        {
+            throw new ProcessException($"Animal (ID={model.AnimalId}) not found.");
+        }
+
+        var achievement = mapper.Map<AchievementEntity>(model);
+
+        db.Achievements.Add(achievement);
+
+        animal.Achievements.Add(achievement);
+
+        db.SaveChanges();
+
+        return mapper.Map<AchievementModel>(achievement);
     }
 
-    public Task Update(Guid id, UpdateAchievementModel model)
+    public async Task Update(Guid id, UpdateAchievementModel model)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (achievement == null)
+        {
+            throw new ProcessException($"Achievement (ID={id}) not found.");
+        }
+
+        achievement = mapper.Map(model, achievement);
+
+        db.Achievements.Update(achievement);
+
+        await db.SaveChangesAsync();
     }
 
-    public Task Delete(Guid id)
+    public async Task Delete(Guid id)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == id);
+
+        if (achievement == null)
+        {
+            throw new ProcessException($"Achievement (ID={id}) not found.");
+        }
+
+        db.Achievements.Remove(achievement);
+
+        await db.SaveChangesAsync();
     }
 }
