@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
@@ -63,7 +62,7 @@ public class CommentService : ICommentService
         }
         else
         {
-            throw new ProcessException($"Comment (ID = {id}) not found.");
+            return null;
         }
     }
 

@@ -18,6 +18,7 @@ COPY ["Services/ZooExpoOrg.Services.Accounts/ZooExpoOrg.Services.Accounts.csproj
 COPY ["Services/ZooExpoOrg.Services.Logger/ZooExpoOrg.Services.Logger.csproj", "Services/ZooExpoOrg.Services.Logger/"]
 COPY ["Services/ZooExpoOrg.Services.Animals/ZooExpoOrg.Services.Animals.csproj", "Services/ZooExpoOrg.Services.Animals/"]
 COPY ["Services/ZooExpoOrg.Services.Client/ZooExpoOrg.Services.Client.csproj", "Services/ZooExpoOrg.Services.Client/"]
+COPY ["Services/ZooExpoOrg.Services.Comments/ZooExpoOrg.Services.Comments.csproj", "Services/ZooExpoOrg.Services.Comments/"]
 COPY ["Services/ZooExpoOrg.Services.Expositions/ZooExpoOrg.Services.Expositions.csproj", "Services/ZooExpoOrg.Services.Expositions/"]
 COPY ["Services/ZooExpoOrg.Services.Photos/ZooExpoOrg.Services.Photos.csproj", "Services/ZooExpoOrg.Services.Photos/"]
 COPY ["Services/ZooExpoOrg.Services.RabbitMq/ZooExpoOrg.Services.RabbitMq.csproj", "Services/ZooExpoOrg.Services.RabbitMq/"]

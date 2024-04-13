@@ -8,6 +8,7 @@ using ZooExpoOrg.Services.Settings;
 using ZooExpoOrg.Services.Accounts;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Expositions;
+using ZooExpoOrg.Services.Comments;
 
 namespace ZooExpoOrg.Api;
 
@@ -28,6 +29,7 @@ public static class Bootstrapper
             .AddAccountService()
             .AddClienService()
             .AddExpositionService()
+            .AddCommentService()
             .AddDbSeeder()
             ;
 
