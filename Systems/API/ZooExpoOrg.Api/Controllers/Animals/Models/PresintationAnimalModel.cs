@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
-using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Context;
-using ZooExpoOrg.Services.Animals;
-using ZooExpoOrg.Api.Controllers.Photos;
+using ZooExpoOrg.Services.Animals.Animals;
 
-namespace ZooExpoOrg.Api.Controllers.Animals;
+
+namespace ZooExpoOrg.Api.Controllers.Animals.Animal;
 
 public class PresintationAnimalModel
 {

@@ -1,7 +1,7 @@
-﻿namespace ZooExpoOrg.Api.Controllers.Animals;
+﻿namespace ZooExpoOrg.Api.Controllers.Animals.Animals;
 
 using Microsoft.AspNetCore.Mvc;
-using ZooExpoOrg.Services.Animals;
+using ZooExpoOrg.Services.Animals.Animals;
 using ZooExpoOrg.Services.Logger;
 using Asp.Versioning;
 using AutoMapper;

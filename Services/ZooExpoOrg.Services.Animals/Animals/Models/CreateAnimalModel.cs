@@ -6,7 +6,7 @@ using ZooExpoOrg.Context;
 using Newtonsoft.Json.Linq;
 using System.Data;
 
-namespace ZooExpoOrg.Services.Animals;
+namespace ZooExpoOrg.Services.Animals.Animals;
 
 public class CreateAnimalModel
 {

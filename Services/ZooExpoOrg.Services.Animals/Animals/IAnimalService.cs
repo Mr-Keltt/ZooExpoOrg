@@ -1,4 +1,4 @@
-﻿namespace ZooExpoOrg.Services.Animals;
+﻿namespace ZooExpoOrg.Services.Animals.Animals;
 
 public interface IAnimalService
 {
