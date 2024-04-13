@@ -12,8 +12,8 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20240412231146_DeleteConfirmationsAchievementsTable")]
-    partial class DeleteConfirmationsAchievementsTable
+    [Migration("20240413231015_RemoveNotNullInColumsCommentTable")]
+    partial class RemoveNotNullInColumsCommentTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -389,11 +389,17 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AnimalId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DateWriting")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ExpositionId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -404,14 +410,16 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AnimalId");
+
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("ExpositionId");
 
                     b.HasIndex("Uid")
                         .IsUnique();
 
                     b.ToTable("comments", (string)null);
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionEntity", b =>
@@ -567,30 +575,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalCommentEntity", b =>
-                {
-                    b.HasBaseType("ZooExpoOrg.Context.Entities.CommentEntity");
-
-                    b.Property<int>("AnimalId")
-                        .HasColumnType("integer");
-
-                    b.HasIndex("AnimalId");
-
-                    b.ToTable("animals_comments", (string)null);
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionCommentEntity", b =>
-                {
-                    b.HasBaseType("ZooExpoOrg.Context.Entities.CommentEntity");
-
-                    b.Property<int>("ExpositionId")
-                        .HasColumnType("integer");
-
-                    b.HasIndex("ExpositionId");
-
-                    b.ToTable("expositions_comments", (string)null);
-                });
-
             modelBuilder.Entity("AnimalEntityExpositionEntity", b =>
                 {
                     b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", null)
@@ -729,13 +713,27 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.CommentEntity", b =>
                 {
+                    b.HasOne("ZooExpoOrg.Context.Entities.AnimalEntity", "Animal")
+                        .WithMany("Comments")
+                        .HasForeignKey("AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", "Exposition")
+                        .WithMany("Comments")
+                        .HasForeignKey("ExpositionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Animal");
+
                     b.Navigation("Author");
+
+                    b.Navigation("Exposition");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionEntity", b =>
@@ -758,40 +756,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalCommentEntity", b =>
-                {
-                    b.HasOne("ZooExpoOrg.Context.Entities.AnimalEntity", "Animal")
-                        .WithMany("Comments")
-                        .HasForeignKey("AnimalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZooExpoOrg.Context.Entities.CommentEntity", null)
-                        .WithOne()
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.AnimalCommentEntity", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Animal");
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.ExpositionCommentEntity", b =>
-                {
-                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", "Exposition")
-                        .WithMany("Comments")
-                        .HasForeignKey("ExpositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZooExpoOrg.Context.Entities.CommentEntity", null)
-                        .WithOne()
-                        .HasForeignKey("ZooExpoOrg.Context.Entities.ExpositionCommentEntity", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exposition");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AnimalEntity", b =>

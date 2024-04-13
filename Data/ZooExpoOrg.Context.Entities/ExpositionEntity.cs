@@ -29,7 +29,7 @@ public class ExpositionEntity : BaseEntity
 
     public virtual ICollection<ExpositionPhotoEntity> Photos { get; set; }
 
-    public virtual ICollection<ExpositionCommentEntity> Comments { get; set; }
+    public virtual ICollection<CommentEntity> Comments { get; set; }
 
     public virtual ICollection<ClientEntity> Subscribers { get; set; }
 }

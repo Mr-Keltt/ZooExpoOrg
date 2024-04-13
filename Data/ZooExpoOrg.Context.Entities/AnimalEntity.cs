@@ -22,7 +22,7 @@ public class AnimalEntity : BaseEntity
 
     public int? Weight { get; set; }
 
-    public virtual ICollection<AnimalCommentEntity> Comments { get; set; }
+    public virtual ICollection<CommentEntity> Comments { get; set; }
 
     public virtual ICollection<AnimalPhotoEntity> Photos { get; set; }
 

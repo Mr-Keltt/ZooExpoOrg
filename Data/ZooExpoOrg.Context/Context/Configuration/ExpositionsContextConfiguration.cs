@@ -33,7 +33,7 @@ public static class ExpositionsContextConfiguration
             entity
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Exposition)
-                .HasForeignKey(c => c.ExpositionId)
+                .HasPrincipalKey(c => c.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity
