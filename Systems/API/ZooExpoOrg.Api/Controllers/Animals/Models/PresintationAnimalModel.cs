@@ -3,7 +3,7 @@ using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Services.Animals.Animals;
 
 
-namespace ZooExpoOrg.Api.Controllers.Animals.Animal;
+namespace ZooExpoOrg.Api.Controllers.Animals.Animals;
 
 public class PresintationAnimalModel
 {

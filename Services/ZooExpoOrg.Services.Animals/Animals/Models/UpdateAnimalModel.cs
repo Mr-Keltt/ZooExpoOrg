@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
-using ZooExpoOrg.Context;
-using ZooExpoOrg.Common.Extensions;
-using static ZooExpoOrg.Services.Animals.CreateAnimalModelProfile;
 
 namespace ZooExpoOrg.Services.Animals.Animals;
 

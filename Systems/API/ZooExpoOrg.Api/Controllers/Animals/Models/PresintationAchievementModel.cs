@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using ZooExpoOrg.Api.Controllers.Animals.Animal;
 using ZooExpoOrg.Services.Animals.Achievements;
-using ZooExpoOrg.Services.Animals.Animals;
 
 namespace ZooExpoOrg.Api.Controllers.Animals.Achievement;
 

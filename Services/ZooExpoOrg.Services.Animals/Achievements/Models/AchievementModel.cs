@@ -23,7 +23,9 @@ public class AchievementModelProfile : Profile
     public AchievementModelProfile()
     {
         CreateMap<AchievementEntity, AchievementModel>()
-            .BeforeMap<AchievementModelActions>();
+            .BeforeMap<AchievementModelActions>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
+            .ForMember(dest => dest.AnimalId, opt => opt.Ignore());
     }
 
     public class AchievementModelActions : IMappingAction<AchievementEntity, AchievementModel>
@@ -37,7 +39,18 @@ public class AchievementModelProfile : Profile
 
         public async void Process(AchievementEntity source, AchievementModel destination, ResolutionContext context)
         {
-            
+            using var db = contextFactory.CreateDbContext();
+
+            var animal = db.Animals.FirstOrDefault(x => x.Id == source.AnimalId);
+
+            if (animal == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            destination.AnimalId = animal.Uid;
+
+            db.Dispose();
         }
     }
 }

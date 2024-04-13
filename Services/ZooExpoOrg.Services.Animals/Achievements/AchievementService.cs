@@ -44,11 +44,6 @@ public class AchievementService : IAchievementService
 
         var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == id);
 
-        if (achievement == null)
-        {
-            throw new ProcessException($"Achievement (ID={id}) not found.");
-        }
-
         return mapper.Map<AchievementModel>(achievement);
     }
 

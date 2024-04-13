@@ -1,8 +1,13 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
+using ZooExpoOrg.Api.Controllers.Animals.Animals;
+using ZooExpoOrg.Api.Controllers.Clients;
+using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Services.Animals.Achievements;
 using ZooExpoOrg.Services.Animals.Animals;
+using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Logger;
 
 namespace ZooExpoOrg.Api.Controllers.Animals.Achievement;
@@ -28,33 +33,81 @@ public class AchievementController : Controller
         this.mapper = mapper;
     }
 
-    [HttpGet("owned/{ownedId:Guid}")]
-    public async Task<IEnumerable<AchievementModel>> GetAllOwned(Guid OwnerId)
+    [HttpGet("owned/{ownerId:Guid}")]
+    public async Task<IActionResult> GetAllOwned(Guid ownerId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var achievements = await achievementService.GetAllOwnedById(ownerId);
+
+            if (achievements == null)
+            {
+                return NotFound($"Achievements not found.");
+            }
+
+            return Ok(mapper.Map<IEnumerable<PresintationAchievementModel>>(achievements));
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpGet("{id:Guid}")]
-    public async Task<AchievementModel> Get(Guid id)
+    public async Task<IActionResult> Get(Guid id)
     {
-        throw new NotImplementedException();
+        var achievements = await achievementService.GetById(id);
+
+        if (achievements == null)
+        {
+            return NotFound($"Achievements not found.");
+        }
+
+        return Ok(mapper.Map<PresintationAchievementModel>(achievements));
     }
 
     [HttpPost("")]
-    public async Task<AchievementModel> Create(CreateAchievementModel model)
+    public async Task<IActionResult> Create(CreateAchievementModel model)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var achievements = await achievementService.Create(model);
+
+            return Ok(mapper.Map<PresintationAchievementModel>(achievements));
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task Update(Guid id, UpdateAchievementModel model)
+    public async Task<IActionResult> Update(Guid id, UpdateAchievementModel model)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await achievementService.Update(id, model);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpDelete("{id:Guid}")]
-    public async Task Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            achievementService.Delete(id);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }

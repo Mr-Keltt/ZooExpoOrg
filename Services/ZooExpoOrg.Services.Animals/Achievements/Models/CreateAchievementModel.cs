@@ -20,11 +20,12 @@ public class CreateAchievementModelProfile : Profile
 {
     public CreateAchievementModelProfile()
     {
-        CreateMap<AchievementEntity, CreateAchievementModel>()
-            .BeforeMap<CreateAchievementModelActions>();
+        CreateMap<CreateAchievementModel, AchievementEntity>()
+            .BeforeMap<CreateAchievementModelActions>()
+            .ForMember(dest => dest.AnimalId, opt => opt.Ignore());
     }
 
-    public class CreateAchievementModelActions : IMappingAction<AchievementEntity, CreateAchievementModel>
+    public class CreateAchievementModelActions : IMappingAction<CreateAchievementModel, AchievementEntity>
     {
         private readonly IDbContextFactory<MainDbContext> contextFactory;
 
@@ -33,9 +34,18 @@ public class CreateAchievementModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(AchievementEntity source, CreateAchievementModel destination, ResolutionContext context)
+        public async void Process(CreateAchievementModel source, AchievementEntity destination, ResolutionContext context)
         {
+            using var db = contextFactory.CreateDbContext();
 
+            var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == source.AnimalId);
+
+            if (animal == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            destination.AnimalId = animal.Id;
         }
     }
 }
