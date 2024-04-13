@@ -64,7 +64,7 @@ public class CreateAnimalModelProfile : Profile
             }
 
             destination.OwnerId = owner.Id;     
-            destination.Comments = new List<AnimalCommentEntity>();
+            destination.Comments = new List<CommentEntity>();
             destination.Photos = new List<AnimalPhotoEntity>();
             destination.Achievements = new List<AchievementEntity>();
         }

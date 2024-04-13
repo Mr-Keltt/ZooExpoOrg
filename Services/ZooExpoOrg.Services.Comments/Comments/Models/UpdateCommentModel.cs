@@ -15,8 +15,6 @@ public class UpdateCommentModelProfile : Profile
 {
     public UpdateCommentModelProfile()
     {
-        CreateMap<UpdateCommentModel, AnimalCommentEntity>();
-
-        CreateMap<UpdateCommentModel, ExpositionCommentEntity>();
+        CreateMap<UpdateCommentModel, CommentEntity>();
     }
 }

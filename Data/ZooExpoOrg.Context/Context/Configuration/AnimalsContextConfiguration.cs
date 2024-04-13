@@ -37,7 +37,7 @@ public static class AnimalsContextConfiguration
             entity
                 .HasMany(a => a.Achievements)
                 .WithOne(a => a.Animal)
-                .HasForeignKey(a => a.AnimalId)
+                .HasPrincipalKey(a => a.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity

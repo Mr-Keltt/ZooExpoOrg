@@ -20,20 +20,14 @@ public class CreateCommentModelProfile : Profile
 {
     public CreateCommentModelProfile()
     {
-        CreateMap<CreateCommentModel, AnimalCommentEntity> ()
+        CreateMap<CreateCommentModel, CommentEntity> ()
             .BeforeMap<CreateCommentModelActions>()
             .ForMember(dest => dest.AnimalId, opt => opt.Ignore())
-            .ForMember(dest => dest.AuthorId, opt => opt.Ignore());
-
-        CreateMap<CreateCommentModel, ExpositionCommentEntity>()
-            .BeforeMap<CreateCommentModelActions>()
             .ForMember(dest => dest.ExpositionId, opt => opt.Ignore())
             .ForMember(dest => dest.AuthorId, opt => opt.Ignore());
     }
 
-    public class CreateCommentModelActions :
-        IMappingAction<CreateCommentModel, AnimalCommentEntity>,
-        IMappingAction<CreateCommentModel, ExpositionCommentEntity>
+    public class CreateCommentModelActions : IMappingAction<CreateCommentModel, CommentEntity>
     {
         private readonly IDbContextFactory<MainDbContext> contextFactory;
 
@@ -42,16 +36,9 @@ public class CreateCommentModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public void Process(CreateCommentModel source, AnimalCommentEntity destination, ResolutionContext context)
+        public void Process(CreateCommentModel source, CommentEntity destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
-
-            var animal = db.Animals.FirstOrDefault(db => db.Uid == source.LocationId);
-
-            if (animal == null)
-            {
-                throw new NullReferenceException();
-            }
 
             var client = db.Clients.FirstOrDefault(x => x.Uid == source.AuthorId);
 
@@ -60,29 +47,24 @@ public class CreateCommentModelProfile : Profile
                 throw new NullReferenceException();
             }
 
-            destination.AnimalId = animal.Id;
-            destination.AuthorId = client.Id;
-        }
+            var animal = db.Animals.FirstOrDefault(x => x.Uid == source.LocationId);
+            var exposition = db.Expositions.FirstOrDefault(x => x.Uid == source.LocationId);
 
-        public void Process(CreateCommentModel source, ExpositionCommentEntity destination, ResolutionContext context)
-        {
-            using var db = contextFactory.CreateDbContext();
-
-            var exposition = db.Expositions.FirstOrDefault(db => db.Uid == source.LocationId);
-
-            if (exposition == null)
+            if (animal != null)
+            {
+                destination.AnimalId = animal.Id;
+                destination.ExpositionId = null;
+            }
+            else if (exposition != null)
+            {
+                destination.ExpositionId = exposition.Id;
+                destination.AnimalId = null;
+            }
+            else
             {
                 throw new NullReferenceException();
             }
 
-            var client = db.Clients.FirstOrDefault(x => x.Uid == source.AuthorId);
-
-            if (client == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            destination.ExpositionId = exposition.Id;
             destination.AuthorId = client.Id;
         }
     }

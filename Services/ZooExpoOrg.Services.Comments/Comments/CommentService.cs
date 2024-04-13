@@ -49,35 +49,23 @@ public class CommentService : ICommentService
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animalComments = await db.AnimalsComments.FirstOrDefaultAsync(x => x.Uid == id);
-        var expositionComments = await db.ExpositionsComments.FirstOrDefaultAsync(x => x.Uid == id);
+        var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
 
-        if (animalComments != null)
-        {
-            return mapper.Map<CommentModel>(animalComments);
-        }
-        else if (expositionComments != null)
-        {
-            return mapper.Map<CommentModel>(expositionComments);
-        }
-        else
-        {
-            return null;
-        }
+        return mapper.Map<CommentModel>(comments);
     }
 
     public async Task<CommentModel> Create(CreateCommentModel model)
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == model.LocationId);
-        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == model.LocationId);
+        var animal = db.Animals.FirstOrDefault(x => x.Uid == model.LocationId);
+        var exposition = db.Expositions.FirstOrDefault(x => x.Uid == model.LocationId);
 
         if (animal != null)
         {
-            var comment = mapper.Map<AnimalCommentEntity>(model);
+            var comment = mapper.Map<CommentEntity>(model);
 
-            db.AnimalsComments.Add(comment);
+            db.Comments.Add(comment);
 
             animal.Comments.Add(comment);
 
@@ -87,9 +75,9 @@ public class CommentService : ICommentService
         }
         else if (exposition != null)
         {
-            var comment = mapper.Map<ExpositionCommentEntity>(model);
+            var comment = mapper.Map<CommentEntity>(model);
 
-            db.ExpositionsComments.Add(comment);
+            db.Comments.Add(comment);
 
             exposition.Comments.Add(comment);
 
@@ -107,53 +95,33 @@ public class CommentService : ICommentService
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animalComments = await db.AnimalsComments.FirstOrDefaultAsync(x => x.Uid == id);
-        var expositionComments = await db.ExpositionsComments.FirstOrDefaultAsync(x => x.Uid == id);
+        var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
 
-        if (animalComments != null)
-        {
-            animalComments = mapper.Map(model, animalComments);
-
-            db.AnimalsComments.Update(animalComments);
-
-            await db.SaveChangesAsync();
-        }
-        else if (expositionComments != null)
-        {
-            expositionComments = mapper.Map(model, expositionComments);
-
-            db.ExpositionsComments.Update(expositionComments);
-
-            await db.SaveChangesAsync();
-        }
-        else
+        if (comments == null)
         {
             throw new ProcessException($"Comment (ID = {id}) not found.");
         }
+
+        comments = mapper.Map(model, comments);
+
+        db.Comments.Update(comments);
+
+        await db.SaveChangesAsync();
     }
 
     public async Task Delete(Guid id)
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animalComments = await db.AnimalsComments.FirstOrDefaultAsync(x => x.Uid == id);
-        var expositionComments = await db.ExpositionsComments.FirstOrDefaultAsync(x => x.Uid == id);
+        var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
 
-        if (animalComments != null)
-        {
-            db.AnimalsComments.Remove(animalComments);
-
-            await db.SaveChangesAsync();
-        }
-        else if (expositionComments != null)
-        {
-            db.ExpositionsComments.Remove(expositionComments);
-
-            await db.SaveChangesAsync();
-        }
-        else
+        if (comments == null)
         {
             throw new ProcessException($"Comment (ID = {id}) not found.");
         }
+
+        db.Comments.Remove(comments);
+
+        await db.SaveChangesAsync();
     }
 }
