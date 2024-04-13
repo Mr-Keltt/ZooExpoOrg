@@ -2,7 +2,6 @@
 
 public interface IAnimalService
 {
-    Task<IEnumerable<AnimalModel>> GetAll();
     Task<IEnumerable<AnimalModel>> GetOwned(Guid ownerId);
     Task<AnimalModel> GetById(Guid id);
     Task<AnimalModel> Create(CreateAnimalModel model);
