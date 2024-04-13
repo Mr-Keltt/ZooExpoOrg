@@ -25,17 +25,6 @@ public class AnimalService : IAnimalService
         this.logger = logger;
     }
 
-    public async Task<IEnumerable<AnimalModel>> GetAll()
-    {
-        using var context = await dbContextFactory.CreateDbContextAsync();
-
-        var animals = await context.Animals.ToListAsync();
-
-        var result = mapper.Map<IEnumerable<AnimalModel>>(animals);
-
-        return result;
-    }
-
     public async Task<IEnumerable<AnimalModel>> GetOwned(Guid ownerId)
     { 
         using var context = await dbContextFactory.CreateDbContextAsync();

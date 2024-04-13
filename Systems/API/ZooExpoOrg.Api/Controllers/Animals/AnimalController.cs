@@ -25,19 +25,6 @@ public class AnimalController : ControllerBase
         this.mapper = mapper;
     }
 
-    [HttpGet("")]
-    public async Task<IActionResult> Get()
-    {
-        var result = await animalService.GetAll();
-
-        if (result.IsNullOrEmpty())
-        {
-            return NotFound("Animals not found.");
-        }
-
-        return Ok(mapper.Map<IEnumerable<PresintationAnimalModel>>(result));
-    }
-
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
