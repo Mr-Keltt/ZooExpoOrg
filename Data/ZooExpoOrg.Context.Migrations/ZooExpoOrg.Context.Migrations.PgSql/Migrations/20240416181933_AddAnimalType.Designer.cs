@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240416181933_AddAnimalType")]
+    partial class AddAnimalType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,8 +203,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(10000)
-                        .HasColumnType("character varying(10000)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -232,8 +234,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(10000)
-                        .HasColumnType("character varying(10000)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -402,8 +403,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(10000)
-                        .HasColumnType("character varying(10000)");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("Uid")
                         .HasColumnType("uuid");
@@ -446,8 +446,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(10000)
-                        .HasColumnType("character varying(10000)");
+                        .HasColumnType("text");
 
                     b.Property<string>("HouseNumber")
                         .HasColumnType("text");

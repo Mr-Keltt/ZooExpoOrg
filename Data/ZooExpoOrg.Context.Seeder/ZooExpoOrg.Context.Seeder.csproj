@@ -13,7 +13,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Accounts\ZooExpoOrg.Services.Accounts.csproj" />
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Animals\ZooExpoOrg.Services.Animals.csproj" />
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Client\ZooExpoOrg.Services.Client.csproj" />
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Comments\ZooExpoOrg.Services.Comments.csproj" />
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Expositions\ZooExpoOrg.Services.Expositions.csproj" />
     <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
+    <ProjectReference Include="..\..\Services\ZooExpoOrg.Services.Photos\ZooExpoOrg.Services.Photos.csproj" />
     <ProjectReference Include="..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
     <ProjectReference Include="..\ZooExpoOrg.Context.Entities\ZooExpoOrg.Context.Entities.csproj" />
     <ProjectReference Include="..\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />

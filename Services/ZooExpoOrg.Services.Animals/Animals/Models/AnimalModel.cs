@@ -16,7 +16,7 @@ public class AnimalModel
 
     public string Description { get; set; }
 
-    public string Breed { get; set; }
+    public AnimalType Type { get; set; }
 
     public Gender Gender { get; set; }
 
@@ -45,7 +45,7 @@ public class AnimalModelProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            .ForMember(dest => dest.Breed, opt => opt.MapFrom(src => src.Breed))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
             .ForMember(dest => dest.Height, opt => opt.MapFrom(src => src.Height))
@@ -66,11 +66,11 @@ public class AnimalModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(AnimalEntity source, AnimalModel destination, ResolutionContext context)
+        public void Process(AnimalEntity source, AnimalModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var owner = await db.Clients.FirstOrDefaultAsync(x => x.Id == source.OwnerId);
+            var owner = db.Clients.FirstOrDefault(x => x.Id == source.OwnerId);
 
             if (owner == null)
             {

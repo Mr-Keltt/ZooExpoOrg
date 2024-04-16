@@ -131,6 +131,11 @@ public class ExpositionController : Controller
         }
         catch (ProcessException e)
         {
+            if (e.Message == $"Animal type does not correspond to the type of exposition participants")
+            {
+                return BadRequest(e.Message);
+            }
+
             return NotFound(e.Message);
         }
     }

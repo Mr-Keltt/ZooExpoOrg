@@ -37,11 +37,11 @@ public class UpdateClientModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(UpdateClientModel source, ClientEntity destination, ResolutionContext context)
+        public void Process(UpdateClientModel source, ClientEntity destination, ResolutionContext context)
         {
-            using var db = await contextFactory.CreateDbContextAsync();
+            using var db = contextFactory.CreateDbContext();
 
-            var photo = await db.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == source.PhotoId);
+            var photo = db.ClientsPhotos.FirstOrDefault(x => x.Uid == source.PhotoId);
 
             destination.PhotoId = photo != null ? photo.Id : null;
         }

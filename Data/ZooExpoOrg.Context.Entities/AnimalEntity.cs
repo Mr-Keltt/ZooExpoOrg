@@ -12,7 +12,7 @@ public class AnimalEntity : BaseEntity
 
     public string? Description { get; set; }
 
-    public string Breed { get; set; }
+    public AnimalType Type { get; set; }
 
     public Gender Gender { get; set; }
 

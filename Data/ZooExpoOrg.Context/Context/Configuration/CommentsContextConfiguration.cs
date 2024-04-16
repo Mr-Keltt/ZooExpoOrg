@@ -10,6 +10,8 @@ public static class CommentsContextConfiguration
         modelBuilder.Entity<CommentEntity>(entity =>
         {
             entity.ToTable("comments");
+
+            entity.Property(a => a.Text).HasMaxLength(10000);
         });
     }
 }

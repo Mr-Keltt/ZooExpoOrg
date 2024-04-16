@@ -17,16 +17,24 @@ public static class AnimalsContextConfiguration
                 .ValueGeneratedOnAdd()
                 .IsRequired();
             entity.Property(a => a.Name).IsRequired();
-            entity
-                .Property(a => a.Gender)
-                .HasConversion<string>()
+            entity.Property(a => a.BirthDate).IsRequired();
+            entity.Property(a => a.OwnerId).IsRequired();
+
+            entity.Property(a => a.Description).HasMaxLength(10000);
+
+            entity.Property(a => a.Gender)
                 .HasConversion(
                     v => v.ToString(),
                     v => (Gender)Enum.Parse(typeof(Gender), v)
                     )
                 .IsRequired();
-            entity.Property(a => a.BirthDate).IsRequired();
-            entity.Property(a => a.OwnerId).IsRequired();
+
+            entity.Property(a => a.Type)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (AnimalType)Enum.Parse(typeof(AnimalType), v)
+                    )
+                .IsRequired();
 
             entity
                 .HasMany(a => a.Photos)
