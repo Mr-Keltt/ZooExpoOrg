@@ -37,7 +37,7 @@ public class AchievementModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(AchievementEntity source, AchievementModel destination, ResolutionContext context)
+        public void Process(AchievementEntity source, AchievementModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
@@ -49,8 +49,6 @@ public class AchievementModelProfile : Profile
             }
 
             destination.AnimalId = animal.Uid;
-
-            db.Dispose();
         }
     }
 }

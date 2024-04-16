@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 
@@ -14,6 +15,8 @@ public class ExpositionModel
     public string Title { get; set; }
 
     public string Description { get; set; }
+
+    public AnimalType ParticipantsType { get; set; }
 
     public string Country { get; set; }
 
@@ -45,6 +48,7 @@ public class ExpositionModelProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ParticipantsType, opt => opt.MapFrom(src => src.ParticipantsType))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
             .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Street))
@@ -67,11 +71,11 @@ public class ExpositionModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(ExpositionEntity source, ExpositionModel destination, ResolutionContext context)
+        public void Process(ExpositionEntity source, ExpositionModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var organizer = await db.Clients.FirstOrDefaultAsync(x => x.Id == source.OrganizerId);
+            var organizer = db.Clients.FirstOrDefault(x => x.Id == source.OrganizerId);
 
             if (organizer == null)
             {

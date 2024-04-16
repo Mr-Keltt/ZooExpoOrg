@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ZooExpoOrg.Api.Controllers.Clients;
+using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Expositions;
 
@@ -14,6 +15,8 @@ public class PresintationExpositionModel
     public string Title { get; set; }
 
     public string Description { get; set; }
+
+    public AnimalType ParticipantsType { get; set; }
 
     public string Country { get; set; }
 

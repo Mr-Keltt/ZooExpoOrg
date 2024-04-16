@@ -35,7 +35,7 @@ public class AnimalService : IAnimalService
 
         if (owner == null)
         {
-            throw new ProcessException($"Client (ID = {ownerId}) not found.");
+            throw new ProcessException($"Client (ownerID = {ownerId}) not found.");
         }
 
         return mapper.Map<IEnumerable<AnimalModel>>(owner.Animals);

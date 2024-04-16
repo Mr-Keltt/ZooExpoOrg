@@ -28,7 +28,7 @@ public class CommentController : Controller
         this.mapper = mapper;
     }
 
-    [HttpGet("{locationId:Guid}")]
+    [HttpGet("location/{locationId:Guid}")]
     public async Task<IActionResult> GetLocatedIn(Guid locationId)
     {
         try
@@ -40,7 +40,7 @@ public class CommentController : Controller
                 return NotFound($"Comments not found.");
             }
 
-            return Ok(mapper.Map<PresintationCommentModel>(result));
+            return Ok(mapper.Map<IEnumerable<PresintationCommentModel>>(result));
         }
         catch (ProcessException e)
         {

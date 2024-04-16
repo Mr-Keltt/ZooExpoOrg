@@ -139,12 +139,21 @@ public class ExpositionService : IExpositionService
         var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);
 
         if (exposition == null)
+        {
             throw new ProcessException($"Exposition (ID = {id}) not found.");
+        }
 
         var animal = await context.Animals.FirstOrDefaultAsync(x => x.Uid == animalId);
 
         if (animal == null)
+        {
             throw new ProcessException($"Animal (ID = {animalId}) not found.");
+        }
+
+        if (animal.Type != exposition.ParticipantsType)
+        {
+            throw new ProcessException("Animal type does not correspond to the type of exposition participants");
+        }
 
         exposition.Participants.Add(animal);
         animal.Expositions.Add(exposition);

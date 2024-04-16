@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System.Runtime.CompilerServices;
+using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities.Common;
 
 namespace ZooExpoOrg.Context.Entities;
@@ -12,6 +13,8 @@ public class ExpositionEntity : BaseEntity
     public string Title { get; set; }
 
     public string Description { get; set; }
+
+    public AnimalType ParticipantsType { get; set; }
 
     public string Country { get; set; }
 

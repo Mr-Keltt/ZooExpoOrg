@@ -41,7 +41,7 @@ public class CreateClientModelProfile : Profile
             
         }
 
-        public async void Process(CreateClientModel source, ClientEntity destination, ResolutionContext context)
+        public void Process(CreateClientModel source, ClientEntity destination, ResolutionContext context)
         {
             destination.PhotoId = null;
             destination.Subscriptions = new List<ExpositionEntity>();

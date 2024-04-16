@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Context;
@@ -12,12 +13,20 @@ public static class ExpositionsContextConfiguration
             entity.ToTable("expositions");
 
             entity.Property(e => e.Title).IsRequired();
-            entity.Property(e => e.Description).IsRequired();
             entity.Property(e => e.Country).IsRequired();
             entity.Property(e => e.City).IsRequired();
             entity.Property(e => e.Street).IsRequired();
             entity.Property(e => e.DateStart).IsRequired();
             entity.Property(e => e.DateEnd).IsRequired();
+
+            entity.Property(e => e.Description).HasMaxLength(10000);
+
+            entity.Property(a => a.ParticipantsType)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (AnimalType)Enum.Parse(typeof(AnimalType), v)
+                    )
+                .IsRequired();
 
             entity
                 .HasMany(e => e.Participants)

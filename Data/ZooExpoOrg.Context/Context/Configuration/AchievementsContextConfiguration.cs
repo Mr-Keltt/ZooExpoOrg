@@ -12,6 +12,8 @@ public static class AchievementsContextConfiguration
             entity.ToTable("achievements");
             entity.Property(a => a.Name).IsRequired();
             entity.Property(a => a.DateAward).IsRequired();
+
+            entity.Property(a => a.Description).HasMaxLength(10000);
         });
     }
 }

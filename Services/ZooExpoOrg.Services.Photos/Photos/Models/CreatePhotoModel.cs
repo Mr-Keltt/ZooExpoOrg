@@ -41,11 +41,11 @@ public class CreatePhotoModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(CreatePhotoModel source, AnimalPhotoEntity destination, ResolutionContext context)
+        public void Process(CreatePhotoModel source, AnimalPhotoEntity destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var owner = await db.Animals.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
+            var owner = db.Animals.FirstOrDefault(x => x.Uid == source.OwnerId);
 
             if (owner == null)
             {
@@ -55,11 +55,11 @@ public class CreatePhotoModelProfile : Profile
             destination.OwnerId = owner.Id;
         }
 
-        public async void Process(CreatePhotoModel source, ExpositionPhotoEntity destination, ResolutionContext context)
+        public void Process(CreatePhotoModel source, ExpositionPhotoEntity destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var owner = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
+            var owner = db.Expositions.FirstOrDefault(x => x.Uid == source.OwnerId);
 
             if (owner == null)
             {
@@ -69,11 +69,11 @@ public class CreatePhotoModelProfile : Profile
             destination.OwnerId = owner.Id;
         }
 
-        public async void Process(CreatePhotoModel source, ClientPhotoEntity destination, ResolutionContext context)
+        public void Process(CreatePhotoModel source, ClientPhotoEntity destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var owner = await db.Clients.FirstOrDefaultAsync(x => x.Uid == source.OwnerId);
+            var owner = db.Clients.FirstOrDefault(x => x.Uid == source.OwnerId);
 
             if (owner == null)
             {

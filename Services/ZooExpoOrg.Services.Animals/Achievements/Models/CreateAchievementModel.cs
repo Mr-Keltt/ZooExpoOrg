@@ -34,11 +34,11 @@ public class CreateAchievementModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(CreateAchievementModel source, AchievementEntity destination, ResolutionContext context)
+        public void Process(CreateAchievementModel source, AchievementEntity destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == source.AnimalId);
+            var animal = db.Animals.FirstOrDefaultAsync(x => x.Uid == source.AnimalId);
 
             if (animal == null)
             {

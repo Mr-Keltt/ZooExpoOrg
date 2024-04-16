@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Common.Validator;
+using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Services.Accounts;
@@ -27,6 +28,13 @@ public class AccountService : IAccountService
     public async Task<bool> IsEmpty()
     {
         return !(await userManager.Users.AnyAsync());
+    }
+
+    public async Task<IEnumerable<AccountModel>> GetAll()
+    {
+        var result = userManager.Users;
+
+        return mapper.Map<IEnumerable<AccountModel>>(result);
     }
 
     public async Task<AccountModel> Create(RegisterAccountModel model)

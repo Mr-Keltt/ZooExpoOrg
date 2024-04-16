@@ -45,7 +45,7 @@ public class PhotoModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public async void Process(AnimalPhotoEntity source, PhotoModel destination, ResolutionContext context)
+        public void Process(AnimalPhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
@@ -57,11 +57,9 @@ public class PhotoModelProfile : Profile
             }
 
             destination.OwnerId = owner.Uid;
-
-            db.Dispose();
         }
 
-        public async void Process(ExpositionPhotoEntity source, PhotoModel destination, ResolutionContext context)
+        public void Process(ExpositionPhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
@@ -73,11 +71,9 @@ public class PhotoModelProfile : Profile
             }
 
             destination.OwnerId = owner.Uid;
-
-            db.Dispose();
         }
 
-        public async void Process(ClientPhotoEntity source, PhotoModel destination, ResolutionContext context)
+        public void Process(ClientPhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
@@ -89,8 +85,6 @@ public class PhotoModelProfile : Profile
             }
 
             destination.OwnerId = owner.Uid;
-
-            db.Dispose();
         }
     }
 }
