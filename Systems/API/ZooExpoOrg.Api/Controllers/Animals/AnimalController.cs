@@ -7,6 +7,8 @@ using Asp.Versioning;
 using AutoMapper;
 using ZooExpoOrg.Common.Exceptions;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using ZooExpoOrg.Common.Security;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -59,6 +61,7 @@ public class AnimalController : ControllerBase
     }
 
     [HttpPost("")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreateAnimalModel request)
     {
         try
@@ -74,6 +77,7 @@ public class AnimalController : ControllerBase
     }
 
     [HttpPut("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Update([FromRoute] Guid id, UpdateAnimalModel request)
     {
         try
@@ -89,6 +93,7 @@ public class AnimalController : ControllerBase
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         try

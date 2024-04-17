@@ -6,6 +6,8 @@ using ZooExpoOrg.Services.Clients;
 using Microsoft.IdentityModel.Tokens;
 using ZooExpoOrg.Common.Exceptions;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
+using ZooExpoOrg.Common.Security;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -49,6 +51,7 @@ public class ClientController : Controller
     }
 
     [HttpPost("")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreateClientModel request)
     {
         try
@@ -64,6 +67,7 @@ public class ClientController : Controller
     }
 
     [HttpPut("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Update([FromRoute] Guid id, UpdateClientModel model)
     {
         try
@@ -79,6 +83,7 @@ public class ClientController : Controller
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         try

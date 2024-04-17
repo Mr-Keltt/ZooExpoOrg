@@ -1,7 +1,9 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Comments;
 using ZooExpoOrg.Services.Logger;
 
@@ -63,6 +65,7 @@ public class CommentController : Controller
     }
 
     [HttpPost]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreateCommentModel model)
     {
         try
@@ -78,6 +81,7 @@ public class CommentController : Controller
     }
 
     [HttpPut("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Update(Guid id, UpdateCommentModel model)
     {
         try
@@ -93,6 +97,7 @@ public class CommentController : Controller
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

@@ -2,8 +2,10 @@
 
 using Asp.Versioning;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Photos;
 
@@ -47,6 +49,7 @@ public class PhotoController : ControllerBase
     }
 
     [HttpPost("")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreatePhotoModel createModel)
     {
         try
@@ -62,6 +65,7 @@ public class PhotoController : ControllerBase
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         try

@@ -41,11 +41,21 @@ public class AccountService : IAccountService
     {
         registerUserAccountModelValidator.Check(model);
 
-        var user = await userManager.FindByEmailAsync(model.Email);
-        if (user != null)
-            throw new ProcessException($"User account with email {model.Email} already exist.");
+        var userByUserName = await userManager.FindByEmailAsync(model.UserName);
 
-        user = new UserEntity()
+        if (userByUserName != null)
+        {
+            throw new ProcessException($"User account with ligin {model.UserName} already exist.");
+        }
+
+        var userByEmail = await userManager.FindByEmailAsync(model.Email);
+
+        if (userByEmail != null)
+        { 
+            throw new ProcessException($"User account with email {model.Email} already exist.");
+        }
+
+        var user = new UserEntity()
         {
             Id = Guid.NewGuid(),
             UserName = model.UserName,
@@ -57,7 +67,9 @@ public class AccountService : IAccountService
 
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
+        {
             throw new ProcessException($"Creating user account is wrong. {string.Join(", ", result.Errors.Select(s => s.Description))}");
+        }  
 
         return mapper.Map<AccountModel>(user);
     }

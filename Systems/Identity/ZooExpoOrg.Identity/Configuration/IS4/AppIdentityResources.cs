@@ -1,5 +1,4 @@
 ﻿namespace ZooExpoOrg.Identity.Configuration;
-
 using Duende.IdentityServer.Models;
 
 public static class AppIdentityResources

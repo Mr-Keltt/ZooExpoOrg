@@ -1,13 +1,12 @@
 ﻿namespace ZooExpoOrg.Identity.Configuration;
-
-using ZooExpoOrg.Common.Security;
 using Duende.IdentityServer.Models;
+using ZooExpoOrg.Common.Security;
 
 public static class AppApiScopes
 {
     public static IEnumerable<ApiScope> ApiScopes =>
         new List<ApiScope>
         {
-
+            new ApiScope(AppScopes.UseScope, "UseScope")
         };
 }

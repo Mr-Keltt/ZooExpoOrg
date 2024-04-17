@@ -2,10 +2,12 @@
 using AutoMapper;
 using Azure.Core;
 using Azure.Core.GeoJson;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ZooExpoOrg.Api.Controllers.Clients;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Expositions;
 using ZooExpoOrg.Services.Logger;
@@ -56,6 +58,7 @@ public class ExpositionController : Controller
     }
 
     [HttpPost("")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreateExpositionModel model)
     {
         try
@@ -71,6 +74,7 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Update(Guid id, UpdateExpositionModel model)
     {
         try
@@ -86,6 +90,7 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("{id:Guid}/subscribe/{clientId:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Subscribe(Guid id, Guid clientId)
     {
         try
@@ -106,6 +111,7 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("{id:Guid}/unsubscribe/{clientId:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Unsubscribe(Guid id, Guid clientId)
     {
         try
@@ -121,6 +127,7 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("{id:Guid}/participants/add/{animalId:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> AddParticipant(Guid id, Guid animalId)
     {
         try
@@ -141,6 +148,7 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("{id:Guid}/participants/delete/{animalId:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> DeleteParticipant(Guid id, Guid animalId)
     {
         try
@@ -156,6 +164,7 @@ public class ExpositionController : Controller
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

@@ -59,21 +59,12 @@ public static class SwaggerConfiguration
                 In = ParameterLocation.Header,
                 Flows = new OpenApiOAuthFlows
                 {
-                    ClientCredentials = new OpenApiOAuthFlow
-                    {
-                        TokenUrl = new Uri($"{identitySettings.Url}/connect/token"),
-                        Scopes = new Dictionary<string, string>
-                        {
-
-                        }
-                    },
-
                     Password = new OpenApiOAuthFlow
                     {
                         TokenUrl = new Uri($"{identitySettings.Url}/connect/token"),
                         Scopes = new Dictionary<string, string>
                         {
-
+                            { AppScopes.UseScope, "UseScope" }
                         }
                     }
                 }
