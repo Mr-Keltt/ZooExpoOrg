@@ -35,8 +35,8 @@ public static class AuthConfiguration
         })
             .AddJwtBearer(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                options.RequireHttpsMetadata = "http://host.docker.internal:10001".StartsWith("https://");
-                options.Authority = "http://host.docker.internal:10001";
+                options.RequireHttpsMetadata = settings.InternalUrl.StartsWith("https://");
+                options.Authority = settings.InternalUrl;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = false,

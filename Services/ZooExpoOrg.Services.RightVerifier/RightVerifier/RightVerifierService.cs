@@ -1,0 +1,72 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Context;
+
+namespace ZooExpoOrg.Services.RightVerifier;
+
+public class RightVerifierService : IRightVerifierService
+{
+    private readonly IDbContextFactory<MainDbContext> dbContextFactory;
+
+    public RightVerifierService(IDbContextFactory<MainDbContext> dbContextFactory)
+    {
+        this.dbContextFactory = dbContextFactory;
+    }
+
+    private Guid GetUserId(string jwtToken)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtSecurityToken = tokenHandler.ReadToken(jwtToken) as JwtSecurityToken;
+
+        var userIdString = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
+
+        if (Guid.TryParse(userIdString, out Guid userId))
+        {
+            return userId;
+        }
+        else
+        {
+            throw new ProcessException("Invalid user ID format.");
+        }
+    }
+
+    public async Task<Guid> GetClientId(string jwtToken)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.UserId == GetUserId(jwtToken));
+
+        if (client == null)
+        {
+            throw new ProcessException($"Client (By jwt = {jwtToken} not found.");
+        }
+
+        return client.Uid;
+    }
+
+    public async Task<bool> VerifiRightToAnAnimal(string jwtToken, Guid animalId)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == animalId);
+
+        if (animal == null)
+        {
+            throw new ProcessException($"Animal (By jwt = {jwtToken} not found.");
+        }
+
+        Guid clientId = await GetClientId(jwtToken);
+
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == animal.OwnerId);
+
+        if (client.Uid == clientId) 
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}

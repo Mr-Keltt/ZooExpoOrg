@@ -9,6 +9,7 @@ using ZooExpoOrg.Common.Exceptions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using ZooExpoOrg.Common.Security;
+using ZooExpoOrg.Services.RightVerifier;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -19,12 +20,19 @@ public class AnimalController : ControllerBase
     private readonly IAppLogger logger;
     private readonly IAnimalService animalService;
     private readonly IMapper mapper;
+    private readonly IRightVerifierService rightVerifier;
 
-    public AnimalController(IAppLogger logger, IAnimalService animalService, IMapper mapper)
+    public AnimalController(
+        IAppLogger logger, 
+        IAnimalService animalService, 
+        IMapper mapper,
+        IRightVerifierService rightVerifier
+        )
     {
         this.logger = logger;
         this.animalService = animalService;
         this.mapper = mapper;
+        this.rightVerifier = rightVerifier;
     }
 
     [HttpGet("{id:Guid}")]
@@ -62,11 +70,20 @@ public class AnimalController : ControllerBase
 
     [HttpPost("")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Create(CreateAnimalModel request)
+    public async Task<IActionResult> Create(PresintationCreateAnimalModel request)
     {
+        string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+        Guid clientId = await rightVerifier.GetClientId(jwtToken);
+
+        if (request.OwnerId != clientId)
+        {
+            return BadRequest("Access denied.");
+        }
+
         try
         {
-            var result = await animalService.Create(request);
+            var result = await animalService.Create(mapper.Map<CreateAnimalModel>(request));
 
             return Ok(mapper.Map<PresintationAnimalModel>(result));
         }
@@ -78,11 +95,18 @@ public class AnimalController : ControllerBase
 
     [HttpPut("{id:Guid}")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, UpdateAnimalModel request)
+    public async Task<IActionResult> Update([FromRoute] Guid id, PresintationUpdateAnimalModel request)
     {
+        string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+        if (!(await rightVerifier.VerifiRightToAnAnimal(jwtToken, id)))
+        {
+            return BadRequest("Access denied.");
+        }
+
         try
         {
-            await animalService.Update(id, request);
+            await animalService.Update(id, mapper.Map<UpdateAnimalModel>(request));
 
             return Ok();
         }
@@ -96,6 +120,13 @@ public class AnimalController : ControllerBase
     [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
+        string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+        if (!(await rightVerifier.VerifiRightToAnAnimal(jwtToken, id)))
+        {
+            return BadRequest("Access denied.");
+        }
+
         try
         {
             await animalService.Delete(id);

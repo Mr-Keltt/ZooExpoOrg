@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ZooExpoOrg.Services.Animals.Achievements;
 
-namespace ZooExpoOrg.Api.Controllers.Animals.Achievement;
+namespace ZooExpoOrg.Api.Controllers.Achievements;
 
 public class PresintationAchievementModel
 {

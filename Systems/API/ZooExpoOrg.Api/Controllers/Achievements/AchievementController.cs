@@ -10,7 +10,7 @@ using ZooExpoOrg.Services.Animals.Animals;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Logger;
 
-namespace ZooExpoOrg.Api.Controllers.Animals.Achievement;
+namespace ZooExpoOrg.Api.Controllers.Achievements;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -23,8 +23,8 @@ public class AchievementController : Controller
     private readonly IMapper mapper;
 
     public AchievementController(
-        IAppLogger logger, 
-        IAchievementService achievementService, 
+        IAppLogger logger,
+        IAchievementService achievementService,
         IMapper mapper
         )
     {
