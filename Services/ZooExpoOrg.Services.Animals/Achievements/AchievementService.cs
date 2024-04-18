@@ -26,7 +26,7 @@ public class AchievementService : IAchievementService
 
     public async Task<IEnumerable<AchievementModel>> GetAllOwnedById(Guid OwnerId)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
         var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == OwnerId);
 
@@ -51,7 +51,7 @@ public class AchievementService : IAchievementService
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == model.AnimalId);
+        var animal = db.Animals.FirstOrDefault(x => x.Uid == model.AnimalId);
 
         if (animal == null)
         {
@@ -71,7 +71,7 @@ public class AchievementService : IAchievementService
 
     public async Task Delete(Guid id)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
         var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == id);
 

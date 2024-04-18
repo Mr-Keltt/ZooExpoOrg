@@ -1,5 +1,4 @@
 ﻿using ZooExpoOrg.Api.Settings;
-using ZooExpoOrg.Context.Seeder;
 using ZooExpoOrg.Services.Animals;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Photos;
@@ -10,6 +9,7 @@ using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Expositions;
 using ZooExpoOrg.Services.Comments;
 using ZooExpoOrg.Services.RightVerifier;
+using ZooExpoOrg.Context.Seeder;
 
 namespace ZooExpoOrg.Api;
 

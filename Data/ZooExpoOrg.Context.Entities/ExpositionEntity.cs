@@ -30,7 +30,7 @@ public class ExpositionEntity : BaseEntity
 
     public virtual ICollection<AnimalEntity> Participants { get; set; }
 
-    public virtual ICollection<ExpositionPhotoEntity> Photos { get; set; }
+    public virtual ICollection<PhotoEntity> Photos { get; set; }
 
     public virtual ICollection<CommentEntity> Comments { get; set; }
 

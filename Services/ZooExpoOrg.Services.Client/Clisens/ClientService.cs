@@ -50,13 +50,9 @@ public class ClientService : IClientService
     
     public async Task<ClientModel> Create(CreateClientModel model)
     {
-        
+        using var context = dbContextFactory.CreateDbContext();
 
-        using var context = await dbContextFactory.CreateDbContextAsync();
-
-        var adminUserName = dbSettings.Init.Administrator.UserName;
-
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+        var user = context.Users.FirstOrDefault(x => x.Id == model.UserId);
 
         if (user == null)
         {
@@ -75,11 +71,11 @@ public class ClientService : IClientService
 
         var client = mapper.Map<ClientEntity>(model);
 
-        await context.Clients.AddAsync(client);
+        context.Clients.Add(client);
 
         user.ClientId = client.Uid;
 
-        await context.SaveChangesAsync();
+        context.SaveChanges();
 
         return mapper.Map<ClientModel>(client);
     }

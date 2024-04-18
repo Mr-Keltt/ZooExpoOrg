@@ -43,9 +43,15 @@ public static class ClientsContextConfiguration
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity
-                .HasOne(e => e.Photo)
+                .HasMany(e => e.Photos)
+                .WithOne(e => e.Client)
+                .HasForeignKey(e => e.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity
+                .HasMany(e => e.OwnedPhotos)
                 .WithOne(e => e.Owner)
-                .HasPrincipalKey<ClientEntity>(e => e.Id)
+                .HasForeignKey(e => e.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

@@ -54,9 +54,9 @@ public class AnimalService : IAnimalService
 
     public async Task<AnimalModel> Create(CreateAnimalModel model)
     {
-        using var context = await dbContextFactory.CreateDbContextAsync();
+        using var context = dbContextFactory.CreateDbContext();
 
-        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
+        var client = context.Clients.FirstOrDefault(x => x.Uid == model.OwnerId);
 
         if (client == null)
         {
@@ -65,11 +65,11 @@ public class AnimalService : IAnimalService
 
         var animal = mapper.Map<AnimalEntity>(model);
 
-        await context.Animals.AddAsync(animal);
+        context.Animals.Add(animal);
 
         client.Animals.Add(animal);
 
-        await context.SaveChangesAsync();
+        context.SaveChanges();
 
         return mapper.Map<AnimalModel>(animal);
     }

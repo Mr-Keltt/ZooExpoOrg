@@ -29,7 +29,7 @@ public class PhotoController : ControllerBase
     [HttpGet("owned/{ownerId:Guid}")]
     public async Task<IActionResult> GetAllOwnedById([FromRoute] Guid ownerId)
     {
-        var result = await photoService.GetAllOwnedById(ownerId);
+        var result = await photoService.GetAllLocationById(ownerId);
 
         if (result == null)
             return NotFound();
