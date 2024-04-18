@@ -69,24 +69,6 @@ public class AchievementService : IAchievementService
         return mapper.Map<AchievementModel>(achievement);
     }
 
-    public async Task Update(Guid id, UpdateAchievementModel model)
-    {
-        using var db = dbContextFactory.CreateDbContext();
-
-        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == id);
-
-        if (achievement == null)
-        {
-            throw new ProcessException($"Achievement (ID={id}) not found.");
-        }
-
-        achievement = mapper.Map(model, achievement);
-
-        db.Achievements.Update(achievement);
-
-        await db.SaveChangesAsync();
-    }
-
     public async Task Delete(Guid id)
     {
         using var db = dbContextFactory.CreateDbContext();

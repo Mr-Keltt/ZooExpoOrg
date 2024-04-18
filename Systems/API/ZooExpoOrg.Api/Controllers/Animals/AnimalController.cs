@@ -72,17 +72,18 @@ public class AnimalController : ControllerBase
     [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(PresintationCreateAnimalModel request)
     {
-        string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-        Guid clientId = await rightVerifier.GetClientId(jwtToken);
-
-        if (request.OwnerId != clientId)
-        {
-            return BadRequest("Access denied.");
-        }
-
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            Guid jwtClientId = await rightVerifier.GetClientId(jwtToken);
+            Guid requestClientId = request.OwnerId;
+
+            if (requestClientId != jwtClientId)
+            {
+                return BadRequest("Access denied.");
+            }
+
             var result = await animalService.Create(mapper.Map<CreateAnimalModel>(request));
 
             return Ok(mapper.Map<PresintationAnimalModel>(result));
@@ -97,15 +98,15 @@ public class AnimalController : ControllerBase
     [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Update([FromRoute] Guid id, PresintationUpdateAnimalModel request)
     {
-        string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-        if (!(await rightVerifier.VerifiRightToAnAnimal(jwtToken, id)))
-        {
-            return BadRequest("Access denied.");
-        }
-
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagAnimal(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await animalService.Update(id, mapper.Map<UpdateAnimalModel>(request));
 
             return Ok();
@@ -120,15 +121,15 @@ public class AnimalController : ControllerBase
     [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-        if (!(await rightVerifier.VerifiRightToAnAnimal(jwtToken, id)))
-        {
-            return BadRequest("Access denied.");
-        }
-
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagAnimal(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await animalService.Delete(id);
             return Ok();
         }

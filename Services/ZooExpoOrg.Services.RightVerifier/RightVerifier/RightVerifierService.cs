@@ -39,13 +39,13 @@ public class RightVerifierService : IRightVerifierService
 
         if (client == null)
         {
-            throw new ProcessException($"Client (By jwt = {jwtToken} not found.");
+            throw new ProcessException($"Client (By jwt = {jwtToken}) not found.");
         }
 
         return client.Uid;
     }
 
-    public async Task<bool> VerifiRightToAnAnimal(string jwtToken, Guid animalId)
+    public async Task<Guid> GetClientIdByAnimalId(Guid animalId)
     {
         var db = await dbContextFactory.CreateDbContextAsync();
 
@@ -53,14 +53,17 @@ public class RightVerifierService : IRightVerifierService
 
         if (animal == null)
         {
-            throw new ProcessException($"Animal (By jwt = {jwtToken} not found.");
+            throw new ProcessException($"Animal (Id = {animalId}) not found.");
         }
-
-        Guid clientId = await GetClientId(jwtToken);
 
         var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == animal.OwnerId);
 
-        if (client.Uid == clientId) 
+        return client.Uid;
+    }
+
+    public async Task<bool> VerifRightsOfManagAnimal(string jwtToken, Guid animalId)
+    {
+        if ((await GetClientId(jwtToken)) == (await GetClientIdByAnimalId(animalId))) 
         {
             return true;
         }
@@ -68,5 +71,21 @@ public class RightVerifierService : IRightVerifierService
         {
             return false;
         }
+    }
+
+    public async Task<bool> VerifRightsOfManagAchievement(string jwtToken, Guid achievementId)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == achievementId);
+
+        if (achievement == null)
+        {
+            throw new ProcessException($"Achievement (By jwt = {achievementId}) not found.");
+        }
+
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Id == achievement.AnimalId);
+
+        return await VerifRightsOfManagAnimal(jwtToken, animal.Uid);
     }
 }
