@@ -26,6 +26,10 @@ public class ClientModel
 
     public Guid? PhotoId { get; set; }
 
+    public virtual ICollection<Guid> Photos { get; set; }
+
+    public virtual ICollection<Guid> OwnedPhotos { get; set; }
+
     public virtual ICollection<Guid> Subscriptions { get; set; }
 
     public virtual ICollection<Guid> OrganizedExpositions { get; set; }
@@ -40,32 +44,13 @@ public class ClientModelProfile : Profile
     public ClientModelProfile()
     {
         CreateMap<ClientEntity, ClientModel>()
-            .BeforeMap<ClientModelActions>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Subscriptions, opt => opt.MapFrom(src => src.Subscriptions.Select(e => e.Uid)))
             .ForMember(dest => dest.OrganizedExpositions, opt => opt.MapFrom(src => src.OrganizedExpositions.Select(e => e.Uid)))
             .ForMember(dest => dest.Animals, opt => opt.MapFrom(src => src.Animals.Select(e => e.Uid)))
             .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.Select(e => e.Uid)))
-            .ForMember(dest => dest.PhotoId, opt => opt.Ignore());
-    }
-
-    public class ClientModelActions : IMappingAction<ClientEntity, ClientModel>
-    {
-        private readonly IDbContextFactory<MainDbContext> contextFactory;
-
-        public ClientModelActions(IDbContextFactory<MainDbContext> contextFactory)
-        {
-            this.contextFactory = contextFactory;
-        }
-
-        public void Process(ClientEntity source, ClientModel destination, ResolutionContext context)
-        {
-            using var db = contextFactory.CreateDbContext();
-
-            var photo = db.ClientsPhotos.FirstOrDefault(x => x.Id == source.PhotoId);
-
-            destination.PhotoId = photo != null ? photo.Uid : null;
-        }
+            .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(e => e.Uid)))
+            .ForMember(dest => dest.OwnedPhotos, opt => opt.MapFrom(src => src.OwnedPhotos.Select(e => e.Uid)));
     }
 }

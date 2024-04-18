@@ -24,155 +24,124 @@ public class PhotoService : IPhotoService
         this.logger = logger;
     }
 
-    public async Task<IEnumerable<PhotoModel>> GetAllOwnedById(Guid OwnerId)
+    public async Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid OwnerId)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
         var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == OwnerId);
         var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == OwnerId);
         var client = await db.Clients.FirstOrDefaultAsync(x => x.Uid == OwnerId);
 
-        IEnumerable<PhotoModel> result = null;
+        ICollection<PhotoEntity> photos = null;
 
         if (animal != null)
         {
-            result = mapper.Map<IEnumerable<PhotoModel>>(animal.Photos);
+            photos = animal.Photos;
         }
         else if (exposition != null)
         {
-            result = mapper.Map<IEnumerable<PhotoModel>>(exposition.Photos);
+            photos = exposition.Photos;
         }
         else if (client != null)
         {
-            var photo = await db.ClientsPhotos.FirstOrDefaultAsync(x => x.Id == client.PhotoId);
-
-            var curList = new List<ClientPhotoEntity>();
-            curList.Add(photo);
-
-            result = mapper.Map<IEnumerable<PhotoModel>>(curList);
+            photos = client.Photos;
         }
         else
         {
             throw new ProcessException($"Photo not found.");
         }
 
-        return result;
+        return mapper.Map<IEnumerable<PhotoModel>>(photos);
     }
 
     public async Task<PhotoModel> GetById(Guid id)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var animalPhotos = await db.AnimalsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
-        var expositionPhotos = await db.ExpositionsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
-        var clientPhotos = await db.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
+        var photo = await context.Photos.FirstOrDefaultAsync(x => x.Uid == id);
 
-        if (animalPhotos != null)
-            return mapper.Map<PhotoModel>(animalPhotos);
-        else if (expositionPhotos != null)
-            return mapper.Map<PhotoModel>(expositionPhotos);
-        else if (clientPhotos != null)
-            return mapper.Map<PhotoModel>(clientPhotos);
-        else
-            throw new ProcessException($"Photo (ID = {id}) not found.");
+        return mapper.Map<PhotoModel>(photo);
     }
 
     public async Task<PhotoModel> Create(CreatePhotoModel model)
     {
-        using var context = await dbContextFactory.CreateDbContextAsync();
+        using var db = dbContextFactory.CreateDbContext();
 
-        var animal = await context.Animals
-            .FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
+        var owner = db.Clients.FirstOrDefault(x => x.Uid == model.OwnerId);
 
-        var exposition = await context.Expositions
-            .FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
-
-        var client = await context.Clients
-            .FirstOrDefaultAsync(x => x.Uid == model.OwnerId);
-
-        PhotoModel result = null;
-
-        if (animal != null)
+        if (owner == null) 
         {
-            var photo = mapper.Map<AnimalPhotoEntity>(model);
-            await context.AnimalsPhotos.AddAsync(photo);
+            throw new ProcessException($"User (ID = {model.OwnerId}) not found.");
+        }
 
-            animal.Photos.Add(photo);
+        var client = db.Clients.FirstOrDefault(x => x.Uid == model.LocationId);
+        var animal = db.Animals.FirstOrDefault(x => x.Uid == model.LocationId);
+        var exposition = db.Expositions.FirstOrDefault(x => x.Uid == model.LocationId);
 
-            result = mapper.Map<PhotoModel>(photo);
+        ICollection<PhotoEntity> location = null;
+
+        if (client != null)
+        {
+            location = client.Photos;
+        }
+        else if (animal != null)
+        {
+            location = animal.Photos;
         }
         else if (exposition != null)
         {
-            var photo = mapper.Map<ExpositionPhotoEntity>(model);
-            await context.ExpositionsPhotos.AddAsync(photo);
-
-            exposition.Photos.Add(photo);
-
-            result = mapper.Map<PhotoModel>(photo);
-        }
-        else if (client != null)
-        {
-            var photo = mapper.Map<ClientPhotoEntity>(model);
-            
-            var curPhoto = await context.ClientsPhotos.FirstOrDefaultAsync(x => x.Id == client.PhotoId);
-
-            if (curPhoto != null)
-            {
-                context.ClientsPhotos.Remove(curPhoto);
-            }
-
-            context.ClientsPhotos.Add(photo);
-
-            result = mapper.Map<PhotoModel>(photo);
-
-            await context.SaveChangesAsync();
-
-            var newPhoto = await context.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == result.Id);
-
-            client.PhotoId = newPhoto.Id;
+            location = exposition.Photos;
         }
         else
         {
-            throw new ProcessException($"Photo owner (ID = {model.OwnerId}) not found.");
+            throw new ProcessException($"Location (ID = {model.LocationId}) not found.");
         }
 
-        await context.SaveChangesAsync();
-        return result;
+        var photo = mapper.Map<PhotoEntity>(model);
+
+        db.Photos.Add(photo);
+
+        owner.Photos.Add(photo);
+
+        location.Add(photo);
+
+        db.SaveChanges();
+
+        return mapper.Map<PhotoModel>(photo);
     }
 
     public async Task Delete(Guid id)
     {
         using var context = await dbContextFactory.CreateDbContextAsync();
 
-        var animalPhoto = await context.AnimalsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
-        var expositionPhoto = await context.ExpositionsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
-        var clientPhoto = await context.ClientsPhotos.FirstOrDefaultAsync(x => x.Uid == id);
-
-        if (animalPhoto != null)
-        {
-            var owner = await context.Animals.FirstOrDefaultAsync(x => x.Id == animalPhoto.OwnerId);
-
-            owner.Photos.Remove(animalPhoto);
-            context.AnimalsPhotos.Remove(animalPhoto);
-        }
-        else if (expositionPhoto != null)
-        {
-            var owner = await context.Expositions.FirstOrDefaultAsync(x => x.Id == expositionPhoto.OwnerId);
-
-            owner.Photos.Remove(expositionPhoto);
-            context.ExpositionsPhotos.Remove(expositionPhoto);
-        }
-        else if (clientPhoto != null)
-        {
-            var owner = await context.Clients.FirstOrDefaultAsync(x => x.Id == clientPhoto.OwnerId);
-
-            owner.PhotoId = null;
-            context.ClientsPhotos.Remove(clientPhoto);
-        }
-        else
+        var photo = await context.Photos.FirstOrDefaultAsync(x => x.Uid == id);
+        
+        if (photo == null)
         {
             throw new ProcessException($"Photo (ID = {id}) not found.");
         }
+
+        var owner = await context.Clients.FirstOrDefaultAsync(x => x.Id == photo.OwnerId);
+        var client = await context.Clients.FirstOrDefaultAsync(x => x.Id == photo.ClientId);
+        var animal = await context.Animals.FirstOrDefaultAsync(x => x.Id == photo.AnimalId);
+        var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Id == photo.ExpositionId);
+
+        if (client != null)
+        {
+            client.Photos.Remove(photo);
+        }
+        else if (animal != null)
+        {
+            animal.Photos.Remove(photo);
+        }
+        else if (exposition != null)
+        {
+            exposition.Photos.Add(photo);
+        }
+
+        context.Photos.Remove(photo);
+
+        owner.Photos.Remove(photo);
 
         await context.SaveChangesAsync();
     }

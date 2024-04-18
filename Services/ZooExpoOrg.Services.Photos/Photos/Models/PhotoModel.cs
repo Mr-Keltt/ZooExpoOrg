@@ -8,8 +8,13 @@ namespace ZooExpoOrg.Services.Photos;
 public class PhotoModel
 {
     public Guid Id;
+
     public Guid OwnerId;
+
+    public Guid LocationId { get; set; }
+
     public byte[] ImageData { get; set; }
+
     public string ImageMimeType { get; set; }
 }
 
@@ -17,26 +22,14 @@ public class PhotoModelProfile : Profile
 {
     public PhotoModelProfile()
     {
-        CreateMap<AnimalPhotoEntity, PhotoModel>()
+        CreateMap<PhotoEntity, PhotoModel>()
             .BeforeMap<PhotoModelActions>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
-            .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
-
-        CreateMap<ExpositionPhotoEntity, PhotoModel>()
-            .BeforeMap<PhotoModelActions>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
-            .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
-
-        CreateMap<ClientPhotoEntity, PhotoModel>()
-            .BeforeMap<PhotoModelActions>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uid))
-            .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
+            .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
+            .ForMember(dest => dest.LocationId, opt => opt.Ignore());
     }
 
-    public class PhotoModelActions : 
-        IMappingAction<AnimalPhotoEntity, PhotoModel>,
-        IMappingAction<ExpositionPhotoEntity, PhotoModel>,
-        IMappingAction<ClientPhotoEntity, PhotoModel>
+    public class PhotoModelActions : IMappingAction<PhotoEntity, PhotoModel>
     {
         private readonly IDbContextFactory<MainDbContext> contextFactory;
 
@@ -45,37 +38,31 @@ public class PhotoModelProfile : Profile
             this.contextFactory = contextFactory;
         }
 
-        public void Process(AnimalPhotoEntity source, PhotoModel destination, ResolutionContext context)
+        public void Process(PhotoEntity source, PhotoModel destination, ResolutionContext context)
         {
             using var db = contextFactory.CreateDbContext();
 
-            var owner = db.Animals.FirstOrDefault(x => x.Id == source.OwnerId);
+            var client = db.Clients.FirstOrDefault(x => x.Id == source.ClientId);
+            var animal = db.Animals.FirstOrDefault(x => x.Id == source.AnimalId);
+            var exposition = db.Expositions.FirstOrDefault(x => x.Id == source.ExpositionId);
 
-            if (owner == null)
+
+            if (client != null)
+            {
+                destination.LocationId = client.Uid;
+            }
+            else if(animal != null)
+            {
+                destination.LocationId = animal.Uid;
+            }
+            else if (exposition != null)
+            {
+                destination.LocationId = exposition.Uid;
+            }
+            else
             {
                 throw new NullReferenceException();
             }
-
-            destination.OwnerId = owner.Uid;
-        }
-
-        public void Process(ExpositionPhotoEntity source, PhotoModel destination, ResolutionContext context)
-        {
-            using var db = contextFactory.CreateDbContext();
-
-            var owner = db.Expositions.FirstOrDefault(x => x.Id == source.OwnerId);
-
-            if (owner == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            destination.OwnerId = owner.Uid;
-        }
-
-        public void Process(ClientPhotoEntity source, PhotoModel destination, ResolutionContext context)
-        {
-            using var db = contextFactory.CreateDbContext();
 
             var owner = db.Clients.FirstOrDefault(x => x.Id == source.OwnerId);
 

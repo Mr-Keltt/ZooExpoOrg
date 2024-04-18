@@ -21,29 +21,8 @@ public class UpdateClientModelProfile : Profile
     public UpdateClientModelProfile()
     {
         CreateMap<UpdateClientModel, ClientEntity>()
-            .BeforeMap<UpdateClientModelActions>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
-            .ForMember(dest => dest.Patronymic, opt => opt.MapFrom(src => src.Patronymic))
-            .ForMember(dest => dest.PhotoId, opt => opt.Ignore());
-    }
-
-    public class UpdateClientModelActions : IMappingAction<UpdateClientModel, ClientEntity>
-    {
-        private readonly IDbContextFactory<MainDbContext> contextFactory;
-
-        public UpdateClientModelActions(IDbContextFactory<MainDbContext> contextFactory)
-        {
-            this.contextFactory = contextFactory;
-        }
-
-        public void Process(UpdateClientModel source, ClientEntity destination, ResolutionContext context)
-        {
-            using var db = contextFactory.CreateDbContext();
-
-            var photo = db.ClientsPhotos.FirstOrDefault(x => x.Uid == source.PhotoId);
-
-            destination.PhotoId = photo != null ? photo.Id : null;
-        }
+            .ForMember(dest => dest.Patronymic, opt => opt.MapFrom(src => src.Patronymic));
     }
 }

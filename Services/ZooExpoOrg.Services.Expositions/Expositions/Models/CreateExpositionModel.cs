@@ -73,7 +73,7 @@ public class CreateExpositionModelProfile : Profile
 
             destination.OrganizerId = organizer.Id;
             destination.Participants = new List<AnimalEntity>();
-            destination.Photos = new List<ExpositionPhotoEntity>();
+            destination.Photos = new List<PhotoEntity>();
             destination.Comments = new List<CommentEntity>();
             destination.Subscribers = new List<ClientEntity>();
         }
