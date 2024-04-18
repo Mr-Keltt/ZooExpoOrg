@@ -70,21 +70,18 @@ public class AnimalController : ControllerBase
 
     [HttpPost("")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Create(PresintationCreateAnimalModel request)
+    public async Task<IActionResult> Create(PresintationCreateAnimalModel model)
     {
         try
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            Guid jwtClientId = await rightVerifier.GetClientId(jwtToken);
-            Guid requestClientId = request.OwnerId;
-
-            if (requestClientId != jwtClientId)
+            if (!(await rightVerifier.VerifRightsOfCreateAnimal(jwtToken, model.OwnerId)))
             {
                 return BadRequest("Access denied.");
             }
 
-            var result = await animalService.Create(mapper.Map<CreateAnimalModel>(request));
+            var result = await animalService.Create(mapper.Map<CreateAnimalModel>(model));
 
             return Ok(mapper.Map<PresintationAnimalModel>(result));
         }
@@ -96,7 +93,7 @@ public class AnimalController : ControllerBase
 
     [HttpPut("{id:Guid}")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, PresintationUpdateAnimalModel request)
+    public async Task<IActionResult> Update([FromRoute] Guid id, PresintationUpdateAnimalModel model)
     {
         try
         {
@@ -107,7 +104,7 @@ public class AnimalController : ControllerBase
                 return BadRequest("Access denied.");
             }
 
-            await animalService.Update(id, mapper.Map<UpdateAnimalModel>(request));
+            await animalService.Update(id, mapper.Map<UpdateAnimalModel>(model));
 
             return Ok();
         }

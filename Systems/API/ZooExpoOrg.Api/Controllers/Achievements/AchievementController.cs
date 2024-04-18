@@ -78,10 +78,7 @@ public class AchievementController : Controller
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            Guid jwtClientId = await rightVerifier.GetClientId(jwtToken);
-            Guid requestClientId = await rightVerifier.GetClientIdByAnimalId(model.AnimalId);
-
-            if (requestClientId != jwtClientId)
+            if (!(await rightVerifier.VerifRightsOfCreateAchievement(jwtToken, model.AnimalId)))
             {
                 return BadRequest("Access denied.");
             }
