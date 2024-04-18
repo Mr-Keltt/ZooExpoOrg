@@ -85,7 +85,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     Patronymic = table.Column<string>(type: "text", nullable: true),
                     Gender = table.Column<string>(type: "text", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    PhotoId = table.Column<int>(type: "integer", nullable: true),
                     Uid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -192,8 +191,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Breed = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: true),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     Gender = table.Column<string>(type: "text", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Height = table.Column<int>(type: "integer", nullable: true),
@@ -212,28 +211,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "clients_photos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Uid = table.Column<Guid>(type: "uuid", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: false),
-                    ImageData = table.Column<byte[]>(type: "bytea", nullable: false),
-                    ImageMimeType = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_clients_photos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_clients_photos_clients_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "expositions",
                 columns: table => new
                 {
@@ -241,7 +218,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     OrganizerId = table.Column<int>(type: "integer", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false),
+                    ParticipantsType = table.Column<string>(type: "text", nullable: false),
                     Country = table.Column<string>(type: "text", nullable: false),
                     City = table.Column<string>(type: "text", nullable: false),
                     Street = table.Column<string>(type: "text", nullable: false),
@@ -268,7 +246,7 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: true),
                     DateAward = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AnimalId = table.Column<int>(type: "integer", nullable: false),
                     Uid = table.Column<Guid>(type: "uuid", nullable: false)
@@ -285,48 +263,27 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "animals_photos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Uid = table.Column<Guid>(type: "uuid", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: false),
-                    ImageData = table.Column<byte[]>(type: "bytea", nullable: false),
-                    ImageMimeType = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_animals_photos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_animals_photos_animals_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "animals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "comments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: false),
+                    ExpositionId = table.Column<int>(type: "integer", nullable: true),
+                    AnimalId = table.Column<int>(type: "integer", nullable: true),
+                    Text = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false),
                     DateWriting = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AnimalEntityId = table.Column<int>(type: "integer", nullable: true),
                     Uid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_comments_animals_AnimalEntityId",
-                        column: x => x.AnimalEntityId,
+                        name: "FK_comments_animals_AnimalId",
+                        column: x => x.AnimalId,
                         principalTable: "animals",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_comments_clients_AuthorId",
                         column: x => x.AuthorId,
@@ -334,8 +291,8 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_comments_expositions_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_comments_expositions_ExpositionId",
+                        column: x => x.ExpositionId,
                         principalTable: "expositions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -366,28 +323,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "expositions_photos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Uid = table.Column<Guid>(type: "uuid", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: false),
-                    ImageData = table.Column<byte[]>(type: "bytea", nullable: false),
-                    ImageMimeType = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_expositions_photos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_expositions_photos_expositions_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "expositions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "expositions_subscribers",
                 columns: table => new
                 {
@@ -406,6 +341,49 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     table.ForeignKey(
                         name: "FK_expositions_subscribers_expositions_SubscriptionsId",
                         column: x => x.SubscriptionsId,
+                        principalTable: "expositions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "photos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OwnerId = table.Column<int>(type: "integer", nullable: false),
+                    ClientId = table.Column<int>(type: "integer", nullable: true),
+                    AnimalId = table.Column<int>(type: "integer", nullable: true),
+                    ExpositionId = table.Column<int>(type: "integer", nullable: true),
+                    ImageData = table.Column<byte[]>(type: "bytea", nullable: false),
+                    ImageMimeType = table.Column<string>(type: "text", nullable: false),
+                    Uid = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_photos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_photos_animals_AnimalId",
+                        column: x => x.AnimalId,
+                        principalTable: "animals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_photos_clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_photos_clients_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_photos_expositions_ExpositionId",
+                        column: x => x.ExpositionId,
                         principalTable: "expositions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -434,17 +412,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_animals_photos_OwnerId",
-                table: "animals_photos",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_animals_photos_Uid",
-                table: "animals_photos",
-                column: "Uid",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_clients_Uid",
                 table: "clients",
                 column: "Uid",
@@ -457,21 +424,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_clients_photos_OwnerId",
-                table: "clients_photos",
-                column: "OwnerId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_clients_photos_Uid",
-                table: "clients_photos",
-                column: "Uid",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_comments_AnimalEntityId",
+                name: "IX_comments_AnimalId",
                 table: "comments",
-                column: "AnimalEntityId");
+                column: "AnimalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_comments_AuthorId",
@@ -479,9 +434,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_comments_LocationId",
+                name: "IX_comments_ExpositionId",
                 table: "comments",
-                column: "LocationId");
+                column: "ExpositionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_comments_Uid",
@@ -506,20 +461,35 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 column: "ParticipantsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_expositions_photos_OwnerId",
-                table: "expositions_photos",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_expositions_photos_Uid",
-                table: "expositions_photos",
-                column: "Uid",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_expositions_subscribers_SubscriptionsId",
                 table: "expositions_subscribers",
                 column: "SubscriptionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_photos_AnimalId",
+                table: "photos",
+                column: "AnimalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_photos_ClientId",
+                table: "photos",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_photos_ExpositionId",
+                table: "photos",
+                column: "ExpositionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_photos_OwnerId",
+                table: "photos",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_photos_Uid",
+                table: "photos",
+                column: "Uid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_user_claims_UserId",
@@ -566,22 +536,16 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 name: "achievements");
 
             migrationBuilder.DropTable(
-                name: "animals_photos");
-
-            migrationBuilder.DropTable(
-                name: "clients_photos");
-
-            migrationBuilder.DropTable(
                 name: "comments");
 
             migrationBuilder.DropTable(
                 name: "expositions_participants");
 
             migrationBuilder.DropTable(
-                name: "expositions_photos");
+                name: "expositions_subscribers");
 
             migrationBuilder.DropTable(
-                name: "expositions_subscribers");
+                name: "photos");
 
             migrationBuilder.DropTable(
                 name: "user_claims");

@@ -44,9 +44,9 @@ public class ExpositionService : IExpositionService
 
     public async Task<ExpositionModel> Create(CreateExpositionModel model)
     {
-        using var context = await dbContextFactory.CreateDbContextAsync();
+        using var context = dbContextFactory.CreateDbContext();
 
-        var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == model.OrganizerId);
+        var client = context.Clients.FirstOrDefault(x => x.Uid == model.OrganizerId);
 
         if (client == null)
         {
@@ -55,11 +55,11 @@ public class ExpositionService : IExpositionService
 
         var exposition = mapper.Map<ExpositionEntity>(model);
 
-        await context.Expositions.AddAsync(exposition);
+        context.Expositions.Add(exposition);
 
-        client.OrganizedExpositions.Append(exposition);
+        client.OrganizedExpositions.Add(exposition);
 
-        await context.SaveChangesAsync();
+        context.SaveChanges();
 
         return mapper.Map<ExpositionModel>(exposition);
     }
@@ -108,7 +108,7 @@ public class ExpositionService : IExpositionService
         exposition.Subscribers.Add(client);
         client.Subscriptions.Add(exposition);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     public async Task Unsubscribe(Guid id, Guid clientId)
@@ -129,7 +129,7 @@ public class ExpositionService : IExpositionService
         exposition.Subscribers.Remove(client);
         client.Subscriptions.Remove(exposition);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     public async Task AddParticipant(Guid id, Guid animalId)
@@ -158,7 +158,7 @@ public class ExpositionService : IExpositionService
         exposition.Participants.Add(animal);
         animal.Expositions.Add(exposition);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     public async Task DeleteParticipant(Guid id, Guid animalId)
@@ -178,7 +178,7 @@ public class ExpositionService : IExpositionService
         exposition.Participants.Remove(animal);
         animal.Expositions.Remove(exposition);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     public async Task Delete(Guid id)

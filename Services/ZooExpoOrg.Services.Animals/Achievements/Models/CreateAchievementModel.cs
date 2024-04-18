@@ -38,7 +38,7 @@ public class CreateAchievementModelProfile : Profile
         {
             using var db = contextFactory.CreateDbContext();
 
-            var animal = db.Animals.FirstOrDefaultAsync(x => x.Uid == source.AnimalId);
+            var animal = db.Animals.FirstOrDefault(x => x.Uid == source.AnimalId);
 
             if (animal == null)
             {

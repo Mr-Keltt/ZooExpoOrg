@@ -26,7 +26,7 @@ public class CommentService : ICommentService
 
     public async Task<IEnumerable<CommentModel>> GetLocatedIn(Guid locationId)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
         var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == locationId);
         var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == locationId);
@@ -47,7 +47,7 @@ public class CommentService : ICommentService
 
     public async Task<CommentModel> GetById(Guid id)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
         var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
 
@@ -58,42 +58,47 @@ public class CommentService : ICommentService
     {
         using var db = dbContextFactory.CreateDbContext();
 
+        var author = db.Clients.FirstOrDefault(x => x.Uid == model.AuthorId);
+
+        if (author == null)
+        {
+            throw new ProcessException($"Client (ID = {model.AuthorId}) not found.");
+        }
+
         var animal = db.Animals.FirstOrDefault(x => x.Uid == model.LocationId);
         var exposition = db.Expositions.FirstOrDefault(x => x.Uid == model.LocationId);
 
+        ICollection<CommentEntity> location = null; 
+
         if (animal != null)
         {
-            var comment = mapper.Map<CommentEntity>(model);
-
-            db.Comments.Add(comment);
-
-            animal.Comments.Add(comment);
-
-            db.SaveChanges();
-
-            return mapper.Map<CommentModel>(comment);
+            location = animal.Comments;
         }
         else if (exposition != null)
         {
-            var comment = mapper.Map<CommentEntity>(model);
-
-            db.Comments.Add(comment);
-
-            exposition.Comments.Add(comment);
-
-            db.SaveChanges();
-
-            return mapper.Map<CommentModel>(comment);
+            location = exposition.Comments;
         }
         else
         {
             throw new ProcessException($"Location (ID = {model.LocationId}) not found.");
         }
+
+        var comment = mapper.Map<CommentEntity>(model);
+
+        db.Comments.Add(comment);
+
+        location.Add(comment);
+
+        author.Comments.Add(comment);
+
+        db.SaveChanges();
+
+        return mapper.Map<CommentModel>(comment);
     }
 
     public async Task Update(Guid id, UpdateCommentModel model)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
         var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
 
@@ -111,16 +116,31 @@ public class CommentService : ICommentService
 
     public async Task Delete(Guid id)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        using var db = await dbContextFactory.CreateDbContextAsync();
 
-        var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
+        var comment = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);
 
-        if (comments == null)
+        if (comment == null)
         {
             throw new ProcessException($"Comment (ID = {id}) not found.");
         }
 
-        db.Comments.Remove(comments);
+        var author = await db.Clients.FirstOrDefaultAsync(x => x.Id == comment.AuthorId);
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Id == comment.AnimalId);
+        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Id == comment.ExpositionId);
+
+        if (animal != null)
+        {
+            animal.Comments.Remove(comment);
+        }
+        else
+        {
+            exposition.Comments.Remove(comment);
+        }
+
+        db.Comments.Remove(comment);
+
+        author.Comments.Remove(comment);
 
         await db.SaveChangesAsync();
     }

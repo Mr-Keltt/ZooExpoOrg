@@ -38,8 +38,8 @@ public static class AnimalsContextConfiguration
 
             entity
                 .HasMany(a => a.Photos)
-                .WithOne(p => p.Owner)
-                .HasForeignKey(p => p.OwnerId)
+                .WithOne(p => p.Animal)
+                .HasForeignKey(p => p.AnimalId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity

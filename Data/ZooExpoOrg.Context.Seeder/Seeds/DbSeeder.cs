@@ -99,6 +99,7 @@ public static class DbSeeder
         await photoService.Create(new CreatePhotoModel()
         {
             OwnerId = aliseClient.Id,
+            LocationId = aliseClient.Id,
             ImageData = new byte[1],
             ImageMimeType = "img"
         });
@@ -124,6 +125,7 @@ public static class DbSeeder
         await photoService.Create(new CreatePhotoModel()
         {
             OwnerId = calClient.Id,
+            LocationId = calClient.Id,
             ImageData = new byte[1],
             ImageMimeType = "img"
         });
@@ -148,7 +150,8 @@ public static class DbSeeder
         {
             await photoService.Create(new CreatePhotoModel()
             {
-                OwnerId = bobAnimals[0].Id,
+                OwnerId = bobClient.Id,
+                LocationId = bobAnimals[0].Id,
                 ImageData = new byte[1],
                 ImageMimeType = "img"
             });
@@ -178,7 +181,8 @@ public static class DbSeeder
         {
             await photoService.Create(new CreatePhotoModel()
             {
-                OwnerId = bobAnimals[1].Id,
+                OwnerId = bobClient.Id,
+                LocationId = bobAnimals[1].Id,
                 ImageData = new byte[1],
                 ImageMimeType = "img"
             });
@@ -200,7 +204,8 @@ public static class DbSeeder
         {
             await photoService.Create(new CreatePhotoModel()
             {
-                OwnerId = bobAnimals[2].Id,
+                OwnerId = bobClient.Id,
+                LocationId = bobAnimals[2].Id,
                 ImageData = new byte[1],
                 ImageMimeType = "img"
             });
@@ -224,7 +229,8 @@ public static class DbSeeder
         {
             await photoService.Create(new CreatePhotoModel()
             {
-                OwnerId = calAnimals[0].Id,
+                OwnerId = calClient.Id,
+                LocationId = calAnimals[0].Id,
                 ImageData = new byte[1],
                 ImageMimeType = "img"
             });
@@ -246,7 +252,8 @@ public static class DbSeeder
         {
             await photoService.Create(new CreatePhotoModel()
             {
-                OwnerId = calAnimals[1].Id,
+                OwnerId = calClient.Id,
+                LocationId = calAnimals[1].Id,
                 ImageData = new byte[1],
                 ImageMimeType = "img"
             });
@@ -272,7 +279,8 @@ public static class DbSeeder
         {
             await photoService.Create(new CreatePhotoModel()
             {
-                OwnerId = aliseExposition.Id,
+                OwnerId = aliseClient.Id,
+                LocationId = aliseExposition.Id,
                 ImageData = new byte[1],
                 ImageMimeType = "img"
             });
@@ -299,7 +307,6 @@ public static class DbSeeder
             );
 
         // Create commets
-
         await commentService.Create(new CreateCommentModel()
         {
             AuthorId = aliseClient.Id,

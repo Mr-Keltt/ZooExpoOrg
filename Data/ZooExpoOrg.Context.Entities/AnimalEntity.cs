@@ -24,7 +24,7 @@ public class AnimalEntity : BaseEntity
 
     public virtual ICollection<CommentEntity> Comments { get; set; }
 
-    public virtual ICollection<AnimalPhotoEntity> Photos { get; set; }
+    public virtual ICollection<PhotoEntity> Photos { get; set; }
 
     public virtual ICollection<AchievementEntity> Achievements { get; set; }
 

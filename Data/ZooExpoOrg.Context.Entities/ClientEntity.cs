@@ -18,9 +18,6 @@ public class ClientEntity : BaseEntity
 
     public DateTime BirthDate { get; set; }
 
-    public int? PhotoId { get; set; }
-    public virtual ClientPhotoEntity Photo { get; set; }
-
     public virtual ICollection<ExpositionEntity> Subscriptions { get; set; }
 
     public virtual ICollection<ExpositionEntity> OrganizedExpositions { get; set; }
@@ -28,4 +25,8 @@ public class ClientEntity : BaseEntity
     public virtual ICollection<AnimalEntity> Animals { get; set; }
 
     public virtual ICollection<CommentEntity> Comments { get; set; }
+
+    public virtual ICollection<PhotoEntity> Photos { get; set; }
+
+    public virtual ICollection<PhotoEntity> OwnedPhotos { get; set; }
 }
