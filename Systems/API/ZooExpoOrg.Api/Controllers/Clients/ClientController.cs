@@ -52,11 +52,11 @@ public class ClientController : Controller
 
     [HttpPost("")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Create(CreateClientModel request)
+    public async Task<IActionResult> Create(PresintationCreateClientModel model)
     {
         try
         {
-            var result = await clientService.Create(request);
+            var result = await clientService.Create(mapper.Map<CreateClientModel>(model));
 
             return Ok(mapper.Map<PresintationClientModel>(result));
         }
@@ -68,11 +68,11 @@ public class ClientController : Controller
 
     [HttpPut("{id:Guid}")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, UpdateClientModel model)
+    public async Task<IActionResult> Update([FromRoute] Guid id, PresintationUpdateClientModel model)
     {
         try
         {
-            await clientService.Update(id, model);
+            await clientService.Update(id, mapper.Map<UpdateClientModel>(model));
 
             return Ok();
         }

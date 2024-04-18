@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Exposit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Comments", "Services\ZooExpoOrg.Services.Comments\ZooExpoOrg.Services.Comments.csproj", "{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Services.RightVerifier", "Services\ZooExpoOrg.Services.RightVerifier\ZooExpoOrg.Services.RightVerifier.csproj", "{BC01C407-4724-4C80-883B-7FA02F2C24B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.RightVerifier", "Services\ZooExpoOrg.Services.RightVerifier\ZooExpoOrg.Services.RightVerifier.csproj", "{BC01C407-4724-4C80-883B-7FA02F2C24B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

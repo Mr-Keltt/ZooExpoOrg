@@ -14,7 +14,7 @@ public class RightVerifierService : IRightVerifierService
         this.dbContextFactory = dbContextFactory;
     }
 
-    private Guid GetUserId(string jwtToken)
+    public async Task<Guid> GetUserId(string jwtToken)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtSecurityToken = tokenHandler.ReadToken(jwtToken) as JwtSecurityToken;
@@ -35,7 +35,9 @@ public class RightVerifierService : IRightVerifierService
     {
         var db = await dbContextFactory.CreateDbContextAsync();
 
-        var client = await db.Clients.FirstOrDefaultAsync(x => x.UserId == GetUserId(jwtToken));
+        var clienId = await GetUserId(jwtToken);
+
+        var client = await db.Clients.FirstOrDefaultAsync(x =>  x.UserId == clienId);
 
         if (client == null)
         {
