@@ -76,6 +76,7 @@ public class AnimalController : ControllerBase
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
+
             if (!(await rightVerifier.VerifRightsOfCreateAnimal(jwtToken, model.OwnerId)))
             {
                 return BadRequest("Access denied.");

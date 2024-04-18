@@ -10,9 +10,9 @@ public class RightVerifierService : IRightVerifierService
 {
     private readonly RightVerifierHelper helper;
 
-    public RightVerifierService(RightVerifierHelper helper)
+    public RightVerifierService(IDbContextFactory<MainDbContext> dbContextFactory)
     {
-        this.helper = helper;
+        this.helper = new RightVerifierHelper(dbContextFactory);
     }
 
     public async Task<bool> VerifRightsOfCreateAchievement(string jwtToken, Guid animalId)
@@ -41,5 +41,19 @@ public class RightVerifierService : IRightVerifierService
         Guid requestClientId = await helper.GetClientIdByAnimalId(animalId);
 
         return helper.EqualsClientId(jwtClientId, requestClientId);
+    }
+
+    public async Task<bool> VerifRightsOfCreateClient(string jwtToken, Guid userId)
+    {
+        Guid jwtUserId = await helper.GetUserId(jwtToken);
+
+        return helper.EqualsClientId(jwtUserId, userId);
+    }
+
+    public async Task<bool> VerifRightsOfManagClient(string jwtToken, Guid clientId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+
+        return helper.EqualsClientId(jwtClientId, clientId);
     }
 }
