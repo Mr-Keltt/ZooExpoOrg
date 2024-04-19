@@ -1,11 +1,13 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using ZooExpoOrg.Api.Controllers.Animals.Animals;
 using ZooExpoOrg.Api.Controllers.Clients;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Animals.Achievements;
 using ZooExpoOrg.Services.Animals.Animals;
 using ZooExpoOrg.Services.Clients;
@@ -72,6 +74,7 @@ public class AchievementController : Controller
     }
 
     [HttpPost("")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreateAchievementModel model)
     {
         try
@@ -94,6 +97,7 @@ public class AchievementController : Controller
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

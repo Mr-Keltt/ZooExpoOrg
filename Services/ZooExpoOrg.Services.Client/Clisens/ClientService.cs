@@ -59,7 +59,7 @@ public class ClientService : IClientService
             throw new ProcessException($"Accounts (ID = {model.UserId}) not found.");
         }
 
-        if (user.UserName == adminUserName)
+        if (user.UserName == dbSettings.Init.Administrator.UserName)
         {
             throw new ProcessException($"Accounts (ID = {model.UserId}) is an adminstrator.");
         }

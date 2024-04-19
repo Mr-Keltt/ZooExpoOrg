@@ -56,4 +56,6 @@ public class RightVerifierService : IRightVerifierService
 
         return helper.EqualsClientId(jwtClientId, clientId);
     }
+
+
 }
