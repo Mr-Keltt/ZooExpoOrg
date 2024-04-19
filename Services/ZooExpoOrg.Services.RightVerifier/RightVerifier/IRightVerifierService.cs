@@ -10,6 +10,8 @@ public interface IRightVerifierService
     Task<bool> VerifRightsOfManagClient(string jwtToken, Guid clientId);
     Task<bool> VerifRightsOfCreateComment(string jwtToken, Guid userId);
     Task<bool> VerifRightsOfManagComment(string jwtToken, Guid clientId);
-    Task<bool> VerifRightsOfCreateExpositions(string jwtToken, Guid userId);
-    Task<bool> VerifRightsOfManagExpositions(string jwtToken, Guid clientId);
+    Task<bool> VerifRightsOfCreateExposition(string jwtToken, Guid clientId);
+    Task<bool> VerifRightsOfManagExposition(string jwtToken, Guid expositionId);
+    Task<bool> VerifRightsOfCreatePhoto(string jwtToken, Guid clientId, Guid LocationId);
+    Task<bool> VerifRightsOfManagPhoto(string jwtToken, Guid clientId);
 }

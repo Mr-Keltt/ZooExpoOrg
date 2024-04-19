@@ -110,7 +110,7 @@ public class RightVerifierHelper
         return client.Uid;
     }
 
-    public async Task<Guid> GetClientIdByExpositionsId(Guid expositionId)
+    public async Task<Guid> GetClientIdByExpositionId(Guid expositionId)
     {
         var db = await dbContextFactory.CreateDbContextAsync();
 
@@ -124,5 +124,47 @@ public class RightVerifierHelper
         var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == exposition.OrganizerId);
 
         return client.Uid;
+    }
+
+    public async Task<Guid> GetClientIdByPhotoId(Guid photoId)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var photo = await db.Photos.FirstOrDefaultAsync(x => x.Uid == photoId);
+
+        if (photo == null)
+        {
+            throw new ProcessException($"Photo (Id = {photoId}) not found.");
+        }
+
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == photo.OwnerId);
+
+        return client.Uid;
+    }
+
+    public async Task<Guid> GetOwnerByLocationId(Guid LocationId)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var client = db.Clients.FirstOrDefault(x => x.Uid == LocationId);
+        var animal = db.Animals.FirstOrDefault(x => x.Uid == LocationId);
+        var exposition = db.Expositions.FirstOrDefault(x => x.Uid == LocationId);
+
+        if (client != null)
+        {
+            return client.Uid;
+        }
+        else if (animal != null)
+        {
+            return await GetClientIdByAnimalId(animal.Uid);
+        }
+        else if (exposition != null)
+        {
+            return await GetClientIdByExpositionId(exposition.Uid);
+        }
+        else
+        {
+            throw new ProcessException($"Location (Id = {LocationId}) not found.");
+        }
     }
 }

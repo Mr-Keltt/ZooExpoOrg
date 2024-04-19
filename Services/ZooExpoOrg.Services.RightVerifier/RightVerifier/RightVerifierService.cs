@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
 using System.IdentityModel.Tokens.Jwt;
 using ZooExpoOrg.Common.Exceptions;
@@ -73,17 +74,35 @@ public class RightVerifierService : IRightVerifierService
         return helper.EqualsClientId(jwtClientId, requestClientId);
     }
 
-    public async Task<bool> VerifRightsOfCreateExpositions(string jwtToken, Guid clientId)
+    public async Task<bool> VerifRightsOfCreateExposition(string jwtToken, Guid clientId)
     {
         Guid jwtClientId = await helper.GetClientId(jwtToken);
 
         return helper.EqualsClientId(jwtClientId, clientId);
     }
 
-    public async Task<bool> VerifRightsOfManagExpositions(string jwtToken, Guid expositionId)
+    public async Task<bool> VerifRightsOfManagExposition(string jwtToken, Guid expositionId)
     {
         Guid jwtClientId = await helper.GetClientId(jwtToken);
-        Guid requestClientId = await helper.GetClientIdByExpositionsId(expositionId);
+        Guid requestClientId = await helper.GetClientIdByExpositionId(expositionId);
+
+        return helper.EqualsClientId(jwtClientId, requestClientId);
+    }
+
+    public async Task<bool> VerifRightsOfCreatePhoto(string jwtToken, Guid clientId, Guid LocationId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+        Guid requestOwnerId = await helper.GetOwnerByLocationId(LocationId);
+
+        return 
+            helper.EqualsClientId(jwtClientId, clientId) &&
+            helper.EqualsClientId(jwtClientId, requestOwnerId);
+    }
+
+    public async Task<bool> VerifRightsOfManagPhoto(string jwtToken, Guid photoId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+        Guid requestClientId = await helper.GetClientIdByPhotoId(photoId);
 
         return helper.EqualsClientId(jwtClientId, requestClientId);
     }

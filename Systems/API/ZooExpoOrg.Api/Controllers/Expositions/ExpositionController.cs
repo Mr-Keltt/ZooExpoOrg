@@ -70,7 +70,7 @@ public class ExpositionController : Controller
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            if (!(await rightVerifier.VerifRightsOfCreateExpositions(jwtToken, model.OrganizerId)))
+            if (!(await rightVerifier.VerifRightsOfCreateExposition(jwtToken, model.OrganizerId)))
             {
                 return BadRequest("Access denied.");
             }
@@ -93,7 +93,7 @@ public class ExpositionController : Controller
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+            if (!(await rightVerifier.VerifRightsOfManagExposition(jwtToken, id)))
             {
                 return BadRequest("Access denied.");
             }
@@ -146,7 +146,7 @@ public class ExpositionController : Controller
 
             if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, clientId)))
             {
-                if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+                if (!(await rightVerifier.VerifRightsOfManagExposition(jwtToken, id)))
                 {
                     return BadRequest("Access denied.");
                 }
@@ -200,7 +200,7 @@ public class ExpositionController : Controller
 
             if (!(await rightVerifier.VerifRightsOfManagAnimal(jwtToken, animalId)))
             {
-                if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+                if (!(await rightVerifier.VerifRightsOfManagExposition(jwtToken, id)))
                 {
                     return BadRequest("Access denied.");
                 }
@@ -224,7 +224,7 @@ public class ExpositionController : Controller
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+            if (!(await rightVerifier.VerifRightsOfManagExposition(jwtToken, id)))
             {
                 return BadRequest("Access denied.");
             }
