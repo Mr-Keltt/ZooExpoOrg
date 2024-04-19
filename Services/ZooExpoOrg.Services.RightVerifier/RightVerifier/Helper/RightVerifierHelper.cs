@@ -11,15 +11,19 @@ namespace ZooExpoOrg.Services.RightVerifier.Helper;
 public class RightVerifierHelper
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
+    private readonly DbSettings dbSettings;
 
-    public RightVerifierHelper(IDbContextFactory<MainDbContext> dbContextFactory)
+    public RightVerifierHelper(
+        IDbContextFactory<MainDbContext> dbContextFactory,
+        DbSettings dbSettings)
     {
         this.dbContextFactory = dbContextFactory;
+        this.dbSettings = dbSettings;
     }
 
-    public bool EqualsClientId(Guid jwtClientId, Guid requestClientId)
+    public bool EqualsId(Guid id1, Guid id2)
     {
-        if (jwtClientId == requestClientId)
+        if (id1 == id2)
         {
             return true;
         }
@@ -27,6 +31,27 @@ public class RightVerifierHelper
         {
             return false;
         }
+    }
+
+    public async Task<Guid> GetAdminId()
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var admin = await db.Users.FirstOrDefaultAsync(x => x.UserName == dbSettings.Init.Administrator.UserName);
+
+        if (admin == null)
+        {
+            if (dbSettings.Init.AddAdministrator)
+            {
+                throw new ProcessException("Administrator not found.");
+            }
+            else
+            {
+                return Guid.NewGuid();
+            }
+        }
+
+        return admin.Id;
     }
 
     public async Task<Guid> GetUserId(string jwtToken)
@@ -50,9 +75,9 @@ public class RightVerifierHelper
     {
         var db = await dbContextFactory.CreateDbContextAsync();
 
-        var clienId = await GetUserId(jwtToken);
+        var userId = await GetUserId(jwtToken);
 
-        var client = await db.Clients.FirstOrDefaultAsync(x => x.UserId == clienId);
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.UserId == userId);
 
         if (client == null)
         {
