@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.IdentityModel.Tokens.Jwt;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
@@ -68,6 +69,21 @@ public class RightVerifierService : IRightVerifierService
     {
         Guid jwtClientId = await helper.GetClientId(jwtToken);
         Guid requestClientId = await helper.GetClientIdByCommentId(commentId);
+
+        return helper.EqualsClientId(jwtClientId, requestClientId);
+    }
+
+    public async Task<bool> VerifRightsOfCreateExpositions(string jwtToken, Guid clientId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+
+        return helper.EqualsClientId(jwtClientId, clientId);
+    }
+
+    public async Task<bool> VerifRightsOfManagExpositions(string jwtToken, Guid expositionId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+        Guid requestClientId = await helper.GetClientIdByExpositionsId(expositionId);
 
         return helper.EqualsClientId(jwtClientId, requestClientId);
     }

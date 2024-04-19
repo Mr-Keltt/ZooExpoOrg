@@ -109,4 +109,20 @@ public class RightVerifierHelper
 
         return client.Uid;
     }
+
+    public async Task<Guid> GetClientIdByExpositionsId(Guid expositionId)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == expositionId);
+
+        if (exposition == null)
+        {
+            throw new ProcessException($"Exposition (Id = {expositionId}) not found.");
+        }
+
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == exposition.OrganizerId);
+
+        return client.Uid;
+    }
 }

@@ -5,12 +5,14 @@ using Azure.Core.GeoJson;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using ZooExpoOrg.Api.Controllers.Clients;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Expositions;
 using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.RightVerifier;
 
 namespace ZooExpoOrg.Api.Controllers.Expositions;
 
@@ -23,16 +25,19 @@ public class ExpositionController : Controller
     private readonly IAppLogger logger;
     private readonly IExpositionService expositionService;
     private readonly IMapper mapper;
+    private readonly IRightVerifierService rightVerifier;
 
     public ExpositionController(
         IAppLogger logger,
         IExpositionService expositionService, 
-        IMapper mapper
+        IMapper mapper,
+        IRightVerifierService rightVerifier
         )
     {
         this.logger = logger;
         this.expositionService = expositionService;
         this.mapper = mapper;
+        this.rightVerifier = rightVerifier;
     }
 
     [HttpGet("")]
@@ -63,6 +68,13 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreateExpositions(jwtToken, model.OrganizerId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             var exposition = await expositionService.Create(model);
 
             return Ok(mapper.Map<PresintationExpositionModel>(exposition));
@@ -79,6 +91,13 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionService.Update(id, model);
 
             return Ok();
@@ -95,6 +114,13 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, clientId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionService.Subscribe(id, clientId);
 
             return Ok();
@@ -116,6 +142,16 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, clientId)))
+            {
+                if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+                {
+                    return BadRequest("Access denied.");
+                }
+            }
+
             await expositionService.Unsubscribe(id, clientId);
 
             return Ok();
@@ -132,6 +168,13 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagAnimal(jwtToken, animalId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionService.AddParticipant(id, animalId);
 
             return Ok();
@@ -153,6 +196,16 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagAnimal(jwtToken, animalId)))
+            {
+                if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+                {
+                    return BadRequest("Access denied.");
+                }
+            }
+
             await expositionService.DeleteParticipant(id, animalId);
 
             return Ok();
@@ -169,6 +222,13 @@ public class ExpositionController : Controller
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagExpositions(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionService.Delete(id);
 
             return Ok();
