@@ -57,5 +57,18 @@ public class RightVerifierService : IRightVerifierService
         return helper.EqualsClientId(jwtClientId, clientId);
     }
 
+    public async Task<bool> VerifRightsOfCreateComment(string jwtToken, Guid clientId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
 
+        return helper.EqualsClientId(jwtClientId, clientId);
+    }
+
+    public async Task<bool> VerifRightsOfManagComment(string jwtToken, Guid commentId)
+    {
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+        Guid requestClientId = await helper.GetClientIdByCommentId(commentId);
+
+        return helper.EqualsClientId(jwtClientId, requestClientId);
+    }
 }

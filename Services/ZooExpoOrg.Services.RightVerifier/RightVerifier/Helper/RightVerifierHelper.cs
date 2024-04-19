@@ -62,6 +62,22 @@ public class RightVerifierHelper
         return client.Uid;
     }
 
+    public async Task<Guid> GetClientIdByAchievementId(Guid achievementId)
+    {
+        var db = await dbContextFactory.CreateDbContextAsync();
+
+        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == achievementId);
+
+        if (achievement == null)
+        {
+            throw new ProcessException($"Achievement (Id = {achievementId}) not found.");
+        }
+
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Id == achievement.AnimalId);
+
+        return await GetClientIdByAnimalId(animal.Uid);
+    }
+
     public async Task<Guid> GetClientIdByAnimalId(Guid animalId)
     {
         var db = await dbContextFactory.CreateDbContextAsync();
@@ -78,19 +94,19 @@ public class RightVerifierHelper
         return client.Uid;
     }
 
-    public async Task<Guid> GetClientIdByAchievementId(Guid achievementId)
+    public async Task<Guid> GetClientIdByCommentId(Guid commentId)
     {
         var db = await dbContextFactory.CreateDbContextAsync();
 
-        var achievement = await db.Achievements.FirstOrDefaultAsync(x => x.Uid == achievementId);
+        var comment = await db.Comments.FirstOrDefaultAsync(x => x.Uid == commentId);
 
-        if (achievement == null)
+        if (comment == null)
         {
-            throw new ProcessException($"Achievement (By jwt = {achievementId}) not found.");
+            throw new ProcessException($"Comment (Id = {commentId}) not found.");
         }
 
-        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Id == achievement.AnimalId);
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == comment.AuthorId);
 
-        return await GetClientIdByAnimalId(animal.Uid);
+        return client.Uid;
     }
 }
