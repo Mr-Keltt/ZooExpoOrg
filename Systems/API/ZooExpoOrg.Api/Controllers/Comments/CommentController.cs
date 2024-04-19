@@ -1,9 +1,12 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Comments;
 using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.RightVerifier;
 
 namespace ZooExpoOrg.Api.Controllers.Comments;
 
@@ -16,16 +19,19 @@ public class CommentController : Controller
     private readonly IAppLogger logger;
     private readonly ICommentService commentService;
     private readonly IMapper mapper;
+    private readonly IRightVerifierService rightVerifier;
 
     public CommentController(
         IAppLogger logger, 
         ICommentService commentService, 
-        IMapper mapper
+        IMapper mapper,
+        IRightVerifierService rightVerifier
         )
     {
         this.logger = logger;
         this.commentService = commentService;
         this.mapper = mapper;
+        this.rightVerifier = rightVerifier;
     }
 
     [HttpGet("location/{locationId:Guid}")]
@@ -63,11 +69,19 @@ public class CommentController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateCommentModel model)
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> Create(PresintationCreateCommentModel model)
     {
         try
         {
-            var result = await commentService.Create(model);
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreateComment(jwtToken, model.AuthorId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            var result = await commentService.Create(mapper.Map<CreateCommentModel>(model));
 
             return Ok(mapper.Map<PresintationCommentModel>(result));
         }
@@ -78,11 +92,19 @@ public class CommentController : Controller
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task<IActionResult> Update(Guid id, UpdateCommentModel model)
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> Update(Guid id, PresintationUpdateCommentModel model)
     {
         try
         {
-            await commentService.Update(id, model);
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagComment(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            await commentService.Update(id, mapper.Map<UpdateCommentModel>(model));
 
             return Ok();
         }
@@ -93,10 +115,18 @@ public class CommentController : Controller
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagComment(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await commentService.Delete(id);
 
             return Ok();

@@ -5,7 +5,9 @@ using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Clients;
 using Microsoft.IdentityModel.Tokens;
 using ZooExpoOrg.Common.Exceptions;
-using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
+using ZooExpoOrg.Common.Security;
+using ZooExpoOrg.Services.RightVerifier;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -18,12 +20,19 @@ public class ClientController : Controller
     private readonly IAppLogger logger;
     private readonly IClientService clientService;
     private readonly IMapper mapper;
+    private readonly IRightVerifierService rightVerifier;
 
-    public ClientController(IAppLogger logger, IClientService clientService, IMapper mapper)
+    public ClientController(
+        IAppLogger logger, 
+        IClientService clientService, 
+        IMapper mapper,
+        IRightVerifierService rightVerifier
+        )
     {
         this.logger = logger;
         this.clientService = clientService;
         this.mapper = mapper;
+        this.rightVerifier = rightVerifier;
     }
 
     [HttpGet("")]
@@ -49,11 +58,19 @@ public class ClientController : Controller
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> Create(CreateClientModel request)
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> Create(PresintationCreateClientModel model)
     {
         try
         {
-            var result = await clientService.Create(request);
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreateClient(jwtToken, model.UserId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            var result = await clientService.Create(mapper.Map<CreateClientModel>(model));
 
             return Ok(mapper.Map<PresintationClientModel>(result));
         }
@@ -64,11 +81,19 @@ public class ClientController : Controller
     }
 
     [HttpPut("{id:Guid}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, UpdateClientModel model)
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> Update([FromRoute] Guid id, PresintationUpdateClientModel model)
     {
         try
         {
-            await clientService.Update(id, model);
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            await clientService.Update(id, mapper.Map<UpdateClientModel>(model));
 
             return Ok();
         }
@@ -79,10 +104,18 @@ public class ClientController : Controller
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await clientService.Delete(id);
 
             return Ok();

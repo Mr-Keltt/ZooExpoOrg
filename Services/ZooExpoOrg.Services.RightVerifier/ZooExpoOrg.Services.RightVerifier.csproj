@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\ZooExpoOrg.Context.Entities\ZooExpoOrg.Context.Entities.csproj" />
+    <ProjectReference Include="..\..\Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
+    <ProjectReference Include="..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
+  </ItemGroup>
+
+</Project>

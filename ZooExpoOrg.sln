@@ -71,6 +71,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Exposit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Comments", "Services\ZooExpoOrg.Services.Comments\ZooExpoOrg.Services.Comments.csproj", "{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.RightVerifier", "Services\ZooExpoOrg.Services.RightVerifier\ZooExpoOrg.Services.RightVerifier.csproj", "{BC01C407-4724-4C80-883B-7FA02F2C24B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC01C407-4724-4C80-883B-7FA02F2C24B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC01C407-4724-4C80-883B-7FA02F2C24B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC01C407-4724-4C80-883B-7FA02F2C24B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC01C407-4724-4C80-883B-7FA02F2C24B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,7 @@ Global
 		{A68AEE8C-EA52-4D83-81D5-8ABB6F1C2F3C} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{9B4D277E-ADF8-4B5E-8E6D-4409BBB025C5} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
+		{BC01C407-4724-4C80-883B-7FA02F2C24B9} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}

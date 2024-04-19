@@ -2,5 +2,6 @@
 
 public class IdentitySettings
 {
-    public string Url { get; private set; }
+    public string PublicUrl { get; private set; }
+    public string InternalUrl { get; private set; }
 }

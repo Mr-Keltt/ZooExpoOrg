@@ -3,8 +3,15 @@
 using Duende.IdentityServer.Services;
 using ZooExpoOrg.Services.Settings;
 
+/// <summary>
+/// CORS configuration
+/// </summary>
 public static class CorsConfiguration
 {
+    /// <summary>
+    /// Add CORS
+    /// </summary>
+    /// <param name="services">Services collection</param>
     public static IServiceCollection AddAppCors(this IServiceCollection services)
     {
         services.AddSingleton<ICorsPolicyService>((container) =>
@@ -20,6 +27,10 @@ public static class CorsConfiguration
         return services;
     }
 
+    /// <summary>
+    /// Use service
+    /// </summary>
+    /// <param name="app">Application</param>
     public static void UseAppCors(this WebApplication app)
     {
         var mainSettings = app.Services.GetService<MainSettings>();

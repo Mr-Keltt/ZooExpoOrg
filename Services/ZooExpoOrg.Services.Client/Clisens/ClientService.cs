@@ -8,22 +8,26 @@ using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.Settings;
 
 public class ClientService : IClientService
 {
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
+    private readonly DbSettings dbSettings;
 
     public ClientService(
         IDbContextFactory<MainDbContext> dbContextFactory, 
         IMapper mapper, 
-        IAppLogger logger
+        IAppLogger logger,
+        DbSettings dbSettings
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
+        this.dbSettings = dbSettings;
     }
 
     public async Task<IEnumerable<ClientModel>> GetAll()
@@ -52,12 +56,17 @@ public class ClientService : IClientService
 
         if (user == null)
         {
-            throw new ProcessException($"User (ID = {model.UserId}) not found.");
+            throw new ProcessException($"Accounts (ID = {model.UserId}) not found.");
+        }
+
+        if (user.UserName == dbSettings.Init.Administrator.UserName)
+        {
+            throw new ProcessException($"Accounts (ID = {model.UserId}) is an adminstrator.");
         }
 
         if (user.ClientId != null)
         {
-            throw new ProcessException($"User (ID = {model.UserId}) is already in use");
+            throw new ProcessException($"Accounts (ID = {model.UserId}) is already in use");
         }
 
         var client = mapper.Map<ClientEntity>(model);

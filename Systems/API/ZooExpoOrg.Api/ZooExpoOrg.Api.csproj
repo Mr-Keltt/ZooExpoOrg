@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Logger\ZooExpoOrg.Services.Logger.csproj" />
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Photos\ZooExpoOrg.Services.Photos.csproj" />
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.RabbitMq\ZooExpoOrg.Services.RabbitMq.csproj" />
+    <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.RightVerifier\ZooExpoOrg.Services.RightVerifier.csproj" />
     <ProjectReference Include="..\..\..\Services\ZooExpoOrg.Services.Settings\ZooExpoOrg.Services.Settings.csproj" />
     <ProjectReference Include="..\..\..\Shared\ZooExpoOrg.Common\ZooExpoOrg.Common.csproj" />
     <ProjectReference Include="..\ZooExpoOrg.Api.Settings\ZooExpoOrg.Api.Settings.csproj" />
@@ -30,11 +31,17 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.3.8" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.3.8" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.18" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.15">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.18" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />    
 	<PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />

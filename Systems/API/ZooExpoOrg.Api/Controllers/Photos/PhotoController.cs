@@ -2,10 +2,13 @@
 
 using Asp.Versioning;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Photos;
+using ZooExpoOrg.Services.RightVerifier;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -16,12 +19,18 @@ public class PhotoController : ControllerBase
     private readonly IAppLogger logger;
     private readonly IPhotoService photoService;
     private readonly IMapper mapper;
+    private readonly IRightVerifierService rightVerifier;
 
-    public PhotoController(IAppLogger logger, IPhotoService photoService, IMapper mapper)
+    public PhotoController(
+        IAppLogger logger, 
+        IPhotoService photoService, 
+        IMapper mapper,
+        IRightVerifierService rightVerifier)
     {
         this.logger = logger;
         this.photoService = photoService;
         this.mapper = mapper;
+        this.rightVerifier = rightVerifier;
     }
 
     [HttpGet("owned/{ownerId:Guid}")]
@@ -47,11 +56,19 @@ public class PhotoController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> Create(CreatePhotoModel createModel)
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> Create(CreatePhotoModel model)
     {
         try
         {
-            var result = await photoService.Create(createModel);
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreatePhoto(jwtToken, model.OwnerId, model.LocationId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            var result = await photoService.Create(model);
 
             return Ok(mapper.Map<PresintationPhotoModel>(result));
         }
@@ -62,10 +79,18 @@ public class PhotoController : ControllerBase
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagPhoto(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await photoService.Delete(id);
 
             return Ok();

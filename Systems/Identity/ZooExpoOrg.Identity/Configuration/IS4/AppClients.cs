@@ -1,31 +1,13 @@
 ﻿namespace ZooExpoOrg.Identity.Configuration;
-
-using ZooExpoOrg.Common.Security;
 using Duende.IdentityServer.Models;
 using IdentityModel;
+using ZooExpoOrg.Common.Security;
 
 public static class AppClients
 {
     public static IEnumerable<Client> Clients =>
         new List<Client>
         {
-            new Client
-            {
-                ClientId = "client",
-                ClientSecrets =
-                {
-                    new Secret("A3F0811F2E934C4F1114CB693F7D785E".ToSha256())
-                },
-
-                AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-                AccessTokenLifetime = 3600, // 1 hour
-
-                AllowedScopes = {
-
-                }
-            }
-            ,
             new Client
             {
                 ClientId = "frontend",
@@ -47,7 +29,7 @@ public static class AppClients
                 SlidingRefreshTokenLifetime = 1296000, // 15 days
 
                 AllowedScopes = {
-                    "api", "role"
+                    AppScopes.UseScope
                 }
             }
         };

@@ -4,10 +4,8 @@ using ZooExpoOrg.Services.Comments;
 
 namespace ZooExpoOrg.Api.Controllers;
 
-public class PresintationCommentModel
+public class PresintationCreateCommentModel
 {
-    public Guid Id { get; set; }
-
     public Guid LocationId { get; set; }
 
     public Guid AuthorId { get; set; }
@@ -17,10 +15,10 @@ public class PresintationCommentModel
     public DateTime DateWriting { get; set; }
 }
 
-public class PresintationCommentModelProfile : Profile
+public class PresintationCreateCommentModelProfile : Profile
 {
-    public PresintationCommentModelProfile()
+    public PresintationCreateCommentModelProfile()
     {
-        CreateMap<CommentModel, PresintationCommentModel>();
+        CreateMap<PresintationCreateCommentModel, CreateCommentModel>();
     }
 }

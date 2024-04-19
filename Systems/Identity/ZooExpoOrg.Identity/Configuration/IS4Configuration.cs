@@ -1,8 +1,8 @@
-﻿namespace ZooExpoOrg.Identity.Configuration;
-
+﻿using Microsoft.AspNetCore.Identity;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
-using Microsoft.AspNetCore.Identity;
+
+namespace ZooExpoOrg.Identity.Configuration;
 
 public static class IS4Configuration
 {
@@ -24,7 +24,7 @@ public static class IS4Configuration
 
         services
             .AddIdentityServer()
-            
+
             .AddAspNetIdentity<UserEntity>()
 
             .AddInMemoryApiScopes(AppApiScopes.ApiScopes)
@@ -32,8 +32,6 @@ public static class IS4Configuration
             .AddInMemoryApiResources(AppResources.Resources)
             .AddInMemoryIdentityResources(AppIdentityResources.Resources)
 
-            //.AddTestUsers(AppApiTestUsers.ApiUsers)
-            
             //.AddDeveloperSigningCredential()
             ;
 
@@ -47,4 +45,3 @@ public static class IS4Configuration
         return app;
     }
 }
-

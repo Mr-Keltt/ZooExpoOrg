@@ -4,10 +4,8 @@ using ZooExpoOrg.Services.Photos;
 namespace ZooExpoOrg.Api.Controllers.Photos;
 
 
-public class PresintationPhotoModel
+public class PresintationCreatePhotoModel
 {
-    public Guid Id;
-
     public Guid OwnerId;
 
     public Guid LocationId { get; set; }
@@ -17,10 +15,10 @@ public class PresintationPhotoModel
     public string ImageMimeType { get; set; }
 }
 
-public class PresintationPhotoModelProfile : Profile
+public class PresintationCreatePhotoModelProfile : Profile
 {
-    public PresintationPhotoModelProfile()
+    public PresintationCreatePhotoModelProfile()
     {
-        CreateMap<PhotoModel, PresintationPhotoModel>();
+        CreateMap<PresintationCreatePhotoModel, CreatePhotoModel>();
     }
 }

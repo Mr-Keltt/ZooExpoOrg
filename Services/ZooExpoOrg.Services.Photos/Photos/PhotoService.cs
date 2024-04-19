@@ -78,7 +78,7 @@ public class PhotoService : IPhotoService
         var animal = db.Animals.FirstOrDefault(x => x.Uid == model.LocationId);
         var exposition = db.Expositions.FirstOrDefault(x => x.Uid == model.LocationId);
 
-        ICollection<PhotoEntity> location = null;
+        ICollection<PhotoEntity> location;
 
         if (client != null)
         {

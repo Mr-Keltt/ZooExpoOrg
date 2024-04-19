@@ -1,16 +1,20 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using ZooExpoOrg.Api.Controllers.Animals.Animals;
 using ZooExpoOrg.Api.Controllers.Clients;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Animals.Achievements;
 using ZooExpoOrg.Services.Animals.Animals;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Logger;
+using ZooExpoOrg.Services.RightVerifier;
 
-namespace ZooExpoOrg.Api.Controllers.Animals.Achievement;
+namespace ZooExpoOrg.Api.Controllers.Achievements;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -21,16 +25,19 @@ public class AchievementController : Controller
     private readonly IAppLogger logger;
     private readonly IAchievementService achievementService;
     private readonly IMapper mapper;
+    private readonly IRightVerifierService rightVerifier;
 
     public AchievementController(
-        IAppLogger logger, 
-        IAchievementService achievementService, 
-        IMapper mapper
+        IAppLogger logger,
+        IAchievementService achievementService,
+        IMapper mapper,
+        IRightVerifierService rightVerifier
         )
     {
         this.logger = logger;
         this.achievementService = achievementService;
         this.mapper = mapper;
+        this.rightVerifier = rightVerifier;
     }
 
     [HttpGet("owned/{ownerId:Guid}")]
@@ -67,10 +74,18 @@ public class AchievementController : Controller
     }
 
     [HttpPost("")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Create(CreateAchievementModel model)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreateAchievement(jwtToken, model.AnimalId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             var achievements = await achievementService.Create(model);
 
             return Ok(mapper.Map<PresintationAchievementModel>(achievements));
@@ -81,26 +96,19 @@ public class AchievementController : Controller
         }
     }
 
-    [HttpPut("{id:Guid}")]
-    public async Task<IActionResult> Update(Guid id, UpdateAchievementModel model)
-    {
-        try
-        {
-            await achievementService.Update(id, model);
-
-            return Ok();
-        }
-        catch (ProcessException e)
-        {
-            return NotFound(e.Message);
-        }
-    }
-
     [HttpDelete("{id:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagAchievement(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             achievementService.Delete(id);
 
             return Ok();
