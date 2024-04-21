@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Services.Expositions;
@@ -35,5 +36,41 @@ public class UpdateExpositionModelProfile : Profile
             .ForMember(dest => dest.HouseNumber, opt => opt.MapFrom(src => src.HouseNumber))
             .ForMember(dest => dest.DateStart, opt => opt.MapFrom(src => src.DateStart))
             .ForMember(dest => dest.DateEnd, opt => opt.MapFrom(src => src.DateEnd));
+    }
+}
+
+public class UpdateExpositionModelValidator : AbstractValidator<UpdateExpositionModel>
+{
+    public UpdateExpositionModelValidator()
+    {
+        RuleFor(x => x.Title)
+            .MaximumLength(100).WithMessage("Title must not exceed 100 characters.")
+            .NotEmpty().WithMessage("Title is required.");
+        RuleFor(x => x.Description)
+            .NotEmpty().WithMessage("Description is required.")
+            .MaximumLength(10000).WithMessage("Text must be less than 10000 characters.");
+        RuleFor(x => x.Country)
+            .MaximumLength(100).WithMessage("Country must not exceed 100 characters.")
+            .NotEmpty().WithMessage("Country is required.");
+        RuleFor(x => x.City)
+            .MaximumLength(100).WithMessage("City must not exceed 100 characters.")
+            .NotEmpty().WithMessage("City is required.");
+        RuleFor(x => x.Street)
+            .MaximumLength(100).WithMessage("Street must not exceed 100 characters.")
+            .NotEmpty().WithMessage("Street is required.");
+        RuleFor(x => x.HouseNumber)
+            .MaximumLength(100).WithMessage("HouseNumber must not exceed 50 characters.");
+        RuleFor(x => x.DateStart)
+            .NotEmpty().WithMessage("DateStart is required.")
+            .Must(BeAValidDate).WithMessage("DateStart must be a valid date.");
+        RuleFor(x => x.DateEnd)
+            .NotEmpty().WithMessage("DateEnd is required.")
+            .Must(BeAValidDate).WithMessage("DateEnd must be a valid date.")
+            .GreaterThanOrEqualTo(x => x.DateStart).WithMessage("DateEnd must be greater than or equal to DateStart.");
+    }
+
+    private bool BeAValidDate(DateTime date)
+    {
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
+using FluentValidation;
 
 namespace ZooExpoOrg.Services.Comments;
 
@@ -67,5 +68,22 @@ public class CreateCommentModelProfile : Profile
 
             destination.AuthorId = client.Id;
         }
+    }
+}
+
+public class CreateCommentModelValidator : AbstractValidator<CreateCommentModel>
+{
+    public CreateCommentModelValidator()
+    {
+        RuleFor(x => x.LocationId)
+            .NotEmpty().WithMessage("LocationId is required.");
+        RuleFor(x => x.AuthorId)
+            .NotEmpty().WithMessage("AuthorId is required.");
+        RuleFor(x => x.Text)
+            .NotEmpty().WithMessage("Text is required.")
+            .MaximumLength(10000).WithMessage("Text must be less than 10000 characters.");
+        RuleFor(x => x.DateWriting)
+            .NotEmpty().WithMessage("DateWriting is required.")
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("DateWriting must be in the past.");
     }
 }

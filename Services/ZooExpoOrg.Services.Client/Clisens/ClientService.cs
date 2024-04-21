@@ -5,6 +5,7 @@ using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
@@ -16,18 +17,24 @@ public class ClientService : IClientService
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
     private readonly DbSettings dbSettings;
+    private readonly IModelValidator<CreateClientModel> createClientModelValidator;
+    private readonly IModelValidator<UpdateClientModel> updateClientModelValidator;
 
     public ClientService(
         IDbContextFactory<MainDbContext> dbContextFactory, 
         IMapper mapper, 
         IAppLogger logger,
-        DbSettings dbSettings
+        DbSettings dbSettings,
+        IModelValidator<CreateClientModel> createClientModelValidator,
+        IModelValidator<UpdateClientModel> updateClientModelValidator
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
         this.dbSettings = dbSettings;
+        this.createClientModelValidator = createClientModelValidator;
+        this.updateClientModelValidator = updateClientModelValidator;
     }
 
     public async Task<IEnumerable<ClientModel>> GetAll()
@@ -50,6 +57,8 @@ public class ClientService : IClientService
     
     public async Task<ClientModel> Create(CreateClientModel model)
     {
+        createClientModelValidator.Check(model);
+
         using var context = dbContextFactory.CreateDbContext();
 
         var user = context.Users.FirstOrDefault(x => x.Id == model.UserId);
@@ -82,6 +91,8 @@ public class ClientService : IClientService
 
     public async Task Update(Guid id, UpdateClientModel model)
     {
+        updateClientModelValidator.Check(model);
+
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var client = await context.Clients.FirstOrDefaultAsync(x => x.Uid == id);

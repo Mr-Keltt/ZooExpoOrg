@@ -5,6 +5,8 @@ using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
 using Newtonsoft.Json.Linq;
 using System.Data;
+using FluentValidation;
+using ZooExpoOrg.Services.Animals.Achievements;
 
 namespace ZooExpoOrg.Services.Animals.Animals;
 
@@ -68,5 +70,38 @@ public class CreateAnimalModelProfile : Profile
             destination.Photos = new List<PhotoEntity>();
             destination.Achievements = new List<AchievementEntity>();
         }
+    }
+}
+
+public class CreateAnimalModelValidator : AbstractValidator<CreateAnimalModel>
+{
+    public CreateAnimalModelValidator()
+    {
+        RuleFor(x => x.OwnerId)
+            .NotEmpty().WithMessage("OwnerId is required.");
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
+
+        RuleFor(x => x.Description)
+            .NotEmpty().WithMessage("Description is required.")
+            .MaximumLength(10000).WithMessage("Description must not exceed 10000 characters.");
+
+        RuleFor(x => x.BirthDate)
+            .NotEmpty().WithMessage("BirthDate is required.")
+            .Must(BeAValidDate).WithMessage("BirthDate must be a valid date.");
+
+        RuleFor(x => x.Height)
+            .NotEmpty().WithMessage("Height is required.")
+            .GreaterThan(-1).WithMessage("Height must be greater than -1.");
+
+        RuleFor(x => x.Weight)
+            .NotEmpty().WithMessage("Weight is required.")
+            .GreaterThan(-1).WithMessage("Weight must be greater than -1.");
+    }
+
+    private bool BeAValidDate(DateTime date)
+    {
+        return !date.Equals(default(DateTime));
     }
 }

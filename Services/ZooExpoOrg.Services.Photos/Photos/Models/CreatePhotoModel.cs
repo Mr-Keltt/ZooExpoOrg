@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
@@ -74,5 +75,21 @@ public class CreatePhotoModelProfile : Profile
 
             destination.OwnerId = owner.Id;
         }
+    }
+}
+
+public class CreatePhotoModelValidator : AbstractValidator<CreatePhotoModel>
+{
+    public CreatePhotoModelValidator()
+    {
+        RuleFor(x => x.OwnerId)
+            .NotEmpty().WithMessage("OwnerId cannot be empty.");
+        RuleFor(x => x.LocationId)
+            .NotEmpty().WithMessage("LocationId cannot be empty.");
+        RuleFor(x => x.ImageData)
+            .NotNull().WithMessage("ImageData cannot be null.")
+            .NotEmpty().WithMessage("ImageData cannot be empty.");
+        RuleFor(x => x.ImageMimeType)
+            .NotEmpty().WithMessage("ImageMimeType cannot be empty.");
     }
 }

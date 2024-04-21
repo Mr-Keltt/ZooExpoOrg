@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
+using ZooExpoOrg.Services.Animals.Achievements;
 using ZooExpoOrg.Services.Logger;
 
 namespace ZooExpoOrg.Services.Animals.Animals;
@@ -13,16 +15,22 @@ public class AnimalService : IAnimalService
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
+    private readonly IModelValidator<CreateAnimalModel> createAnimalModelValidator;
+    private readonly IModelValidator<UpdateAnimalModel> updateAnimalModelValidator;
 
     public AnimalService(
         IDbContextFactory<MainDbContext> dbContextFactory, 
         IMapper mapper,
-        IAppLogger logger
+        IAppLogger logger,
+        IModelValidator<CreateAnimalModel> createAnimalModelValidator,
+        IModelValidator<UpdateAnimalModel> updateAnimalModelValidator
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
+        this.createAnimalModelValidator = createAnimalModelValidator;
+        this.updateAnimalModelValidator = updateAnimalModelValidator;
     }
 
     public async Task<IEnumerable<AnimalModel>> GetOwned(Guid ownerId)
@@ -54,6 +62,8 @@ public class AnimalService : IAnimalService
 
     public async Task<AnimalModel> Create(CreateAnimalModel model)
     {
+        createAnimalModelValidator.Check(model);
+
         using var context = dbContextFactory.CreateDbContext();
 
         var client = context.Clients.FirstOrDefault(x => x.Uid == model.OwnerId);
@@ -76,6 +86,8 @@ public class AnimalService : IAnimalService
 
     public async Task Update(Guid id, UpdateAnimalModel model)
     {
+        updateAnimalModelValidator.Check(model);
+
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var animal = await context.Animals.FirstOrDefaultAsync(x => x.Uid == id);

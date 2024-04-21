@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using ZooExpoOrg.Services.Accounts;
+using ZooExpoOrg.Common.Exceptions;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -23,9 +24,16 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<PresintationAccountModel> Register([FromQuery] RegisterAccountModel request)
+    public async Task<IActionResult> Register([FromQuery] RegisterAccountModel request)
     {
-        var user = await accountService.Create(request);
-        return mapper.Map<PresintationAccountModel>(user);
+        try
+        {
+            var user = await accountService.Create(request);
+            return Ok(mapper.Map<PresintationAccountModel>(user));
+        }
+        catch (ProcessException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
