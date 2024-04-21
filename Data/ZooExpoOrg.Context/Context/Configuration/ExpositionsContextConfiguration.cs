@@ -42,13 +42,19 @@ public static class ExpositionsContextConfiguration
             entity
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Exposition)
-                .HasPrincipalKey(c => c.Id)
+                .HasForeignKey(c => c.ExpositionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity
                 .HasMany(e => e.Subscribers)
                 .WithMany(u => u.Subscriptions)
                 .UsingEntity(j => j.ToTable("expositions_subscribers"));
+
+            entity
+                .HasMany(p => p.SentNotifications)
+                .WithOne(c => c.SenderNotification)
+                .HasForeignKey(c => c.SenderNotificationsId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

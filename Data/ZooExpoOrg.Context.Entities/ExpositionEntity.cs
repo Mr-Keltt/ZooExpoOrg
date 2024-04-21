@@ -35,4 +35,6 @@ public class ExpositionEntity : BaseEntity
     public virtual ICollection<CommentEntity> Comments { get; set; }
 
     public virtual ICollection<ClientEntity> Subscribers { get; set; }
+
+    public virtual ICollection<NotificationEntity> SentNotifications { get; set; }
 }

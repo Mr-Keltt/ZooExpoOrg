@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ZooExpoOrg.Context.Entities;
+
+namespace ZooExpoOrg.Services.ExpositionsNotificationManager;
+
+public class CreateNotificationModel
+{
+    public Guid Id { get; set; }
+
+    public Guid SenderNotificationsId { get; set; }
+
+    public virtual ICollection<Guid> RecipientsNotification { get; set; }
+
+    public string Title { get; set; }
+
+    public string Text { get; set; }
+
+    public DateTime DepartureTime { get; set; }
+}
+

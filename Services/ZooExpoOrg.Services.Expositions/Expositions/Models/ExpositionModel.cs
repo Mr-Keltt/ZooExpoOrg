@@ -37,6 +37,8 @@ public class ExpositionModel
     public virtual ICollection<Guid> Comments { get; set; }
 
     public virtual ICollection<Guid> Subscribers { get; set; }
+
+    public virtual ICollection<Guid> SentNotifications { get; set; }
 }
 
 public class ExpositionModelProfile : Profile
@@ -59,6 +61,7 @@ public class ExpositionModelProfile : Profile
             .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(p => p.Uid)))
             .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.Select(c => c.Uid)))
             .ForMember(dest => dest.Subscribers, opt => opt.MapFrom(src => src.Subscribers.Select(s => s.Uid)))
+            .ForMember(dest => dest.SentNotifications, opt => opt.MapFrom(src => src.SentNotifications.Select(s => s.Uid)))
             .ForMember(dest => dest.OrganizerId, opt => opt.Ignore());
     }
 

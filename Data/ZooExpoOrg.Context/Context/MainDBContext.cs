@@ -11,6 +11,7 @@ public class MainDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, G
     public DbSet<AnimalEntity> Animals { get; set; }
     public DbSet<ClientEntity> Clients { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
+    public DbSet<NotificationEntity> Notifications { get; set; }
     public DbSet<ExpositionEntity> Expositions { get; set; }
     public DbSet<PhotoEntity> Photos { get; set; }
 
@@ -25,8 +26,9 @@ public class MainDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, G
         modelBuilder.ConfigureAnimals();
         modelBuilder.ConfigureClients();
         modelBuilder.ConfigureComments();
+        modelBuilder.ConfigureNotifications();
         modelBuilder.ConfigureExpositions();
-        modelBuilder.ConfigureUsers();
         modelBuilder.ConfigurePhotos();
+        modelBuilder.ConfigureUsers();
     }
 }

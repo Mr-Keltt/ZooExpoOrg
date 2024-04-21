@@ -29,6 +29,10 @@ public class PresintationClientModel
     public virtual ICollection<Guid> OrganizedExpositions { get; set; }
 
     public virtual ICollection<Guid> Animals { get; set; }
+
+    public virtual ICollection<Guid> Comments { get; set; }
+
+    public virtual ICollection<Guid> UnreadNotifications { get; set; }
 }
 
 public class PresintationClientModelProfile : Profile

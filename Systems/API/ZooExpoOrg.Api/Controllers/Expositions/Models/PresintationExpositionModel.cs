@@ -37,6 +37,8 @@ public class PresintationExpositionModel
     public virtual ICollection<Guid> Comments { get; set; }
 
     public virtual ICollection<Guid> Subscribers { get; set; }
+
+    public virtual ICollection<Guid> SentNotifications { get; set; }
 }
 
 public class PresintationExpositionModelProfile : Profile

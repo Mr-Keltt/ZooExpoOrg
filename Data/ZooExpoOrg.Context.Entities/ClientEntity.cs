@@ -29,4 +29,6 @@ public class ClientEntity : BaseEntity
     public virtual ICollection<PhotoEntity> Photos { get; set; }
 
     public virtual ICollection<PhotoEntity> OwnedPhotos { get; set; }
+
+    public virtual ICollection<NotificationEntity> UnreadNotifications { get; set; }
 }
