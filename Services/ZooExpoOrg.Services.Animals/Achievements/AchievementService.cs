@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
@@ -12,16 +13,19 @@ public class AchievementService : IAchievementService
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
+    private readonly IModelValidator<CreateAchievementModel> createAchievementModelValidator;
 
     public AchievementService(
         IDbContextFactory<MainDbContext> dbContextFactory,
         IMapper mapper,
-        IAppLogger logger
+        IAppLogger logger,
+        IModelValidator<CreateAchievementModel> createAchievementModelValidator
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
+        this.createAchievementModelValidator = createAchievementModelValidator;
     }
 
     public async Task<IEnumerable<AchievementModel>> GetAllOwnedById(Guid OwnerId)
@@ -49,6 +53,8 @@ public class AchievementService : IAchievementService
 
     public async Task<AchievementModel> Create(CreateAchievementModel model)
     {
+        createAchievementModelValidator.Check(model);
+
         using var db = dbContextFactory.CreateDbContext();
 
         var animal = db.Animals.FirstOrDefault(x => x.Uid == model.AnimalId);

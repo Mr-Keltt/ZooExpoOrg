@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
@@ -12,16 +13,22 @@ public class CommentService : ICommentService
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
+    private readonly IModelValidator<CreateCommentModel> createCommentModelValidator;
+    private readonly IModelValidator<UpdateCommentModel> updateCommentModelValidator;
 
     public CommentService(
         IDbContextFactory<MainDbContext> dbContextFactory,
         IMapper mapper,
-        IAppLogger logger
+        IAppLogger logger,
+        IModelValidator<CreateCommentModel> createCommentModelValidator,
+        IModelValidator<UpdateCommentModel> updateCommentModelValidator
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
+        this.createCommentModelValidator = createCommentModelValidator;
+        this.updateCommentModelValidator = updateCommentModelValidator;
     }
 
     public async Task<IEnumerable<CommentModel>> GetLocatedIn(Guid locationId)
@@ -56,6 +63,8 @@ public class CommentService : ICommentService
 
     public async Task<CommentModel> Create(CreateCommentModel model)
     {
+        createCommentModelValidator.Check(model);
+
         using var db = dbContextFactory.CreateDbContext();
 
         var author = db.Clients.FirstOrDefault(x => x.Uid == model.AuthorId);
@@ -98,6 +107,8 @@ public class CommentService : ICommentService
 
     public async Task Update(Guid id, UpdateCommentModel model)
     {
+        updateCommentModelValidator.Check(model);
+
         using var db = await dbContextFactory.CreateDbContextAsync();
 
         var comments = await db.Comments.FirstOrDefaultAsync(x => x.Uid == id);

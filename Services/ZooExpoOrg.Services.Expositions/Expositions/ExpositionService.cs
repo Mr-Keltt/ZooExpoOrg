@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
@@ -12,16 +13,22 @@ public class ExpositionService : IExpositionService
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
+    private readonly IModelValidator<CreateExpositionModel> createExpositionModelValidator;
+    private readonly IModelValidator<UpdateExpositionModel> updateExpositionModelValidator;
 
     public ExpositionService(
         IDbContextFactory<MainDbContext> dbContextFactory,
         IMapper mapper,
-        IAppLogger logger
+        IAppLogger logger,
+        IModelValidator<CreateExpositionModel> createExpositionModelValidator,
+        IModelValidator<UpdateExpositionModel> updateExpositionModelValidator
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
+        this.createExpositionModelValidator = createExpositionModelValidator;
+        this.updateExpositionModelValidator = updateExpositionModelValidator;
     }
 
     public async Task<IEnumerable<ExpositionModel>> GetAll()
@@ -44,6 +51,8 @@ public class ExpositionService : IExpositionService
 
     public async Task<ExpositionModel> Create(CreateExpositionModel model)
     {
+        createExpositionModelValidator.Check(model);
+
         using var context = dbContextFactory.CreateDbContext();
 
         var client = context.Clients.FirstOrDefault(x => x.Uid == model.OrganizerId);
@@ -66,6 +75,8 @@ public class ExpositionService : IExpositionService
 
     public async Task Update(Guid id, UpdateExpositionModel model)
     {
+        updateExpositionModelValidator.Check(model);
+
         using var context = await dbContextFactory.CreateDbContextAsync();
 
         var exposition = await context.Expositions.FirstOrDefaultAsync(x => x.Uid == id);

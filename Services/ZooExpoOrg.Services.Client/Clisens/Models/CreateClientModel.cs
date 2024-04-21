@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
 using ZooExpoOrg.Context.Entities;
@@ -51,5 +52,32 @@ public class CreateClientModelProfile : Profile
             destination.Animals = new List<AnimalEntity>();
             destination.Comments = new List<CommentEntity>();
         }
+    }
+}
+
+public class CreateClientModelValidator : AbstractValidator<CreateClientModel>
+{
+    public CreateClientModelValidator()
+    {
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("UserId is required.");
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
+        RuleFor(x => x.Surname)
+            .NotEmpty().WithMessage("Surname is required.")
+            .MaximumLength(50).WithMessage("Surname must not exceed 50 characters.");
+        RuleFor(x => x.Patronymic)
+            .MaximumLength(50).WithMessage("Patronymic must not exceed 50 characters.");
+        RuleFor(x => x.Gender)
+            .IsInEnum().WithMessage("Invalid gender value.");
+        RuleFor(x => x.BirthDate)
+            .NotEmpty().WithMessage("BirthDate is required.")
+            .Must(BeAValidDate).WithMessage("Invalid date format.");
+    }
+
+    private bool BeAValidDate(DateTime date)
+    {
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150); // Assuming birth date should not be in future and not more than 150 years old.
     }
 }

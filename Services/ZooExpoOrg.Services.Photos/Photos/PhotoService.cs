@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
@@ -12,16 +13,19 @@ public class PhotoService : IPhotoService
     private readonly IDbContextFactory<MainDbContext> dbContextFactory;
     private readonly IMapper mapper;
     private readonly IAppLogger logger;
+    private readonly IModelValidator<CreatePhotoModel> createPhotoModelValidator;
 
     public PhotoService(
         IDbContextFactory<MainDbContext> dbContextFactory, 
         IMapper mapper,
-        IAppLogger logger
+        IAppLogger logger,
+        IModelValidator<CreatePhotoModel> createPhotoModelValidator
         )
     {
         this.dbContextFactory = dbContextFactory;
         this.mapper = mapper;
         this.logger = logger;
+        this.createPhotoModelValidator = createPhotoModelValidator;
     }
 
     public async Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid OwnerId)
@@ -65,6 +69,8 @@ public class PhotoService : IPhotoService
 
     public async Task<PhotoModel> Create(CreatePhotoModel model)
     {
+        createPhotoModelValidator.Check(model);
+
         using var db = dbContextFactory.CreateDbContext();
 
         var owner = db.Clients.FirstOrDefault(x => x.Uid == model.OwnerId);

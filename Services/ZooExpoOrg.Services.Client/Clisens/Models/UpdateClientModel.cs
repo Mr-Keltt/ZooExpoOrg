@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
@@ -24,5 +25,30 @@ public class UpdateClientModelProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
             .ForMember(dest => dest.Patronymic, opt => opt.MapFrom(src => src.Patronymic));
+    }
+}
+
+public class UpdateClientModelValidator : AbstractValidator<UpdateClientModel>
+{
+    public UpdateClientModelValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
+        RuleFor(x => x.Surname)
+            .NotEmpty().WithMessage("Surname is required.")
+            .MaximumLength(50).WithMessage("Surname must not exceed 50 characters.");
+        RuleFor(x => x.Patronymic)
+            .MaximumLength(50).WithMessage("Patronymic must not exceed 50 characters.");
+        RuleFor(model => model.PhotoId)
+            .Must(BeValidGuidOrNull).WithMessage("Invalid PhotoId format.");
+    }
+
+    private bool BeValidGuidOrNull(Guid? photoId)
+    {
+        if (photoId == null)
+            return true;
+
+        return Guid.TryParse(photoId.ToString(), out _);
     }
 }
