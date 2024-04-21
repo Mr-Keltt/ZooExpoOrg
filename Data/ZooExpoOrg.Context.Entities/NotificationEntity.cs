@@ -1,4 +1,5 @@
-﻿using ZooExpoOrg.Context.Entities.Common;
+﻿using AutoMapper;
+using ZooExpoOrg.Context.Entities.Common;
 
 namespace ZooExpoOrg.Context.Entities;
 
@@ -6,7 +7,7 @@ public class NotificationEntity : BaseEntity
 {
     public Guid MailingID { get; set; }
 
-    public int SenderNotificationsId { get; set; }
+    public int SenderNotificationId { get; set; }
     public virtual ExpositionEntity SenderNotification { get; set; }
 
     public virtual ICollection<ClientEntity> RecipientsNotification { get; set; }
@@ -17,4 +18,3 @@ public class NotificationEntity : BaseEntity
 
     public DateTime DepartureTime { get; set; }
 }
-
