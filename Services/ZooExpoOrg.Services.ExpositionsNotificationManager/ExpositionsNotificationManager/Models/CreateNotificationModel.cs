@@ -25,9 +25,9 @@ public class CreateNotificationModel
 }
 
 
-public class NotificationMappingProfile : Profile
+public class CreateNotificationModelProfile : Profile
 {
-    public NotificationMappingProfile()
+    public CreateNotificationModelProfile()
     {
         CreateMap<CreateNotificationModel, NotificationEntity>()
 
