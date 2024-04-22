@@ -85,7 +85,7 @@ public class ExpositionsNotificationManagerService : IExpositionsNotificationMan
         {
             throw new ProcessException($"Notification (ID = {notificationId}) not found.");
         }
-
+            
         foreach (ClientEntity client in notification.Recipients)
         {
             client.UnreadNotifications.Remove(notification);
