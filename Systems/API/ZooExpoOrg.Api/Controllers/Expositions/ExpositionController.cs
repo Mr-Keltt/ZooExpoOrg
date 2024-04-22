@@ -112,12 +112,27 @@ public class ExpositionController : Controller
         }
     }
 
-    [HttpPut("send-notification/{id:Guid}")]
+    [HttpPut("{id:Guid}/notification/send")]
     public async Task<IActionResult> SendNotification(Guid id, PresintationCreateNotificationModel model)
     {
         try
         {
             await expositionsNotificationManager.SendNotification(id, mapper.Map<CreateNotificationModel>(model));
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPut("notification/cancel/{notificationId:Guid}")]
+    public async Task<IActionResult> cancelMailing(Guid notificationId)
+    {
+        try
+        {
+            await expositionsNotificationManager.CancelMailingByNotificationId(notificationId);
 
             return Ok();
         }

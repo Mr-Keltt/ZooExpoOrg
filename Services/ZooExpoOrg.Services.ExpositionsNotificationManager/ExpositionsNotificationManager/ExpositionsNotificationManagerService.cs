@@ -51,8 +51,29 @@ public class ExpositionsNotificationManagerService : IExpositionsNotificationMan
         throw new NotImplementedException();
     }
 
-    public Task CancelMailingByID(Guid id)
+    public async Task CancelMailingByNotificationId(Guid notificationId)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var notification = db.Notifications
+            .Include(x => x.Sender)
+            .Include(x => x.Recipients)
+            .FirstOrDefault(x => x.Uid == notificationId);
+
+        if (notification == null)
+        {
+            throw new ProcessException($"Notification (ID = {notificationId}) not found.");
+        }
+
+        foreach (ClientEntity client in notification.Recipients)
+        {
+            client.UnreadNotifications.Remove(notification);
+        }
+
+        notification.Sender.SentNotifications.Remove(notification);
+
+        db.Notifications.Remove(notification);
+
+        db.SaveChanges();
     }
 }
