@@ -14,4 +14,6 @@ public interface IRightVerifierService
     Task<bool> VerifRightsOfManagExposition(string jwtToken, Guid expositionId);
     Task<bool> VerifRightsOfCreatePhoto(string jwtToken, Guid clientId, Guid LocationId);
     Task<bool> VerifRightsOfManagPhoto(string jwtToken, Guid clientId);
+    Task<bool> VerifRightsOfCreateNotification(string jwtToken, Guid expositionId);
+    Task<bool> VerifRightsOfManagNotification(string jwtToken, Guid notificationId);
 }

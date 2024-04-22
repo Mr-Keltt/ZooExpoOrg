@@ -179,4 +179,30 @@ public class RightVerifierService : IRightVerifierService
 
         return helper.EqualsId(jwtClientId, requestClientId);
     }
+
+    public async Task<bool> VerifRightsOfCreateNotification(string jwtToken, Guid expositionId)
+    {
+        if (await VerifAdminRights(jwtToken))
+        {
+            return true;
+        }
+
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+        Guid requestClientId = await helper.GetClientIdByExpositionId(expositionId);
+
+        return helper.EqualsId(jwtClientId, requestClientId);
+    }
+
+    public async Task<bool> VerifRightsOfManagNotification(string jwtToken, Guid notificationId)
+    {
+        if (await VerifAdminRights(jwtToken))
+        {
+            return true;
+        }
+
+        Guid jwtClientId = await helper.GetClientId(jwtToken);
+        Guid requestClientId = await helper.GetOwnerByNotificationId(notificationId);
+
+        return helper.EqualsId(jwtClientId, requestClientId);
+    }
 }

@@ -51,17 +51,20 @@ public class ExpositionsNotificationManagerService : IExpositionsNotificationMan
     {
         using var db = dbContextFactory.CreateDbContext();
 
-        var notification = db.Notifications.FirstOrDefault(x => x.Uid == notificationId);
-        var client = db.Clients.FirstOrDefault(x => x.Uid == clientId);
-
-        if (notification == null)
-        {
-            throw new ProcessException($"Notification (ID = {notificationId}) not found.");
-        }
+        var client = db.Clients
+            .Include(x => x.UnreadNotifications)
+            .FirstOrDefault(x => x.Uid == clientId);
 
         if (client == null)
         {
             throw new ProcessException($"Client (ID = {clientId}) not found.");
+        }
+
+        var notification = client.UnreadNotifications.FirstOrDefault(x => x.Uid == notificationId);
+
+        if (notification == null)
+        {
+            throw new ProcessException($"Notification (ID = {notificationId}) was not found on the user (ID = {clientId}).");
         }
 
         client.UnreadNotifications.Remove(notification);

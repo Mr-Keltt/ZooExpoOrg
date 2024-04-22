@@ -108,10 +108,18 @@ public class ClientController : Controller
     }
 
     [HttpPut("{id:Guid}/notification/{notificationId:Guid}/markreader")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> NotificationMarkReader(Guid id, Guid notificationId)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionsNotificationManager.MarkNotificationReaderByClientId(id, notificationId);
 
             return Ok();

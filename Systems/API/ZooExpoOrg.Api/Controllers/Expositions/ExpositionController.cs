@@ -113,10 +113,18 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("{id:Guid}/notification/send")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> SendNotification(Guid id, PresintationCreateNotificationModel model)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreateNotification(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionsNotificationManager.SendNotification(id, mapper.Map<CreateNotificationModel>(model));
 
             return Ok();
@@ -128,10 +136,18 @@ public class ExpositionController : Controller
     }
 
     [HttpPut("notification/cancel/{notificationId:Guid}")]
+    [Authorize(AppScopes.UseScope)]
     public async Task<IActionResult> cancelMailing(Guid notificationId)
     {
         try
         {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagNotification(jwtToken, notificationId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
             await expositionsNotificationManager.CancelMailingByNotificationId(notificationId);
 
             return Ok();
