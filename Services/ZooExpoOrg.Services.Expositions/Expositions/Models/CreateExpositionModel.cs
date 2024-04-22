@@ -93,8 +93,8 @@ public class CreateExpositionModelValidator : AbstractValidator<CreateExposition
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")
             .MaximumLength(10000).WithMessage("Description must be less than 10000 characters.");
-        RuleFor(x => x.ParticipantsType)
-            .NotEmpty().WithMessage("ParticipantsType is required.");
+        /*RuleFor(x => x.ParticipantsType)
+            .NotEmpty().WithMessage("ParticipantsType is required.");   TODO*/
         RuleFor(x => x.Country)
             .MaximumLength(100).WithMessage("Country must not exceed 100 characters.")
             .NotEmpty().WithMessage("Country is required.");

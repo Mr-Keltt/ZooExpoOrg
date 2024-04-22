@@ -10,6 +10,7 @@ using ZooExpoOrg.Services.Expositions;
 using ZooExpoOrg.Services.Comments;
 using ZooExpoOrg.Services.RightVerifier;
 using ZooExpoOrg.Context.Seeder;
+using ZooExpoOrg.Services.ExpositionsNotificationManager;
 
 namespace ZooExpoOrg.Api;
 
@@ -33,6 +34,7 @@ public static class Bootstrapper
             .AddCommentService()
             .AddDbSeeder()
             .AddRightVerifier()
+            .AddExpositionsNotificationManagerService()
             ;
 
         return service;

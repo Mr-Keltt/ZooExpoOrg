@@ -12,7 +12,6 @@ public static class NotificationsContextConfiguration
         {
             entity.ToTable("notifications");
 
-            entity.Property(e => e.MailingID).IsRequired();
             entity.Property(e => e.Title).IsRequired();
             entity.Property(e => e.Text).HasMaxLength(10000).IsRequired();
             entity.Property(e => e.DepartureTime).IsRequired();

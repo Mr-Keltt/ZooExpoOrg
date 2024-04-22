@@ -56,8 +56,8 @@ public static class ClientsContextConfiguration
 
             entity
                 .HasMany(e => e.UnreadNotifications)
-                .WithMany(u => u.RecipientsNotification)
-                .UsingEntity(j => j.ToTable("notifications_recipients"));
+                .WithMany(u => u.Recipients)
+                .UsingEntity(j => j.ToTable("unreadNotifications_recipients"));
             
         });
     }

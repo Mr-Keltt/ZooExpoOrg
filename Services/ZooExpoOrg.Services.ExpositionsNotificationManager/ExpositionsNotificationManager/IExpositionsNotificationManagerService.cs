@@ -1,7 +1,8 @@
-﻿namespace ZooExpoOrg.Services.ExpositionsNotificationManager.ExpositionsNotificationManager;
+﻿namespace ZooExpoOrg.Services.ExpositionsNotificationManager;
 
 public interface IExpositionsNotificationManagerService
 {
-    Task SendNotification(CreateNotificationModel model);
+    Task SendNotification(Guid senderId, CreateNotificationModel model);
+    Task MarkNotificationReaderByClientId(Guid notificationId, Guid clientId);
     Task CancelMailingByID(Guid id);
 }

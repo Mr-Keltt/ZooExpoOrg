@@ -5,12 +5,10 @@ namespace ZooExpoOrg.Context.Entities;
 
 public class NotificationEntity : BaseEntity
 {
-    public Guid MailingID { get; set; }
+    public int SenderId { get; set; }
+    public virtual ExpositionEntity Sender { get; set; }
 
-    public int SenderNotificationId { get; set; }
-    public virtual ExpositionEntity SenderNotification { get; set; }
-
-    public virtual ICollection<ClientEntity> RecipientsNotification { get; set; }
+    public virtual ICollection<ClientEntity> Recipients { get; set; }
 
     public string Title { get; set; }
 

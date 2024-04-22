@@ -52,8 +52,8 @@ public static class ExpositionsContextConfiguration
 
             entity
                 .HasMany(p => p.SentNotifications)
-                .WithOne(c => c.SenderNotification)
-                .HasForeignKey(c => c.SenderNotificationId)
+                .WithOne(c => c.Sender)
+                .HasForeignKey(c => c.SenderId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
