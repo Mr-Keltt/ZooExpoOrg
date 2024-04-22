@@ -3,6 +3,6 @@
 public interface IExpositionsNotificationManagerService
 {
     Task SendNotification(Guid senderId, CreateNotificationModel model);
-    Task MarkNotificationReaderByClientId(Guid notificationId, Guid clientId);
+    Task MarkNotificationReaderByClientId(Guid clientId, Guid notificationId);
     Task CancelMailingByNotificationId(Guid notificationId);
 }

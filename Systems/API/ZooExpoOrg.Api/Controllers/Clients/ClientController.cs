@@ -8,6 +8,7 @@ using ZooExpoOrg.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.RightVerifier;
+using ZooExpoOrg.Services.ExpositionsNotificationManager;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -21,18 +22,21 @@ public class ClientController : Controller
     private readonly IClientService clientService;
     private readonly IMapper mapper;
     private readonly IRightVerifierService rightVerifier;
+    private readonly IExpositionsNotificationManagerService expositionsNotificationManager;
 
     public ClientController(
         IAppLogger logger, 
         IClientService clientService, 
         IMapper mapper,
-        IRightVerifierService rightVerifier
+        IRightVerifierService rightVerifier,
+        IExpositionsNotificationManagerService expositionsNotificationManager
         )
     {
         this.logger = logger;
         this.clientService = clientService;
         this.mapper = mapper;
         this.rightVerifier = rightVerifier;
+        this.expositionsNotificationManager = expositionsNotificationManager;
     }
 
     [HttpGet("")]
@@ -94,6 +98,21 @@ public class ClientController : Controller
             }
 
             await clientService.Update(id, mapper.Map<UpdateClientModel>(model));
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPut("{id:Guid}/notification/{notificationId:Guid}/markreader")]
+    public async Task<IActionResult> NotificationMarkReader(Guid id, Guid notificationId)
+    {
+        try
+        {
+            await expositionsNotificationManager.MarkNotificationReaderByClientId(id, notificationId);
 
             return Ok();
         }

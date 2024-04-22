@@ -35,6 +35,7 @@ public class ExpositionsNotificationManagerService : IExpositionsNotificationMan
 
         notification.SenderId = sender.Id;
         notification.Recipients = sender.Subscribers;
+        notification.DepartureTime = DateTime.Now.ToUniversalTime();
 
         foreach (ClientEntity client in notification.Recipients)
         {
@@ -46,9 +47,26 @@ public class ExpositionsNotificationManagerService : IExpositionsNotificationMan
         db.SaveChanges();
     }
 
-    public Task MarkNotificationReaderByClientId(Guid notificationId, Guid clientId)
+    public async Task MarkNotificationReaderByClientId(Guid clientId, Guid notificationId)
     {
-        throw new NotImplementedException();
+        using var db = dbContextFactory.CreateDbContext();
+
+        var notification = db.Notifications.FirstOrDefault(x => x.Uid == notificationId);
+        var client = db.Clients.FirstOrDefault(x => x.Uid == clientId);
+
+        if (notification == null)
+        {
+            throw new ProcessException($"Notification (ID = {notificationId}) not found.");
+        }
+
+        if (client == null)
+        {
+            throw new ProcessException($"Client (ID = {clientId}) not found.");
+        }
+
+        client.UnreadNotifications.Remove(notification);
+
+        db.SaveChanges();
     }
 
     public async Task CancelMailingByNotificationId(Guid notificationId)

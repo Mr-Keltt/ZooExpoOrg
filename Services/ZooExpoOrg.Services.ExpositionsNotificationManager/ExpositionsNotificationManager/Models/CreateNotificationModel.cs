@@ -16,8 +16,6 @@ public class CreateNotificationModel
     public string Title { get; set; }
 
     public string Text { get; set; }
-
-    public DateTime DepartureTime { get; set; }
 }
 
 
@@ -26,6 +24,7 @@ public class CreateNotificationModelProfile : Profile
     public CreateNotificationModelProfile()
     {
         CreateMap<CreateNotificationModel, NotificationEntity>()
+            .ForMember(dest => dest.DepartureTime, opt => opt.Ignore())
             .ForMember(dest => dest.SenderId, opt => opt.Ignore())
             .ForMember(dest => dest.Recipients, opt => opt.Ignore());
     }
@@ -41,13 +40,5 @@ public class CreateNotificationModelValidator : AbstractValidator<CreateNotifica
         RuleFor(model => model.Text)
             .NotEmpty().WithMessage("Text is required.")
             .MaximumLength(10000).WithMessage("Description must be less than 10000 characters.");
-        RuleFor(model => model.DepartureTime)
-            .NotEmpty().WithMessage("DepartureTime is required.")
-            .Must(BeAValidDate).WithMessage("DepartureTime must be a valid DateTime.");
-    }
-
-    private bool BeAValidDate(DateTime date)
-    {
-        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }
