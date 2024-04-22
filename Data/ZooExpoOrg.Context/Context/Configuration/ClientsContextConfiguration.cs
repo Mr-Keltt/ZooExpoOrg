@@ -53,6 +53,12 @@ public static class ClientsContextConfiguration
                 .WithOne(e => e.Owner)
                 .HasForeignKey(e => e.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity
+                .HasMany(e => e.UnreadNotifications)
+                .WithMany(u => u.Recipients)
+                .UsingEntity(j => j.ToTable("unreadNotifications_recipients"));
+            
         });
     }
 }

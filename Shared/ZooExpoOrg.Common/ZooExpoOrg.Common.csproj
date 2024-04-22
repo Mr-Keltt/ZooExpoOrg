@@ -25,8 +25,4 @@
     <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Enumerables\" />
-  </ItemGroup>
-
 </Project>

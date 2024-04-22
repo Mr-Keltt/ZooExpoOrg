@@ -196,8 +196,8 @@ public static class DbSeeder
             Type = AnimalType.Parrot,
             BirthDate = DateTime.UtcNow,
             Gender = Gender.Female,
-            Height = -1,
-            Weight = -1
+            Height = 0,
+            Weight = 0
         }));
 
         for (int i = 0; i < 2; i++)

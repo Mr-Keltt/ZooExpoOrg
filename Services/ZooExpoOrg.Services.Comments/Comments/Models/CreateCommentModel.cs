@@ -84,6 +84,11 @@ public class CreateCommentModelValidator : AbstractValidator<CreateCommentModel>
             .MaximumLength(10000).WithMessage("Text must be less than 10000 characters.");
         RuleFor(x => x.DateWriting)
             .NotEmpty().WithMessage("DateWriting is required.")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("DateWriting must be in the past.");
+            .Must(BeAValidDate).WithMessage("Invalid date format.");
+    }
+
+    private bool BeAValidDate(DateTime date)
+    {
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }

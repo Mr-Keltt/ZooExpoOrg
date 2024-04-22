@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240422162915_EditColumsNameInNotificationTable")]
+    partial class EditColumsNameInNotificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -437,6 +440,9 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MailingID")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("SenderId")
                         .HasColumnType("integer");

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZooExpoOrg.Context;
@@ -11,9 +12,11 @@ using ZooExpoOrg.Context;
 namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240421230051_AddNotificationTable")]
+    partial class AddNotificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,17 +60,17 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
 
             modelBuilder.Entity("ClientEntityNotificationEntity", b =>
                 {
-                    b.Property<int>("RecipientsId")
+                    b.Property<int>("RecipientsNotificationId")
                         .HasColumnType("integer");
 
                     b.Property<int>("UnreadNotificationsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("RecipientsId", "UnreadNotificationsId");
+                    b.HasKey("RecipientsNotificationId", "UnreadNotificationsId");
 
                     b.HasIndex("UnreadNotificationsId");
 
-                    b.ToTable("unreadNotifications_recipients", (string)null);
+                    b.ToTable("notifications_recipients", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -198,6 +201,48 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("user_tokens", (string)null);
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Common.Notifications.NotificationEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DepartureTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MailingID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SenderNotificationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SenderNotificationsId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderNotificationId");
+
+                    b.HasIndex("Uid")
+                        .IsUnique();
+
+                    b.ToTable("notifications", (string)null);
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AchievementEntity", b =>
@@ -427,42 +472,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.ToTable("expositions", (string)null);
                 });
 
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.NotificationEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DepartureTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(10000)
-                        .HasColumnType("character varying(10000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SenderId");
-
-                    b.HasIndex("Uid")
-                        .IsUnique();
-
-                    b.ToTable("notifications", (string)null);
-                });
-
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.PhotoEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -612,11 +621,11 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                 {
                     b.HasOne("ZooExpoOrg.Context.Entities.ClientEntity", null)
                         .WithMany()
-                        .HasForeignKey("RecipientsId")
+                        .HasForeignKey("RecipientsNotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ZooExpoOrg.Context.Entities.NotificationEntity", null)
+                    b.HasOne("ZooExpoOrg.Common.Notifications.NotificationEntity", null)
                         .WithMany()
                         .HasForeignKey("UnreadNotificationsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -672,6 +681,17 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ZooExpoOrg.Common.Notifications.NotificationEntity", b =>
+                {
+                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", "SenderNotification")
+                        .WithMany("SentNotifications")
+                        .HasForeignKey("SenderNotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SenderNotification");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.AchievementEntity", b =>
@@ -741,17 +761,6 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                         .IsRequired();
 
                     b.Navigation("Organizer");
-                });
-
-            modelBuilder.Entity("ZooExpoOrg.Context.Entities.NotificationEntity", b =>
-                {
-                    b.HasOne("ZooExpoOrg.Context.Entities.ExpositionEntity", "Sender")
-                        .WithMany("SentNotifications")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("ZooExpoOrg.Context.Entities.PhotoEntity", b =>

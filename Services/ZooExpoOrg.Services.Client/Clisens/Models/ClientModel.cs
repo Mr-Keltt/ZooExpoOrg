@@ -37,6 +37,8 @@ public class ClientModel
     public virtual ICollection<Guid> Animals { get; set; }
 
     public virtual ICollection<Guid> Comments { get; set; }
+
+    public virtual ICollection<Guid> UnreadNotifications { get; set; }
 }
 
 public class ClientModelProfile : Profile
@@ -51,6 +53,7 @@ public class ClientModelProfile : Profile
             .ForMember(dest => dest.Animals, opt => opt.MapFrom(src => src.Animals.Select(e => e.Uid)))
             .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.Select(e => e.Uid)))
             .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(e => e.Uid)))
-            .ForMember(dest => dest.OwnedPhotos, opt => opt.MapFrom(src => src.OwnedPhotos.Select(e => e.Uid)));
+            .ForMember(dest => dest.OwnedPhotos, opt => opt.MapFrom(src => src.OwnedPhotos.Select(e => e.Uid)))
+            .ForMember(dest => dest.UnreadNotifications, opt => opt.MapFrom(src => src.UnreadNotifications.Select(e => e.Uid)));
     }
 }

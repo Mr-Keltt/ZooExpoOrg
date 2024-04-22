@@ -1,18 +1,19 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
-using Azure.Core;
-using Azure.Core.GeoJson;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using ZooExpoOrg.Api.Controllers.Clients;
+using ZooExpoOrg.Api.Controllers.Expositions.Models;
 using ZooExpoOrg.Common.Exceptions;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.Clients;
 using ZooExpoOrg.Services.Expositions;
+using ZooExpoOrg.Services.ExpositionsNotificationManager;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.RightVerifier;
+
 
 namespace ZooExpoOrg.Api.Controllers.Expositions;
 
@@ -26,18 +27,21 @@ public class ExpositionController : Controller
     private readonly IExpositionService expositionService;
     private readonly IMapper mapper;
     private readonly IRightVerifierService rightVerifier;
+    private readonly IExpositionsNotificationManagerService expositionsNotificationManager;
 
     public ExpositionController(
         IAppLogger logger,
         IExpositionService expositionService, 
         IMapper mapper,
-        IRightVerifierService rightVerifier
+        IRightVerifierService rightVerifier,
+        IExpositionsNotificationManagerService expositionsNotificationManager
         )
     {
         this.logger = logger;
         this.expositionService = expositionService;
         this.mapper = mapper;
         this.rightVerifier = rightVerifier;
+        this.expositionsNotificationManager = expositionsNotificationManager;
     }
 
     [HttpGet("")]
@@ -103,6 +107,52 @@ public class ExpositionController : Controller
             return Ok();
         }
         catch(ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPut("{id:Guid}/notification/send")]
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> SendNotification(Guid id, PresintationCreateNotificationModel model)
+    {
+        try
+        {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfCreateNotification(jwtToken, id)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            await expositionsNotificationManager.SendNotification(id, mapper.Map<CreateNotificationModel>(model));
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPut("notification/cancel/{notificationId:Guid}")]
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> cancelMailing(Guid notificationId)
+    {
+        try
+        {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagNotification(jwtToken, notificationId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            await expositionsNotificationManager.CancelMailingByNotificationId(notificationId);
+
+            return Ok();
+        }
+        catch (ProcessException e)
         {
             return NotFound(e.Message);
         }
