@@ -102,7 +102,7 @@ public class ExpositionController : Controller
                 return BadRequest("Access denied.");
             }
 
-            await expositionService.Update(id, mapper.Map<PresintationUpdateExpositionModel>(model));
+            await expositionService.Update(id, mapper.Map<UpdateExpositionModel>(model));
 
             return Ok();
         }

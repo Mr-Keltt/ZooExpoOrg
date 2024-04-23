@@ -1,4 +1,4 @@
-﻿using ZooExpoOrg.Common.Enumerables;
+﻿using ZooExpoOrg.Web.Common.Enumerables;
 
 namespace ZooExpoOrg.Web.Services.Expositions;
 
