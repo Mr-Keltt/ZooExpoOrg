@@ -1,45 +1,45 @@
 ﻿using System.Net.Http.Json;
-using ZooExpoOrg.Web.Services.Expositions;
+using ZooExpoOrg.Web.Services.Animals;
 
-namespace ZooExpoOrg.Web.Services.Animals;
+namespace ZooExpoOrg.Web.Services.Clients;
 
-public class AnimalService : IAnimalService
+public class ClientService : IClientService
 {
     private readonly HttpClient httpClient;
 
-    public AnimalService(HttpClient httpClient)
+    public ClientService(HttpClient httpClient)
     {
         this.httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<VueAnimalModel>> GetAnimalsOwned(Guid ownerId)
+    public async Task<IEnumerable<VueClientModel>> GetClients()
     {
-        var response = await httpClient.GetAsync($"v1/animal/owned/{ownerId}");
+        var response = await httpClient.GetAsync($"v1/client");
         if (!response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
             throw new Exception(content);
         }
 
-        return await response.Content.ReadFromJsonAsync<IEnumerable<VueAnimalModel>>() ?? new List<VueAnimalModel>();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<VueClientModel>>() ?? new List<VueClientModel>();
     }
 
-    public async Task<VueAnimalModel> GetAnimal(Guid animalId)
+    public async Task<VueClientModel> GetClient(Guid clientId)
     {
-        var response = await httpClient.GetAsync($"v1/animal/{animalId}");
+        var response = await httpClient.GetAsync($"v1/client/{clientId}");
         if (!response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
             throw new Exception(content);
         }
 
-        return await response.Content.ReadFromJsonAsync<VueAnimalModel>() ?? new();
+        return await response.Content.ReadFromJsonAsync<VueClientModel>() ?? new();
     }
 
-    public async Task AddAnimal(VueCreateAnimalModel model)
+    public async Task AddClients(VueCreateClientModel model)
     {
         var requestContent = JsonContent.Create(model);
-        var response = await httpClient.PostAsync("v1/animal", requestContent);
+        var response = await httpClient.PostAsync("v1/client", requestContent);
 
         var content = await response.Content.ReadAsStringAsync();
 
@@ -49,10 +49,10 @@ public class AnimalService : IAnimalService
         }
     }
 
-    public async Task UpdateAnimal(Guid animalId, VueUpdateAnimalModel model)
+    public async Task UpdateClients(Guid clientId, VueUpdateClientModel model)
     {
         var requestContent = JsonContent.Create(model);
-        var response = await httpClient.PutAsync($"v1/animal/{animalId}", requestContent);
+        var response = await httpClient.PutAsync($"v1/client/{clientId}", requestContent);
 
         var content = await response.Content.ReadAsStringAsync();
 
@@ -62,9 +62,9 @@ public class AnimalService : IAnimalService
         }
     }
 
-    public async Task DeleteAnimal(Guid animalId)
+    public async Task DeleteClients(Guid clientId)
     {
-        var response = await httpClient.DeleteAsync($"v1/animal/{animalId}");
+        var response = await httpClient.DeleteAsync($"v1/client/{clientId}");
 
         var content = await response.Content.ReadAsStringAsync();
 
