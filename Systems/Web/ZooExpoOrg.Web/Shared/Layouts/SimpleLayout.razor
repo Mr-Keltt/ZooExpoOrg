@@ -1,0 +1,19 @@
+﻿@using ZooExpoOrg.Web.Services.Configuration;
+@inherits LayoutComponentBase
+@inject IConfigurationService Configuration
+
+<MudThemeProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudText Typo="Typo.h5" >ZooExpoOrg</MudText>
+        <MudSpacer />
+    </MudAppBar>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    
+}

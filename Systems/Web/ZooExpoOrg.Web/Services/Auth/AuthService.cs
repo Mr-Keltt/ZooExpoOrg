@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         await _localStorage.SetItemAsync(LocalStorageAuthTokenKey, loginResult.AccessToken);
         await _localStorage.SetItemAsync(LocalStorageRefreshTokenKey, loginResult.RefreshToken);
 
-        ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Email!);
+        ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.UserName!);
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.AccessToken);
 

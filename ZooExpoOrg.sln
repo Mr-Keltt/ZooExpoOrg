@@ -75,7 +75,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.RightVe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.ExpositionsNotificationManager", "Services\ZooExpoOrg.Services.ExpositionsNotificationManager\ZooExpoOrg.Services.ExpositionsNotificationManager.csproj", "{97BC784D-CA87-43C1-B5AF-117378F5BDD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Web", "Systems\Web\ZooExpoOrg.Web\ZooExpoOrg.Web.csproj", "{18844DD3-4946-4D5E-909E-0F05AED64B9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Web", "Systems\Web\ZooExpoOrg.Web\ZooExpoOrg.Web.csproj", "{18844DD3-4946-4D5E-909E-0F05AED64B9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

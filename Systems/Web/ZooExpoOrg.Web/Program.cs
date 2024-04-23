@@ -1,11 +1,15 @@
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using ZooExpoOrg.Web;
+using ZooExpoOrg.Web.Providers;
 using ZooExpoOrg.Web.Services;
+using ZooExpoOrg.Web.Services.Accounts;
 using ZooExpoOrg.Web.Services.Achievements;
 using ZooExpoOrg.Web.Services.Animals;
+using ZooExpoOrg.Web.Services.Auth;
 using ZooExpoOrg.Web.Services.Clients;
 using ZooExpoOrg.Web.Services.Comments;
 using ZooExpoOrg.Web.Services.Configuration;
@@ -18,6 +22,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 var services = builder.Services;
     
+services.AddAuthorizationCore();
 services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(Settings.ApiRoot) });
 
 services.AddMudServices();
@@ -26,11 +31,15 @@ services.AddBlazoredLocalStorage();
 
 services.AddScoped<IConfigurationService, ConfigurationService>();
 
+services.AddScoped<IAccountService, AccountService>();
 services.AddScoped<IAchievementService, AchievementService>();
 services.AddScoped<IAnimalService, AnimalService>();
 services.AddScoped<IClientService, ClientService>();
 services.AddScoped<ICommentService, CommentService>();
 services.AddScoped<IExpositionService, ExpositionService>();
 services.AddScoped<IPhotoService, PhotoService>();
+
+builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 await builder.Build().RunAsync();
