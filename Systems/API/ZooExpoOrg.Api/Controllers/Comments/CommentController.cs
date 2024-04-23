@@ -13,7 +13,7 @@ namespace ZooExpoOrg.Api.Controllers.Comments;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Technical")]
-[Route("v{version:apiVersion}/comments")]
+[Route("v{version:apiVersion}/comment")]
 public class CommentController : Controller
 {
     private readonly IAppLogger logger;
@@ -34,7 +34,7 @@ public class CommentController : Controller
         this.rightVerifier = rightVerifier;
     }
 
-    [HttpGet("location/{locationId:Guid}")]
+    [HttpGet("located/{locationId:Guid}")]
     public async Task<IActionResult> GetLocatedIn(Guid locationId)
     {
         try
