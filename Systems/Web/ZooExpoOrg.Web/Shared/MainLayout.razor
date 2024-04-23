@@ -1,27 +1,36 @@
-﻿@using MudBlazor;
+﻿@using MudBlazor
+@using ZooExpoOrg.Web.Services
 @inherits LayoutComponentBase
+@inject IConfigurationService ConfigurationService
 
 <MudThemeProvider />
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggleAsync" />
+        <MudText Typo="Typo.h5" Class="ml-3">ZooExpoOrg</MudText>
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        @*NavMenu*@
+    <MudDrawer @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
     </MudDrawer>
     <MudMainContent>
         @*Body*@
     </MudMainContent>
 </MudLayout>
-@code {
-    bool _drawerOpen = true;
 
-    void DrawerToggle()
+@code {
+    private bool drawerOpen = true;
+
+    protected override async Task OnInitializedAsync()
     {
-        _drawerOpen = !_drawerOpen;
+        drawerOpen = await ConfigurationService.GetNavigationMenuVisibleAsync();
+    }
+
+    private async Task DrawerToggleAsync()
+    {
+        drawerOpen = !drawerOpen;
+        await ConfigurationService.SetNavigationMenuVisibleAsync(drawerOpen);
     }
 }
