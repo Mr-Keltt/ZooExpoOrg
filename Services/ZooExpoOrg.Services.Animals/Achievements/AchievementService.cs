@@ -28,15 +28,15 @@ public class AchievementService : IAchievementService
         this.createAchievementModelValidator = createAchievementModelValidator;
     }
 
-    public async Task<IEnumerable<AchievementModel>> GetAllOwnedById(Guid OwnerId)
+    public async Task<IEnumerable<AchievementModel>> GetAllOwnedById(Guid ownerId)
     {
         using var db = await dbContextFactory.CreateDbContextAsync();
 
-        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == OwnerId);
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == ownerId);
 
         if (animal == null)
         {
-            throw new ProcessException($"Animal (ID={OwnerId}) not found.");
+            throw new ProcessException($"Animal (ID={ownerId}) not found.");
         }
         
         return mapper.Map<IEnumerable<AchievementModel>>(animal.Achievements);
