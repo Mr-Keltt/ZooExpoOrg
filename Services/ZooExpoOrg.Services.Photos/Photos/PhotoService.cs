@@ -28,13 +28,13 @@ public class PhotoService : IPhotoService
         this.createPhotoModelValidator = createPhotoModelValidator;
     }
 
-    public async Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid OwnerId)
+    public async Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid ownerId)
     {
         using var db = await dbContextFactory.CreateDbContextAsync();
 
-        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == OwnerId);
-        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == OwnerId);
-        var client = await db.Clients.FirstOrDefaultAsync(x => x.Uid == OwnerId);
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == ownerId);
+        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == ownerId);
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Uid == ownerId);
 
         ICollection<PhotoEntity> photos = null;
 

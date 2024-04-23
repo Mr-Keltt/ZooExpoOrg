@@ -2,7 +2,7 @@
 
 public interface IPhotoService
 {
-    public Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid OwnerId);
+    public Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid ownerId);
     public Task<PhotoModel> GetById(Guid id);
     public Task<PhotoModel> Create(CreatePhotoModel model);
     public Task Delete(Guid id);
