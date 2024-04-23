@@ -73,7 +73,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.Comment
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.RightVerifier", "Services\ZooExpoOrg.Services.RightVerifier\ZooExpoOrg.Services.RightVerifier.csproj", "{BC01C407-4724-4C80-883B-7FA02F2C24B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Services.ExpositionsNotificationManager", "Services\ZooExpoOrg.Services.ExpositionsNotificationManager\ZooExpoOrg.Services.ExpositionsNotificationManager.csproj", "{97BC784D-CA87-43C1-B5AF-117378F5BDD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.ExpositionsNotificationManager", "Services\ZooExpoOrg.Services.ExpositionsNotificationManager\ZooExpoOrg.Services.ExpositionsNotificationManager.csproj", "{97BC784D-CA87-43C1-B5AF-117378F5BDD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Web", "Systems\Web\ZooExpoOrg.Web\ZooExpoOrg.Web.csproj", "{18844DD3-4946-4D5E-909E-0F05AED64B9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,6 +167,10 @@ Global
 		{97BC784D-CA87-43C1-B5AF-117378F5BDD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97BC784D-CA87-43C1-B5AF-117378F5BDD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97BC784D-CA87-43C1-B5AF-117378F5BDD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18844DD3-4946-4D5E-909E-0F05AED64B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18844DD3-4946-4D5E-909E-0F05AED64B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18844DD3-4946-4D5E-909E-0F05AED64B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18844DD3-4946-4D5E-909E-0F05AED64B9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -196,6 +202,7 @@ Global
 		{2EA5C3BB-39CB-4174-AFA4-15AD23620C9E} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{BC01C407-4724-4C80-883B-7FA02F2C24B9} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{97BC784D-CA87-43C1-B5AF-117378F5BDD0} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
+		{18844DD3-4946-4D5E-909E-0F05AED64B9E} = {953D4CBB-73AE-4650-A4A8-241316D67A31}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}
