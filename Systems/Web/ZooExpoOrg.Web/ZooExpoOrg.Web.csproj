@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\" />
+    <Folder Include="Pages\Auth\" />
   </ItemGroup>
 
 </Project>
