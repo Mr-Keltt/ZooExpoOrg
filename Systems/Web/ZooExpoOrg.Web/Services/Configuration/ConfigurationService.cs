@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 
-namespace ZooExpoOrg.Web.Services;
+namespace ZooExpoOrg.Web.Services.Configuration;
 
 public class ConfigurationService : IConfigurationService
 {

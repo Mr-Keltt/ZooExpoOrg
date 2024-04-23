@@ -1,4 +1,4 @@
-﻿namespace ZooExpoOrg.Web.Services;
+﻿namespace ZooExpoOrg.Web.Services.Configuration;
 
 public interface IConfigurationService
 {
