@@ -1,3 +1,15 @@
-﻿<MudMenu Color="Color.Inherit" Icon="@Icons.Material.Filled.Face" AnchorOrigin="Origin.BottomRight" >
-    <MudMenuItem Link="/logout">Logout</MudMenuItem>
-</MudMenu>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu Color="Color.Inherit" Icon="@Icons.Material.Filled.Face" Size="Size.Large" AnchorOrigin="Origin.BottomRight" >
+            <MudMenuItem Link="/logout">Logout</MudMenuItem>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudMenu Color="Color.Inherit" Icon="@Icons.Material.Filled.Face" Size="Size.Large" AnchorOrigin="Origin.BottomRight" >
+            <MudMenuItem Link="/login">Login</MudMenuItem>
+        </MudMenu>
+    </NotAuthorized>
+</AuthorizeView>
+

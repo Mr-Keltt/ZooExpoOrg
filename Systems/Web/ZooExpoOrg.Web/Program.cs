@@ -14,6 +14,7 @@ using ZooExpoOrg.Web.Services.Clients;
 using ZooExpoOrg.Web.Services.Comments;
 using ZooExpoOrg.Web.Services.Configuration;
 using ZooExpoOrg.Web.Services.Expositions;
+using ZooExpoOrg.Web.Services.GetIdHelper;
 using ZooExpoOrg.Web.Services.Photos;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -38,6 +39,8 @@ services.AddScoped<IClientService, ClientService>();
 services.AddScoped<ICommentService, CommentService>();
 services.AddScoped<IExpositionService, ExpositionService>();
 services.AddScoped<IPhotoService, PhotoService>();
+
+services.AddScoped<IGetIdHelperService, GetIdHelperService>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
