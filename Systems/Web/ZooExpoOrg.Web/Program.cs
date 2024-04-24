@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using ZooExpoOrg.Web;
 using ZooExpoOrg.Web.Providers;
-using ZooExpoOrg.Web.Services;
 using ZooExpoOrg.Web.Services.Accounts;
 using ZooExpoOrg.Web.Services.Achievements;
 using ZooExpoOrg.Web.Services.Animals;

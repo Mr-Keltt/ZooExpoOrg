@@ -24,7 +24,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> Register([FromQuery] RegisterAccountModel request)
+    public async Task<IActionResult> Register(RegisterAccountModel request)
     {
         try
         {

@@ -1,24 +1,23 @@
-﻿@page "/login"
+﻿@page "/register"
 @using ZooExpoOrg.Web.Services.Accounts
 @using System.ComponentModel.DataAnnotations
 @using ZooExpoOrg.Web.Services.Auth
 @using ZooExpoOrg.Web.Shared.Layouts;
 
-
-@inject IAuthService AuthService
+@inject IAccountService AccountService
 @inject NavigationManager NavigationManager
 
 <MudGrid Justify="Justify.Center" Class="pa-10">
     <MudItem xs="7" sm="4">
         <MudPaper Class="pa-4">
             <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-                
-                <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Вход</MudText>
+                <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Регистрация</MudText>
 
                 <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
-                    @Error
-                    <br />
-                    @ErrorDetail
+                    @foreach (string mesage in Error)
+                    {
+                        <MudText>@mesage</MudText>
+                    }
                 </MudAlert>
 
                 <MudTextField T="string"
@@ -27,6 +26,14 @@
                                 Required="true" 
                                 RequiredError="Логин обязателен"
                                 HelperText="Введите ваш логин"/>
+
+                <MudTextField T="string"
+                                @bind-Value="model.Email" For="@(() => model.Email)"
+                                Label="Email" 
+                                Required="true" 
+                                RequiredError="Email обязателен"
+                                HelperText="Введите ваш email"/>
+
                 <MudTextField @bind-Value="model.Password" For="@(() => model.Password)"
                                 Label="Пароль"
                                 HelperText="Введите ваш пароль"
@@ -37,22 +44,18 @@
                                 RequiredError="Пароль обязателен"
                                 OnAdornmentClick="TogglePasswordVisibility" />
 
-                <div Class="d-flex justify-space-between align-center">
-                    <MudCheckBox For="@(() => model.RememberMe)" @bind-Checked="model.RememberMe" Label="Запомнить пользователя?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
-                </div>
-
                 <MudCardActions>
                     <MudButton Variant="Variant.Filled"
                         Color="Color.Primary"
                         Size="Size.Medium"
-                        ButtonType="ButtonType.Submit">Войти</MudButton>
+                        ButtonType="ButtonType.Submit">Зарегистрироваться</MudButton>
 
                     <MudSpacer />
 
                     <MudButton Class="" Variant="Variant.Filled"
                         Color="Color.Secondary"
                         Size="Size.Medium"
-                        OnClick="@GoToRegister">Регистрация</MudButton>
+                        OnClick="@GoToLogin">Вход</MudButton>
                 </MudCardActions>
             </EditForm>
         </MudPaper>
@@ -60,22 +63,19 @@
 </MudGrid>
 
 @code {
-    bool success;
-    MudForm form;
-
-    private LoginModel model = new LoginModel();
+    private RegisterAccountModel model = new RegisterAccountModel();
+    private bool registerProcessing = false;
 
     bool PasswordVisibility;
     InputType PasswordInput = InputType.Password;
     string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
 
     private bool ShowErrors;
-    private string Error;
-    private string ErrorDetail;
+    private List<string> Error = new List<string>();
 
     void TogglePasswordVisibility()
     {
-        @if (PasswordVisibility)
+        if (PasswordVisibility)
         {
             PasswordVisibility = false;
             PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
@@ -92,42 +92,53 @@
     private async Task OnValidSubmit()
     {
         ShowErrors = false;
-        Error = "";
-        ErrorDetail = "";
+        Error.Clear();
 
-        var result = await AuthService.Login(model);
+        var result = await AccountService.RegisterAccount(model);
 
         if (result.Successful)
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/login");
         }
         else
         {
-            if (result.Error == "invalid_grant")
+            foreach (RegisterError error in result.Errors)
             {
-                Error = "Логин обязателен";
+                switch (error.Message)
+                {
+                    case "User name is required.":
+                        Error.Add("Логин обязателен");
+                        break;
+                    case "UserName is long.":
+                        Error.Add("Имя пользователя слишком длинное");
+                        break;
+                    case "Email is required.":
+                        Error.Add("Email обязателен");
+                        break;
+                    case "Email format is incorrect.":
+                        Error.Add("Неверный формат Email");
+                        break;
+                    case "Email is long.":
+                        Error.Add("Email слишком длинное.");
+                        break;
+                    case "Password is required.":
+                        Error.Add("Пароль обязателен");
+                        break;
+                    case "Password is long.":
+                        Error.Add("Пароль слишком длинный");
+                        break;
+                    default:
+                        Error.Add(error.Message);
+                        break;
+                }
             }
-            else
-            {
-                Error = result.Error;
-            }
-
-            if (result.ErrorDescription == "invalid_username_or_password")
-            {
-                Error = "Не верный логин или пароль";
-            }
-            else
-            {
-                ErrorDetail = result.ErrorDescription;
-            }
-
 
             ShowErrors = true;
         }
     }
 
-    private void GoToRegister()
+    private void GoToLogin()
     {
-        NavigationManager.NavigateTo("/register");
+        NavigationManager.NavigateTo("/login");
     }
 }

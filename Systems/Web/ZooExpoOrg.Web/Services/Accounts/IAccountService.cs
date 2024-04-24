@@ -2,5 +2,5 @@
 
 public interface IAccountService
 {
-    Task RegisterAccount(RegisterAccountModel model);
+    Task<RegisterResult> RegisterAccount(RegisterAccountModel model);
 }

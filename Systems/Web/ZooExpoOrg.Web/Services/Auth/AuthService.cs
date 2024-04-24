@@ -45,7 +45,7 @@ public class AuthService : IAuthService
 
         var loginResult = JsonSerializer.Deserialize<LoginResult>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new LoginResult();
         loginResult.Successful = response.IsSuccessStatusCode;
-
+        
         if (!response.IsSuccessStatusCode)
         {
             return loginResult;
