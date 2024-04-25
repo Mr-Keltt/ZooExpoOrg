@@ -35,3 +35,13 @@ services:
 #      - zooexpoorg_postgresql
 #      - zooexpoorg_rabbitmq
 #      - zooexpoorg_api
+
+  zooexpoorg_web:
+    image: ${DOCKER_REGISTRY-}zoo-expo-org-web
+    build:
+      context: .
+      dockerfile: Systems/Web/ZooExpoOrg.Web/Dockerfile
+    depends_on:
+      - zooexpoorg_api
+      - zooexpoorg_postgresql
+      - zooexpoorg_identity
