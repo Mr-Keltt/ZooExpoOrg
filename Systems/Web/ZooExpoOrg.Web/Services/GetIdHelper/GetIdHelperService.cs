@@ -37,7 +37,7 @@ public class GetIdHelperService : IGetIdHelperService
             return getIdResult;
         }
 
-        var users = getUsersResult.Users;
+        var users = getUsersResult.Result;
 
         if (!users.Any())
         {
@@ -97,7 +97,7 @@ public class GetIdHelperService : IGetIdHelperService
         if (!getClientsResult.Successful)
         {
             getIdResult.Successful = false;
-            getIdResult.ErrorMesage = "Clints not found.";
+            getIdResult.ErrorMesage = getClientsResult.ErrorMesage;
 
             return getIdResult;
         }
@@ -112,7 +112,7 @@ public class GetIdHelperService : IGetIdHelperService
             return getIdResult;
         }
 
-        var client = getClientsResult.Clients.FirstOrDefault(x => x.UserId == getUserId.Id);
+        var client = getClientsResult.Result.FirstOrDefault(x => x.UserId == getUserId.Id);
 
         if (client == null)
         {

@@ -78,6 +78,6 @@ public class CreateClientModelValidator : AbstractValidator<CreateClientModel>
 
     private bool BeAValidDate(DateTime date)
     {
-        return date < DateTime.Now && date > DateTime.Now.AddYears(-150); // Assuming birth date should not be in future and not more than 150 years old.
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }

@@ -1,10 +1,12 @@
-﻿namespace ZooExpoOrg.Web.Services.Clients;
+﻿using ZooExpoOrg.Web.Services.GetRsultHelper;
+
+namespace ZooExpoOrg.Web.Services.Clients;
 
 public interface IClientService
 {
-    Task<GetClientsResult> GetClients();
-    Task<GetClientResult> GetClient(Guid clientId);
-    Task AddClients(VueCreateClientModel model);
-    Task UpdateClients(Guid clientId, VueUpdateClientModel model);
-    Task DeleteClients(Guid clientId);
+    Task<GetModelResult<List<VueClientModel>>> GetClients();
+    Task<GetModelResult<VueClientModel>> GetClient(Guid clientId);
+    Task<ManageModelResult<VueClientModel>> AddClient(VueCreateClientModel model);
+    Task<ManageModelResult<VueClientModel>> UpdateClients(Guid clientId, VueUpdateClientModel model);
+    Task<DeleteModelResult> DeleteClients(Guid clientId);
 }

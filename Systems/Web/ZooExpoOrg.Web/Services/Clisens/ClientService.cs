@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using ZooExpoOrg.Web.Services.Accounts;
-using ZooExpoOrg.Web.Services.Animals;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
 
 namespace ZooExpoOrg.Web.Services.Clients;
 
@@ -14,81 +14,52 @@ public class ClientService : IClientService
         this.httpClient = httpClient;
     }
 
-    public async Task<GetClientsResult> GetClients()
+    public async Task<GetModelResult<List<VueClientModel>>> GetClients()
     {
-        var getClientsResult = new GetClientsResult();
-
         var response = await httpClient.GetAsync($"v1/client");
-
-        if (!response.IsSuccessStatusCode)
-        {
-            getClientsResult.Successful = false;
-            getClientsResult.ErrorMesage = "Clients not found.";
-
-            return getClientsResult;
-        }
-
-        getClientsResult.Successful = true;
-        getClientsResult.Clients = await response.Content.ReadFromJsonAsync<IEnumerable<VueClientModel>>() ?? new List<VueClientModel>();
-
-        return getClientsResult;
+        
+        var getResultHelper = new GetResultHelper<List<VueClientModel>>();
+        
+        return await getResultHelper.GetGetModelResult(response, "Clients");
     }
 
-    public async Task<GetClientResult> GetClient(Guid clientId)
+    public async Task<GetModelResult<VueClientModel>> GetClient(Guid clientId)
     {
-        var getClientResult = new GetClientResult();
-
         var response = await httpClient.GetAsync($"v1/client/{clientId}");
 
-        if (!response.IsSuccessStatusCode)
-        {
-            getClientResult.Successful = false;
-            getClientResult.ErrorMesage = "Client not found.";
+        GetResultHelper<VueClientModel> getResultHelper = new GetResultHelper<VueClientModel>();
 
-            return getClientResult;
-        }
-
-        getClientResult.Successful = true;
-        getClientResult.Client = await response.Content.ReadFromJsonAsync<VueClientModel>() ?? new VueClientModel();
-
-        return getClientResult;
+        return await getResultHelper.GetGetModelResult(response, "Client");
     }
 
-    public async Task AddClients(VueCreateClientModel model)
+    public async Task<ManageModelResult<VueClientModel>> AddClient(VueCreateClientModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PostAsync("v1/client", requestContent);
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueClientModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetManageModelResult(response, "Client add");
     }
 
-    public async Task UpdateClients(Guid clientId, VueUpdateClientModel model)
+    public async Task<ManageModelResult<VueClientModel>> UpdateClients(Guid clientId, VueUpdateClientModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PutAsync($"v1/client/{clientId}", requestContent);
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueClientModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetManageModelResult(response, "Client update");
     }
 
-    public async Task DeleteClients(Guid clientId)
+    public async Task<DeleteModelResult> DeleteClients(Guid clientId)
     {
         var response = await httpClient.DeleteAsync($"v1/client/{clientId}");
 
         var content = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        var getResultHelper = new GetResultHelper<VueClientModel>();
+
+        return await getResultHelper.GetDeleteModelResult(response, "Client");
     }
 }

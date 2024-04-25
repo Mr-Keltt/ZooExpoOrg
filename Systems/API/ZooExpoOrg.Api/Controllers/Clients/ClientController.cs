@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.RightVerifier;
 using ZooExpoOrg.Services.ExpositionsNotificationManager;
+using FluentValidation;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -82,6 +83,10 @@ public class ClientController : Controller
         {
             return NotFound(e.Message);
         }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
+        }
     }
 
     [HttpPut("{id:Guid}")]
@@ -104,6 +109,10 @@ public class ClientController : Controller
         catch (ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 

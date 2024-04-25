@@ -1,8 +1,11 @@
-﻿namespace ZooExpoOrg.Web.Services.Accounts;
+﻿using ZooExpoOrg.Web.Services.Auth;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
+
+namespace ZooExpoOrg.Web.Services.Accounts;
 
 public interface IAccountService
 {
-    Task<GetUsersResult> GetUsers();
+    Task<GetModelResult<List<AccountModel>>> GetUsers();
 
-    Task<RegisterResult> RegisterAccount(RegisterAccountModel model);
+    Task<ManageModelResult<AccountModel>> RegisterAccount(RegisterAccountModel model);
 }

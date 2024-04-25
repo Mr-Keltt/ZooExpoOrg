@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using ZooExpoOrg.Web.Services.Clients;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
 
 namespace ZooExpoOrg.Web.Services.Comments;
 
@@ -12,65 +13,50 @@ public class CommentService : ICommentService
         this.httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<VueCommentModel>> GetCommentsLocated(Guid locationId)
+    public async Task<GetModelResult<List<VueCommentModel>>> GetCommentsLocated(Guid locationId)
     {
         var response = await httpClient.GetAsync($"v1/comment/located/{locationId:Guid}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
-        }
+        
+        var getResultHelper = new GetResultHelper<List<VueCommentModel>>();
 
-        return await response.Content.ReadFromJsonAsync<IEnumerable<VueCommentModel>>() ?? new List<VueCommentModel>();
+        return await getResultHelper.GetGetModelResult(response, "Comments");
     }
 
-    public async Task<VueCommentModel> GetComment(Guid commentId)
+    public async Task<GetModelResult<VueCommentModel>> GetComment(Guid commentId)
     {
         var response = await httpClient.GetAsync($"v1/comment/{commentId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
-        }
 
-        return await response.Content.ReadFromJsonAsync<VueCommentModel>() ?? new();
+        var getResultHelper = new GetResultHelper<VueCommentModel>();
+
+        return await getResultHelper.GetGetModelResult(response, "Comment");
     }
 
-    public async Task AddComment(VueCreateCommentModel model)
+    public async Task<ManageModelResult<VueCommentModel>> AddComment(VueCreateCommentModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PostAsync("v1/comment", requestContent);
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueCommentModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetManageModelResult(response, "Comment add");
     }
 
-    public async Task UpdateComment(Guid commentId, VueUpdateCommentModel model)
+    public async Task<ManageModelResult<VueCommentModel>> UpdateComment(Guid commentId, VueUpdateCommentModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PutAsync($"v1/comment/{commentId}", requestContent);
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueCommentModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetManageModelResult(response, "Comment update");
     }
 
-    public async Task DeleteComment(Guid commentId)
+    public async Task<DeleteModelResult> DeleteComment(Guid commentId)
     {
         var response = await httpClient.DeleteAsync($"v1/comment/{commentId}");
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueCommentModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetDeleteModelResult(response, "Comment");
     }
 }

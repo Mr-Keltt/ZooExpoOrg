@@ -1,14 +1,16 @@
-﻿namespace ZooExpoOrg.Web.Services.Expositions;
+﻿using ZooExpoOrg.Web.Services.GetRsultHelper;
+
+namespace ZooExpoOrg.Web.Services.Expositions;
 
 public interface IExpositionService
 {
-    Task<IEnumerable<VueExpositionModel>> GetExpositions();
-    Task<VueExpositionModel> GetExposition(Guid expositionId);
-    Task AddExposition(VueCreateExpositionModel model);
-    Task EditExposition(Guid expositionId, VueUpdateExpositionModel model);
+    Task<GetModelResult<List<VueExpositionModel>>> GetExpositions();
+    Task<GetModelResult<VueExpositionModel>> GetExposition(Guid expositionId);
+    Task<ManageModelResult<VueExpositionModel>> AddExposition(VueCreateExpositionModel model);
+    Task<ManageModelResult<VueExpositionModel>> EditExposition(Guid expositionId, VueUpdateExpositionModel model);
     Task Subscribe(Guid expositionId, Guid clientId);
     Task Unsubscribe(Guid expositionId, Guid clientId);
     Task AddParticipant(Guid expositionId, Guid animalId);
     Task DeleteParticipant(Guid expositionId, Guid animalId);
-    Task DeleteExposition(Guid expositionId);
+    Task<DeleteModelResult> DeleteExposition(Guid expositionId);
 }

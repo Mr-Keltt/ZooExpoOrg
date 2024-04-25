@@ -7,7 +7,7 @@ using ZooExpoOrg.Services.Accounts;
 using ZooExpoOrg.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using ZooExpoOrg.Common.Security;
-using ZooExpoOrg.Api.Controllers.Achievements;
+using FluentValidation;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -58,6 +58,10 @@ public class AccountController : ControllerBase
         catch (ProcessException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (ValidationException e) 
+        {
+            return BadRequest(e.Errors);
         }
     }
 }

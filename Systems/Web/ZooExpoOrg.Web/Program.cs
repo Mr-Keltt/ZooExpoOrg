@@ -14,6 +14,7 @@ using ZooExpoOrg.Web.Services.Comments;
 using ZooExpoOrg.Web.Services.Configuration;
 using ZooExpoOrg.Web.Services.Expositions;
 using ZooExpoOrg.Web.Services.GetIdHelper;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
 using ZooExpoOrg.Web.Services.Photos;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

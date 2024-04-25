@@ -1,12 +1,12 @@
 ﻿using System.Text.Json.Serialization;
-using ZooExpoOrg.Web.Shared.Interfaces;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
 
 namespace ZooExpoOrg.Web.Services.Auth;
 
 public class LoginResult : RequestResult
 {
     public bool Successful { get; set; }
-    
+
     [JsonPropertyName("scope")]
     public string Scope { get; set; }
 
@@ -15,7 +15,7 @@ public class LoginResult : RequestResult
 
     [JsonPropertyName("refresh_token")]
     public string RefreshToken { get; set; }
-    
+
     [JsonPropertyName("expires_in")]
     public int? ExpiresIn { get; set; }
 

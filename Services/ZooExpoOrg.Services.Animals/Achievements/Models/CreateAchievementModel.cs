@@ -70,6 +70,6 @@ public class CreateAchievementModelValidator : AbstractValidator<CreateAchieveme
 
     private bool BeAValidDate(DateTime date)
     {
-        return date != default(DateTime);
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }

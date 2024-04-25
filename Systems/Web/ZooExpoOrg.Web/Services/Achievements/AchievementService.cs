@@ -1,6 +1,8 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
+using ZooExpoOrg.Web.Services.Clients;
 using ZooExpoOrg.Web.Services.Expositions;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
 
 namespace ZooExpoOrg.Web.Services.Achievements;
 
@@ -13,52 +15,40 @@ public class AchievementService : IAchievementService
         this.httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<VueAchievementModel>> GetAchievementsOwned(Guid ownerId)
+    public async Task<GetModelResult<List<VueAchievementModel>>> GetAchievementsOwned(Guid ownerId)
     {
         var response = await httpClient.GetAsync($"v1/achievement/owned/{ownerId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
-        }
 
-        return await response.Content.ReadFromJsonAsync<IEnumerable<VueAchievementModel>>() ?? new List<VueAchievementModel>();
+        var getResultHelper = new GetResultHelper<List<VueAchievementModel>>();
+
+        return await getResultHelper.GetGetModelResult(response, "Achievements");
     }
 
-    public async Task<VueAchievementModel> GetAchievement(Guid achievementId)
+    public async Task<GetModelResult<VueAchievementModel>> GetAchievement(Guid achievementId)
     {
         var response = await httpClient.GetAsync($"v1/achievement/{achievementId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
-        }
 
-        return await response.Content.ReadFromJsonAsync<VueAchievementModel>() ?? new();
+        var getResultHelper = new GetResultHelper<VueAchievementModel>();
+
+        return await getResultHelper.GetGetModelResult(response, "Achievement");
     }
 
-    public async Task AddAchievement(VueCreateAchievementModel model)
+    public async Task<ManageModelResult<VueAchievementModel>> AddAchievement(VueCreateAchievementModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PostAsync("v1/achievemen", requestContent);
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueAchievementModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetManageModelResult(response, "Achievement add");
     }
 
-    public async Task DeleteAchievement(Guid achievementId)
+    public async Task<DeleteModelResult> DeleteAchievement(Guid achievementId)
     {
         var response = await httpClient.DeleteAsync($"v1/achievemen/{achievementId}");
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VueAchievementModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetDeleteModelResult(response, "Achievement");
     }
 }

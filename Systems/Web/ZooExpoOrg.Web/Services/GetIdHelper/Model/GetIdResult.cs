@@ -1,10 +1,8 @@
-﻿namespace ZooExpoOrg.Web.Services.GetIdHelper;
+﻿using ZooExpoOrg.Web.Services.GetRsultHelper;
 
-public class GetIdResult
+namespace ZooExpoOrg.Web.Services.GetIdHelper;
+
+public class GetIdResult : RequestResult
 {
-    public bool Successful { get; set; }
-
     public Guid Id { get; set; }
-
-    public string ErrorMesage { get; set; }
 }

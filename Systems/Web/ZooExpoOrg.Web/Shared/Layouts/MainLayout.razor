@@ -79,12 +79,7 @@
 
         var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
 
-        if (!getClientResult.Successful)
-        {
-            return;
-        }
-
-        client = getClientResult.Client;
+        client = getClientResult.Result;
     }
 
     private async Task<bool> UserIsAdmin()

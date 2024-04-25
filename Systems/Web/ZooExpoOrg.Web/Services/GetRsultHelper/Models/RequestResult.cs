@@ -1,4 +1,4 @@
-﻿namespace ZooExpoOrg.Web.Shared.Interfaces;
+﻿namespace ZooExpoOrg.Web.Services.GetRsultHelper;
 
 public abstract class RequestResult
 {

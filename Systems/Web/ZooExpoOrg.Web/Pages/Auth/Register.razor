@@ -2,7 +2,8 @@
 @using ZooExpoOrg.Web.Services.Accounts
 @using System.ComponentModel.DataAnnotations
 @using ZooExpoOrg.Web.Services.Auth
-@using ZooExpoOrg.Web.Shared.Layouts;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
+@using ZooExpoOrg.Web.Shared.Layouts
 
 @inject IAccountService AccountService
 @inject NavigationManager NavigationManager
@@ -102,9 +103,9 @@
         }
         else
         {
-            foreach (RegisterError error in registerResult.FieldErrors)
+            foreach (ManageModelError error in registerResult.FieldErrors)
             {
-                switch (error.Message)
+                switch (error.ErrorMessage)
                 {
                     case "User name is required.":
                         Error.Add("Логин обязателен");
@@ -128,7 +129,7 @@
                         Error.Add("Пароль слишком длинный");
                         break;
                     default:
-                        Error.Add(error.Message);
+                        Error.Add(error.ErrorMessage);
                         break;
                 }
             }

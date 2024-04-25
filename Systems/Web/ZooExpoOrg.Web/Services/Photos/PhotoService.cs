@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using ZooExpoOrg.Web.Services.Comments;
+using ZooExpoOrg.Web.Services.GetRsultHelper;
 
 namespace ZooExpoOrg.Web.Services.Photos;
 
@@ -14,52 +15,40 @@ public class PhotoService : IPhotoService
         this.httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<VuePhotoModel>> GetPhotosOwned(Guid ownerId)
+    public async Task<GetModelResult<List<VuePhotoModel>>> GetPhotosOwned(Guid ownerId)
     {
         var response = await httpClient.GetAsync($"v1/photo/owned/{ownerId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
-        }
 
-        return await response.Content.ReadFromJsonAsync<IEnumerable<VuePhotoModel>>() ?? new List<VuePhotoModel>();
+        var getResultHelper = new GetResultHelper<List<VuePhotoModel>>();
+
+        return await getResultHelper.GetGetModelResult(response, "Photos");
     }
 
-    public async Task<VuePhotoModel> GetPhoto(Guid photoId)
+    public async Task<GetModelResult<VuePhotoModel>> GetPhoto(Guid photoId)
     {
         var response = await httpClient.GetAsync($"v1/photo/{photoId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
-        }
 
-        return await response.Content.ReadFromJsonAsync<VuePhotoModel>() ?? new();
+        var getResultHelper = new GetResultHelper<VuePhotoModel>();
+
+        return await getResultHelper.GetGetModelResult(response, "Photo");
     }
 
-    public async Task AddPhoto(VueCreatePhotoModel model)
+    public async Task<ManageModelResult<VuePhotoModel>> AddPhoto(VueCreatePhotoModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PostAsync("v1/photo", requestContent);
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VuePhotoModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetManageModelResult(response, "Photo add");
     }
 
-    public async Task DeletePhoto(Guid photoId)
+    public async Task<DeleteModelResult> DeletePhoto(Guid photoId)
     {
         var response = await httpClient.DeleteAsync($"v1/photo/{photoId}");
 
-        var content = await response.Content.ReadAsStringAsync();
+        var getResultHelper = new GetResultHelper<VuePhotoModel>();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception(content);
-        }
+        return await getResultHelper.GetDeleteModelResult(response, "Photo");
     }
 }

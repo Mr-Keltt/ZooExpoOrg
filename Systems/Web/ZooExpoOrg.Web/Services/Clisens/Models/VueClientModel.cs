@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ZooExpoOrg.Web.Common.Enumerables;
+using ZooExpoOrg.Web.Services.GetRsultHelper.Models;
 
 namespace ZooExpoOrg.Web.Services.Clients;
 
