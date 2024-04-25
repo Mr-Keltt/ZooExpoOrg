@@ -2,6 +2,7 @@
 @using ZooExpoOrg.Web.Services.Configuration
 @using Microsoft.AspNetCore.Components.Authorization
 @using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Shared.Components
 
 @inherits LayoutComponentBase
 
@@ -9,6 +10,7 @@
 @inject IClientService ClientService
 @inject IGetIdHelperService GetIdHelper
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
 <MudThemeProvider />
 
@@ -33,7 +35,7 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        
+        @Body
     </MudMainContent>
 </MudLayout>
 
@@ -48,6 +50,11 @@
             drawerOpen = await ConfigurationService.GetNavigationMenuVisibleAsync();
 
             await ReloadClientData();
+
+            if (client == null && !await UserIsAdmin())
+            {
+                NavigationManager.NavigateTo("/client/update");
+            }
         }
         catch (Exception ex)
         {
@@ -63,10 +70,39 @@
 
     private async Task ReloadClientData()
     {
-        Guid clientId = await GetIdHelper.GetClientId();
+        var getClientIdResult = await GetIdHelper.GetClientId();
 
-        client = await ClientService.GetClient(clientId);
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        if (!getClientResult.Successful)
+        {
+            return;
+        }
+
+        client = getClientResult.Client;
     }
 
+    private async Task<bool> UserIsAdmin()
+    {
+        var getAdminIdResuly = await GetIdHelper.GetAdminId();
 
+        var getUserIdResult = await GetIdHelper.GetUserId();
+
+        if (!getAdminIdResuly.Successful || !getUserIdResult.Successful)
+        {
+            return false;
+        }
+
+        if (getAdminIdResuly.Id != getUserIdResult.Id)
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

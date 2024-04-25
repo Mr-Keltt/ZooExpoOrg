@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using ZooExpoOrg.Web.Shared.Interfaces;
 
 namespace ZooExpoOrg.Web.Services.Auth;
 
-public class LoginResult
+public class LoginResult : RequestResult
 {
     public bool Successful { get; set; }
     

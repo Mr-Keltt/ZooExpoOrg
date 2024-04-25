@@ -2,7 +2,9 @@
 
 public interface IGetIdHelperService
 {
-    Task<Guid> GetUserId(CancellationToken cancellationToken = default);
+    Task<GetIdResult> GetAdminId();
 
-    Task<Guid> GetClientId(CancellationToken cancellationToken = default);
+    Task<GetIdResult> GetUserId(CancellationToken cancellationToken = default);
+
+    Task<GetIdResult> GetClientId();
 }

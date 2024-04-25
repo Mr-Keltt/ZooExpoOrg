@@ -1,13 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using ZooExpoOrg.Web.Shared.Interfaces;
 
 namespace ZooExpoOrg.Web.Services.Accounts;
 
-public class RegisterResult
+public class RegisterResult : RequestResult
 {
-    public bool Successful { get; set; }
-
     [JsonPropertyName("fieldErrors")]
-    public List<RegisterError> Errors { get; set; }
+    public List<RegisterError> FieldErrors { get; set; }
 }
 
 //{

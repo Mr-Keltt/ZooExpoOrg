@@ -1,4 +1,6 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
+using ZooExpoOrg.Web.Services.Accounts;
 using ZooExpoOrg.Web.Services.Animals;
 
 namespace ZooExpoOrg.Web.Services.Clients;
@@ -12,28 +14,44 @@ public class ClientService : IClientService
         this.httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<VueClientModel>> GetClients()
+    public async Task<GetClientsResult> GetClients()
     {
+        var getClientsResult = new GetClientsResult();
+
         var response = await httpClient.GetAsync($"v1/client");
+
         if (!response.IsSuccessStatusCode)
         {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
+            getClientsResult.Successful = false;
+            getClientsResult.ErrorMesage = "Clients not found.";
+
+            return getClientsResult;
         }
 
-        return await response.Content.ReadFromJsonAsync<IEnumerable<VueClientModel>>() ?? new List<VueClientModel>();
+        getClientsResult.Successful = true;
+        getClientsResult.Clients = await response.Content.ReadFromJsonAsync<IEnumerable<VueClientModel>>() ?? new List<VueClientModel>();
+
+        return getClientsResult;
     }
 
-    public async Task<VueClientModel> GetClient(Guid clientId)
+    public async Task<GetClientResult> GetClient(Guid clientId)
     {
+        var getClientResult = new GetClientResult();
+
         var response = await httpClient.GetAsync($"v1/client/{clientId}");
+
         if (!response.IsSuccessStatusCode)
         {
-            var content = await response.Content.ReadAsStringAsync();
-            throw new Exception(content);
+            getClientResult.Successful = false;
+            getClientResult.ErrorMesage = "Client not found.";
+
+            return getClientResult;
         }
 
-        return await response.Content.ReadFromJsonAsync<VueClientModel>() ?? new();
+        getClientResult.Successful = true;
+        getClientResult.Client = await response.Content.ReadFromJsonAsync<VueClientModel>() ?? new VueClientModel();
+
+        return getClientResult;
     }
 
     public async Task AddClients(VueCreateClientModel model)

@@ -2,5 +2,7 @@
 
 public interface IAccountService
 {
+    Task<GetUsersResult> GetUsers();
+
     Task<RegisterResult> RegisterAccount(RegisterAccountModel model);
 }

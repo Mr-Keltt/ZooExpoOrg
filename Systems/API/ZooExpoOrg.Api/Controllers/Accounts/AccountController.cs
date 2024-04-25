@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using ZooExpoOrg.Services.Accounts;
 using ZooExpoOrg.Common.Exceptions;
+using Microsoft.AspNetCore.Authorization;
+using ZooExpoOrg.Common.Security;
+using ZooExpoOrg.Api.Controllers.Achievements;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -23,12 +26,33 @@ public class AccountController : ControllerBase
         this.accountService = accountService;
     }
 
-    [HttpPost("")]
-    public async Task<IActionResult> Register(RegisterAccountModel request)
+    [HttpGet("")]
+    [Authorize(AppScopes.UseScope)]
+    public async Task<IActionResult> Register()
     {
         try
         {
-            var user = await accountService.Create(request);
+            var users = await accountService.GetAll();
+
+            if (users == null)
+            {
+                return NotFound($"Users not found.");
+            }
+
+            return Ok(mapper.Map<IEnumerable<PresintationAccountModel>>(users));
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPost("")]
+    public async Task<IActionResult> Register(PresintationRegisterAccountModel request)
+    {
+        try
+        {
+            var user = await accountService.Create(mapper.Map<RegisterAccountModel>(request));
             return Ok(mapper.Map<PresintationAccountModel>(user));
         }
         catch (ProcessException e)

@@ -94,15 +94,15 @@
         ShowErrors = false;
         Error.Clear();
 
-        var result = await AccountService.RegisterAccount(model);
+        var registerResult = await AccountService.RegisterAccount(model);
 
-        if (result.Successful)
+        if (registerResult.Successful)
         {
             NavigationManager.NavigateTo("/login");
         }
         else
         {
-            foreach (RegisterError error in result.Errors)
+            foreach (RegisterError error in registerResult.FieldErrors)
             {
                 switch (error.Message)
                 {

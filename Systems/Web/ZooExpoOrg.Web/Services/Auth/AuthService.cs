@@ -44,12 +44,16 @@ public class AuthService : IAuthService
         var content = await response.Content.ReadAsStringAsync();
 
         var loginResult = JsonSerializer.Deserialize<LoginResult>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new LoginResult();
-        loginResult.Successful = response.IsSuccessStatusCode;
         
         if (!response.IsSuccessStatusCode)
         {
+            loginResult.Successful = false;
+            loginResult.ErrorMesage = "Authorization error.";
+
             return loginResult;
         }
+
+        loginResult.Successful = true;
 
         await _localStorage.SetItemAsync(LocalStorageAuthTokenKey, loginResult.AccessToken);
         await _localStorage.SetItemAsync(LocalStorageRefreshTokenKey, loginResult.RefreshToken);
