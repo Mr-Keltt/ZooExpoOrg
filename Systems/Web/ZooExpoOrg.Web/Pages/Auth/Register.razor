@@ -8,60 +8,62 @@
 @inject IAccountService AccountService
 @inject NavigationManager NavigationManager
 
-<MudGrid Justify="Justify.Center" Class="pa-10">
-    <MudItem xs="7" sm="4">
-        <MudPaper Class="pa-4">
-            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-                <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Регистрация</MudText>
-
-                <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
-                    @foreach (string mesage in Error)
-                    {
-                        <MudText>@mesage</MudText>
-                    }
-                </MudAlert>
-
-                <MudTextField T="string"
-                                @bind-Value="model.UserName" For="@(() => model.UserName)"
-                                Label="Логин" 
-                                Required="true" 
-                                RequiredError="Логин обязателен"
-                                HelperText="Введите ваш логин"/>
-
-                <MudTextField T="string"
-                                @bind-Value="model.Email" For="@(() => model.Email)"
-                                Label="Email" 
-                                Required="true" 
-                                RequiredError="Email обязателен"
-                                HelperText="Введите ваш email"/>
-
-                <MudTextField @bind-Value="model.Password" For="@(() => model.Password)"
-                                Label="Пароль"
-                                HelperText="Введите ваш пароль"
-                                InputType="@PasswordInput"
-                                Adornment="Adornment.End"
-                                AdornmentIcon="@PasswordInputIcon"
-                                Required="true"
-                                RequiredError="Пароль обязателен"
-                                OnAdornmentClick="TogglePasswordVisibility" />
-
-                <MudCardActions>
-                    <MudButton Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Size="Size.Medium"
-                        ButtonType="ButtonType.Submit">Зарегистрироваться</MudButton>
-
-                    <MudSpacer />
-
-                    <MudButton Class="" Variant="Variant.Filled"
-                        Color="Color.Secondary"
-                        Size="Size.Medium"
-                        OnClick="@GoToLogin">Вход</MudButton>
-                </MudCardActions>
-            </EditForm>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Регистрация</MudText>
+    
+                    <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
+                        @foreach (string mesage in Error)
+                        {
+                            <MudText>@mesage</MudText>
+                        }
+                    </MudAlert>
+    
+                    <MudTextField T="string"
+                                    @bind-Value="model.UserName" For="@(() => model.UserName)"
+                                    Label="Логин" 
+                                    Required="true" 
+                                    RequiredError="Логин обязателен"
+                                    HelperText="Введите ваш логин"/>
+    
+                    <MudTextField T="string"
+                                    @bind-Value="model.Email" For="@(() => model.Email)"
+                                    Label="Email" 
+                                    Required="true" 
+                                    RequiredError="Email обязателен"
+                                    HelperText="Введите ваш email"/>
+    
+                    <MudTextField @bind-Value="model.Password" For="@(() => model.Password)"
+                                    Label="Пароль"
+                                    HelperText="Введите ваш пароль"
+                                    InputType="@PasswordInput"
+                                    Adornment="Adornment.End"
+                                    AdornmentIcon="@PasswordInputIcon"
+                                    Required="true"
+                                    RequiredError="Пароль обязателен"
+                                    OnAdornmentClick="TogglePasswordVisibility" />
+    
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            Size="Size.Medium"
+                            ButtonType="ButtonType.Submit">Зарегистрироваться</MudButton>
+    
+                        <MudSpacer />
+    
+                        <MudButton Class="" Variant="Variant.Filled"
+                            Color="Color.Secondary"
+                            Size="Size.Medium"
+                            OnClick="@GoToLogin">Вход</MudButton>
+                    </MudCardActions>
+                </EditForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
 
 @code {
     private RegisterAccountModel model = new RegisterAccountModel();
@@ -105,7 +107,7 @@
         {
             foreach (ManageModelError error in registerResult.FieldErrors)
             {
-                switch (error.ErrorMessage)
+                switch (error.Message)
                 {
                     case "User name is required.":
                         Error.Add("Логин обязателен");
@@ -129,7 +131,7 @@
                         Error.Add("Пароль слишком длинный");
                         break;
                     default:
-                        Error.Add(error.ErrorMessage);
+                        Error.Add(error.Message);
                         break;
                 }
             }

@@ -56,8 +56,10 @@ public class RightVerifierHelper
 
     public async Task<Guid> GetUserId(string jwtToken)
     {
+        string validJwtToken = jwtToken.Replace("bearer ", "");
+
         var tokenHandler = new JwtSecurityTokenHandler();
-        var jwtSecurityToken = tokenHandler.ReadToken(jwtToken) as JwtSecurityToken;
+        var jwtSecurityToken = tokenHandler.ReadToken(validJwtToken) as JwtSecurityToken;
 
         var userIdString = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
 

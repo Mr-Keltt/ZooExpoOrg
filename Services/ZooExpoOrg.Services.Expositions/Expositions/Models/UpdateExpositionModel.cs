@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using ZooExpoOrg.Common.Helpers;
+using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 
 namespace ZooExpoOrg.Services.Expositions;
@@ -35,7 +38,23 @@ public class UpdateExpositionModelProfile : Profile
             .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Street))
             .ForMember(dest => dest.HouseNumber, opt => opt.MapFrom(src => src.HouseNumber))
             .ForMember(dest => dest.DateStart, opt => opt.MapFrom(src => src.DateStart))
-            .ForMember(dest => dest.DateEnd, opt => opt.MapFrom(src => src.DateEnd));
+            .ForMember(dest => dest.DateEnd, opt => opt.MapFrom(src => src.DateEnd))
+            .ForMember(dest => dest.DateStart, opt => opt.Ignore())
+            .ForMember(dest => dest.DateEnd, opt => opt.Ignore());
+    }
+
+    public class UpdateExpositionModelActions : IMappingAction<UpdateExpositionModel, ExpositionEntity>
+    {
+        public UpdateExpositionModelActions()
+        {
+
+        }
+
+        public void Process(UpdateExpositionModel source, ExpositionEntity destination, ResolutionContext context)
+        {
+            destination.DateStart = DateHelper.ConvertToUTC(source.DateStart);
+            destination.DateEnd = DateHelper.ConvertToUTC(source.DateEnd);
+        }
     }
 }
 

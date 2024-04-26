@@ -54,8 +54,6 @@ public class GetResultHelper<T> where T : new()
         manageModelResult.Successful = false;
         manageModelResult.ErrorMesage = $"{perationName} error.";
 
-        Console.WriteLine(manageModelResult.FieldErrors[0].PropertyName);
-        Console.WriteLine(manageModelResult.FieldErrors[0].ErrorMessage);
         return manageModelResult;
     }
 

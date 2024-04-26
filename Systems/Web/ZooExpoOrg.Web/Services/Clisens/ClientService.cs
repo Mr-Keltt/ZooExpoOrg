@@ -35,11 +35,13 @@ public class ClientService : IClientService
     public async Task<ManageModelResult<VueClientModel>> AddClient(VueCreateClientModel model)
     {
         var requestContent = JsonContent.Create(model);
+
         var response = await httpClient.PostAsync("v1/client", requestContent);
 
         var getResultHelper = new GetResultHelper<VueClientModel>();
+        var res = await getResultHelper.GetManageModelResult(response, "Client add");
 
-        return await getResultHelper.GetManageModelResult(response, "Client add");
+        return res;
     }
 
     public async Task<ManageModelResult<VueClientModel>> UpdateClients(Guid clientId, VueUpdateClientModel model)

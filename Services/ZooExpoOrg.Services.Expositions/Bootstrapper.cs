@@ -10,6 +10,7 @@ public static class Bootstrapper
         services.AddSingleton<IExpositionService, ExpositionService>();
         services.AddAutoMapper(typeof(ExpositionModelProfile));
         services.AddAutoMapper(typeof(CreateExpositionModelProfile));
+        services.AddAutoMapper(typeof(UpdateExpositionModelProfile));
 
         return services;
     }

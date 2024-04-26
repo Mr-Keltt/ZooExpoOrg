@@ -8,56 +8,58 @@
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 
-<MudGrid Justify="Justify.Center" Class="pa-10">
-    <MudItem xs="7" sm="4">
-        <MudPaper Class="pa-4">
-            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-                
-                <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Вход</MudText>
-
-                <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
-                    @Error
-                    <br />
-                    @ErrorDetail
-                </MudAlert>
-
-                <MudTextField T="string"
-                                @bind-Value="model.UserName" For="@(() => model.UserName)"
-                                Label="Логин" 
-                                Required="true" 
-                                RequiredError="Логин обязателен"
-                                HelperText="Введите ваш логин"/>
-                <MudTextField @bind-Value="model.Password" For="@(() => model.Password)"
-                                Label="Пароль"
-                                HelperText="Введите ваш пароль"
-                                InputType="@PasswordInput"
-                                Adornment="Adornment.End"
-                                AdornmentIcon="@PasswordInputIcon"
-                                Required="true"
-                                RequiredError="Пароль обязателен"
-                                OnAdornmentClick="TogglePasswordVisibility" />
-
-                <div Class="d-flex justify-space-between align-center">
-                    <MudCheckBox For="@(() => model.RememberMe)" @bind-Checked="model.RememberMe" Label="Запомнить пользователя?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
-                </div>
-
-                <MudCardActions>
-                    <MudButton Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Size="Size.Medium"
-                        ButtonType="ButtonType.Submit">Войти</MudButton>
-
-                    <MudSpacer />
-
-                    <MudButton Class="" Variant="Variant.Filled"
-                        Color="Color.Secondary"
-                        Size="Size.Medium"
-                        OnClick="@GoToRegister">Регистрация</MudButton>
-                </MudCardActions>
-            </EditForm>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" >
+        <MudItem Class="ma-10" xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                    
+                    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Вход</MudText>
+    
+                    <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
+                        @Error
+                        <br />
+                        @ErrorDetail
+                    </MudAlert>
+    
+                    <MudTextField T="string"
+                                    @bind-Value="model.UserName" For="@(() => model.UserName)"
+                                    Label="Логин" 
+                                    Required="true" 
+                                    RequiredError="Логин обязателен"
+                                    HelperText="Введите ваш логин"/>
+                    <MudTextField @bind-Value="model.Password" For="@(() => model.Password)"
+                                    Label="Пароль"
+                                    HelperText="Введите ваш пароль"
+                                    InputType="@PasswordInput"
+                                    Adornment="Adornment.End"
+                                    AdornmentIcon="@PasswordInputIcon"
+                                    Required="true"
+                                    RequiredError="Пароль обязателен"
+                                    OnAdornmentClick="TogglePasswordVisibility" />
+    
+                    <div Class="d-flex justify-space-between align-center">
+                        <MudCheckBox For="@(() => model.RememberMe)" @bind-Checked="model.RememberMe" Label="Запомнить пользователя?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+                    </div>
+    
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            Size="Size.Medium"
+                            ButtonType="ButtonType.Submit">Войти</MudButton>
+    
+                        <MudSpacer />
+    
+                        <MudButton Class="" Variant="Variant.Filled"
+                            Color="Color.Secondary"
+                            Size="Size.Medium"
+                            OnClick="@GoToRegister">Регистрация</MudButton>
+                    </MudCardActions>
+                </EditForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
 
 @code {
     bool success;

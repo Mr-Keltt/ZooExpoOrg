@@ -1,4 +1,5 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using ZooExpoOrg.Web.Services.Auth;
+@inject NavigationManager NavigationManager
 
 <div>
     <MudFab OnClick="@GoBack" Class="back-button object-right-bottom" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.ArrowBack" />
@@ -7,8 +8,18 @@
 
 
 @code {
-    private void GoBack()
+    private async void GoBack()
     {
+        var absoluteUri = NavigationManager.Uri;
+        var baseUri = NavigationManager.BaseUri;
+
+        string сurrentPage = absoluteUri.Replace(baseUri, "");
+
+        if (сurrentPage == "client/create")
+        {
+            NavigationManager.NavigateTo("/logout");
+        }
+
         NavigationManager.NavigateTo("/");
     }
 }
