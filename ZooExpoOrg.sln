@@ -77,6 +77,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Web", "Systems\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context", "Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj", "{9204EAE5-1E96-48DE-95A6-08A8533C70B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Services.EmailService", "Services\ZooExpoOrg.Services.EmailService\ZooExpoOrg.Services.EmailService.csproj", "{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{9204EAE5-1E96-48DE-95A6-08A8533C70B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9204EAE5-1E96-48DE-95A6-08A8533C70B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9204EAE5-1E96-48DE-95A6-08A8533C70B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -203,6 +209,7 @@ Global
 		{97BC784D-CA87-43C1-B5AF-117378F5BDD0} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 		{79409CCE-2983-4BA9-961A-3215FB06CC77} = {953D4CBB-73AE-4650-A4A8-241316D67A31}
 		{9204EAE5-1E96-48DE-95A6-08A8533C70B8} = {12CBF372-F79E-4B11-A52C-523348C24BA4}
+		{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3} = {09B9C976-FF37-4FA7-B44E-04A4593F6FEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D7DE59-C493-45DA-AC67-704D9C973C5D}

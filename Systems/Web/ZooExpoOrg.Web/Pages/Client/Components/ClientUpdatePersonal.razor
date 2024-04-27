@@ -1,5 +1,6 @@
 ﻿@using ZooExpoOrg.Web.Services.Clients;
 @using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
 @using ZooExpoOrg.Web.Services.Photos;
 @inject IGetIdHelperService GetIdHelper
 @inject IClientService ClientService
@@ -12,15 +13,25 @@
 		Label="Имя"
 		/>
 
+	<MudAlert Severity="Severity.Error" Class="@(errorModel.Name != "" ? "my-3 d-block" : "d-none")">
+		@errorModel.Name
+	</MudAlert>
+
 	<MudTextField T="string" 
 		@bind-Value="updateClientModel.Surname"
 		Label="Фамилия"
 		/>
+	<MudAlert Severity="Severity.Error" Class="@(errorModel.Surname != "" ? "my-3 d-block" : "d-none")">
+		@errorModel.Surname
+	</MudAlert>
 
 	<MudTextField T="string" 
 		@bind-Value="updateClientModel.Patronymic"
 		Label="Отчество"
 		/>
+	<MudAlert Severity="Severity.Error" Class="@(errorModel.Patronymic != "" ? "my-3 d-block" : "d-none")">
+		@errorModel.Patronymic
+	</MudAlert>
 
 	<MudPaper Class="pa-2 mt-2">
 		@if (imageSrc == "")
@@ -35,7 +46,8 @@
 			<MudImage 
 				@bind-Src="imageSrc"
 				Width="200" 
-				Height="150" 
+				Height="200" 
+				ObjectFit="ObjectFit.Cover"
 				Alt="Ваше фото" 
 				Elevation="25" 
 				Class="rounded-lg ma-4"/>
@@ -102,6 +114,7 @@
 	private bool formDisabled = true;
 	private VueUpdateClientModel updateClientModel = new VueUpdateClientModel();
 	private VueCreatePhotoModel createPhotoModel = new VueCreatePhotoModel();
+	private ClientValidationErorr errorModel = new ClientValidationErorr();
 	private string imageSrc = "";
 
 	protected override async Task OnInitializedAsync()
@@ -189,6 +202,44 @@
 
 	private async Task OnValidSubmit()
 	{
-		
+		errorModel.Name = "";
+		errorModel.Surname = "";
+		errorModel.Patronymic = "";
+
+		if (updateClientModel.Patronymic == null)
+		{
+			updateClientModel.Patronymic = "";
+		}
+
+		var clientCreateResult = await ClientService.UpdateClients(currentClientId, updateClientModel);
+
+		if (!clientCreateResult.Successful)
+		{
+			foreach (ManageModelError error in clientCreateResult.FieldErrors)
+			{
+				switch (error.Message)
+				{
+					case "Name is required.":
+						errorModel.Name = "Имя обязательно";
+						break;
+					case "Name must not exceed 50 characters.":
+						errorModel.Name = "Имя слишком длинное";
+						break;
+					case "Surname is required.":
+						errorModel.Surname = "Фамилия обязательно";
+						break;
+					case "Surname must not exceed 50 characters.":
+						errorModel.Surname = "Фамилия слишком длинная";
+						break;
+					case "Patronymic must not exceed 50 characters.":
+						errorModel.Patronymic = "Отчество слишком длинное";
+						break;
+				}
+			}
+		}
+		else
+		{
+			DisableForm();
+		}
 	}
 }

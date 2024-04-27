@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\ZooExpoOrg.Context.Entities\ZooExpoOrg.Context.Entities.csproj" />
+    <ProjectReference Include="..\..\Data\ZooExpoOrg.Context.Migrations\ZooExpoOrg.Context.Migrations.MSSQL\ZooExpoOrg.Context.Migrations.MSSQL.csproj" />
+    <ProjectReference Include="..\..\Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj" />
+  </ItemGroup>
+
+</Project>
