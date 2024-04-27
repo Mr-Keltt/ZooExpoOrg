@@ -8,8 +8,9 @@
 
 @inject IGetIdHelperService GetIdHelper
 @inject IClientService ClientService
+@inject NavigationManager NavigationManager
 
-@attribute [Authorize]
+f
 
 <div style="height: 900px; overflow-x: hidden;">
     <MudGrid Justify="Justify.Center" Class="pa-10">
@@ -94,6 +95,16 @@
     private VueCreateClientModel clientModel = new VueCreateClientModel();
     private ClientValidationErorr errorModel = new ClientValidationErorr();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (getClientIdResult.Successful)
+        {
+            NavigationManager.NavigateTo("/client/update");
+        }
+    }
+
     private async Task OnValidSubmit()
     {
         errorModel.Name = "";
@@ -102,7 +113,7 @@
         errorModel.Gender = "";
         errorModel.BirthDate = "";
 
-        var getIdClientResult = await GetIdHelper.GetUserId();
+        var getIdClientResult = await GetIdHelper.GetCurrentUserId();
 
         if (!getIdClientResult.Successful)
         {
@@ -120,8 +131,6 @@
 
         if (!clientCreateResult.Successful)
         {
-            Console.WriteLine(clientCreateResult.FieldErrors[0].Message);
-
             foreach (ManageModelError error in clientCreateResult.FieldErrors)
             {
                 switch (error.Message)
@@ -155,6 +164,10 @@
                         break;
                 }
             }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/client/update");
         }
     }
 

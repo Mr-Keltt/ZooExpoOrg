@@ -1,0 +1,84 @@
+﻿@using ZooExpoOrg.Web.Services.Accounts
+@using ZooExpoOrg.Web.Services.Clients
+@using ZooExpoOrg.Web.Services.GetIdHelper
+@inject IAccountService AccountService
+@inject IGetIdHelperService GetIdHelper
+@inject NavigationManager NavigationManager
+
+<MudForm Disabled="true">
+	<MudTextField T="string" 
+		@bind-Value="accountModel.UserName"
+		Label="Логин"
+		/>
+
+	<MudTextField T="string" 
+		@bind-Value="accountModel.Email"
+		Label="Email"/>
+
+	@if (accountModel.EmailConfirmed)
+	{
+				<MudAlert Severity="Severity.Success" Class="my-3 d-block">
+					Email подтвержден
+				</MudAlert>
+	}
+	else
+	{
+				<MudAlert Severity="Severity.Warning" Class="my-3 d-block">
+					Подтвердите ваш email
+				</MudAlert>
+	}
+
+	<MudCardActions>
+		<MudButton 
+			Size="Size.Medium"
+			Style="width: 100%"
+			Variant="Variant.Outlined"
+			>Сменить пароль</MudButton>
+	</MudCardActions>
+</MudForm>
+
+<MudCardActions>
+	<MudSpacer />
+	<MudButton 
+		Class="mt-2"
+		Size="Size.Medium"
+		Variant="Variant.Filled"
+		Color="Color.Primary"
+		OnClick="@(x => EnableForm())"
+		>Редактировать</MudButton>
+</MudCardActions>
+
+<MudAlert Severity="Severity.Warning" Class="@(comingSoonViseble ? "my-3 d-block" : "d-none")">
+	В скором времени!
+</MudAlert>
+
+
+@code {
+	private AccountModel accountModel = new AccountModel();
+
+	private bool comingSoonViseble = false;
+	private bool emailConfirmed = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var getUserIdResult = await GetIdHelper.GetCurrentUserId();
+		var getUsersResult = await AccountService.GetUsers();
+
+		if (!getUserIdResult.Successful || !getUsersResult.Successful)
+		{
+			NavigationManager.NavigateTo("/logout");
+		}
+
+		accountModel = getUsersResult.Result.FirstOrDefault(x => x.Id == getUserIdResult.Id);
+
+		if (accountModel.Id == null)
+		{
+			NavigationManager.NavigateTo("/logout");
+		}
+	}
+
+	private void EnableForm()
+	{
+		comingSoonViseble = true;
+	}
+}

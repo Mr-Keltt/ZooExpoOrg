@@ -70,7 +70,7 @@
 
     private async Task ReloadClientData()
     {
-        var getClientIdResult = await GetIdHelper.GetClientId();
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
 
         if (!getClientIdResult.Successful)
         {
@@ -86,7 +86,7 @@
     {
         var getAdminIdResuly = await GetIdHelper.GetAdminId();
 
-        var getUserIdResult = await GetIdHelper.GetUserId();
+        var getUserIdResult = await GetIdHelper.GetCurrentUserId();
 
         if (!getAdminIdResuly.Successful || !getUserIdResult.Successful)
         {

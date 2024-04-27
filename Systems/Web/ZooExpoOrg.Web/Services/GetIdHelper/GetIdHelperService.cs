@@ -63,7 +63,7 @@ public class GetIdHelperService : IGetIdHelperService
         return getIdResult;
     }
 
-    public async Task<GetIdResult> GetUserId(CancellationToken cancellationToken = default)
+    public async Task<GetIdResult> GetCurrentUserId(CancellationToken cancellationToken = default)
     {
         string jwtToken = await localStorage.GetItemAsync<string>(NavigationMenuVisibleKey, cancellationToken);
 
@@ -88,7 +88,7 @@ public class GetIdHelperService : IGetIdHelperService
         return getIdResult;
     }
 
-    public async Task<GetIdResult> GetClientId()
+    public async Task<GetIdResult> GetCurrentClientId()
     {
         var getIdResult = new GetIdResult();
 
@@ -102,7 +102,7 @@ public class GetIdHelperService : IGetIdHelperService
             return getIdResult;
         }
 
-        var getUserId = await GetUserId();
+        var getUserId = await GetCurrentUserId();
 
         if (!getUserId.Successful)
         {

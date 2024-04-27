@@ -23,7 +23,7 @@ public class AccountService : IAccountService
         return await getResultHelper.GetGetModelResult(response, "Users");
     }
 
-    public async Task<ManageModelResult<AccountModel>> RegisterAccount(RegisterAccountModel model)
+	public async Task<ManageModelResult<AccountModel>> RegisterAccount(RegisterAccountModel model)
     {
         var requestContent = JsonContent.Create(model);
         var response = await httpClient.PostAsync("v1/account", requestContent);

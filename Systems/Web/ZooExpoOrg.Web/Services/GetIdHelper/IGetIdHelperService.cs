@@ -4,7 +4,7 @@ public interface IGetIdHelperService
 {
     Task<GetIdResult> GetAdminId();
 
-    Task<GetIdResult> GetUserId(CancellationToken cancellationToken = default);
+    Task<GetIdResult> GetCurrentUserId(CancellationToken cancellationToken = default);
 
-    Task<GetIdResult> GetClientId();
+    Task<GetIdResult> GetCurrentClientId();
 }

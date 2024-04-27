@@ -1,0 +1,141 @@
+﻿@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.Photos;
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject IPhotoService PhotoService
+@inject NavigationManager NavigationManager
+
+<MudForm Disabled="@formDisabled" Class="mt-2">
+	<MudTextField T="string" 
+		@bind-Value="updateClientModel.Name"
+		Label="Имя"
+		/>
+
+	<MudTextField T="string" 
+		@bind-Value="updateClientModel.Surname"
+		Label="Фамилия"
+		/>
+
+	<MudTextField T="string" 
+		@bind-Value="updateClientModel.Patronymic"
+		Label="Отчество"
+		/>
+
+	<MudPaper Class="pa-2 mt-2">
+		@if (updateClientModel.PhotoId == null)
+		{
+			<MudSkeleton 
+				SkeletonType="SkeletonType.Rectangle" 
+				Width="200px"
+				Height="200px"/>
+		}
+		else
+		{
+			<MudImage 
+				Src="" 
+				Width="200" 
+				Height="150" 
+				Alt="Ваше фото" 
+				Elevation="25" 
+				Class="rounded-lg ma-4"/>
+		}
+	</MudPaper>
+
+	<MudFileUpload T="IBrowserFile" Accept=".png, .jpg" MaximumFileCount="100">
+		<ButtonTemplate>
+			<MudButton 
+				Style="width: 100%"
+				Variant="@(formDisabled ? Variant.Outlined : Variant.Filled)"
+				Color="@(formDisabled ? Color.Default : Color.Primary)"
+				Size="Size.Medium">Изменить фото</MudButton>
+		</ButtonTemplate>
+	</MudFileUpload>
+</MudForm>
+
+<MudCardActions>
+	@if (formDisabled)
+	{
+		<MudSpacer />
+		<MudButton 
+			Class="mt-2"
+			Size="Size.Medium"
+			Variant="Variant.Filled"
+			Color="Color.Primary"
+			OnClick="EnableForm"
+			>Редактировать</MudButton>
+	}
+	else
+	{
+		<MudButton 
+			Class="mt-2"
+			Size="Size.Medium"
+			Variant="Variant.Filled"
+			Color="Color.Primary"
+			OnClick="OnValidSubmit">Применить</MudButton>
+
+		<MudSpacer />
+
+		<MudButton 
+			Class="mt-2"
+			Size="Size.Medium"
+			Variant="Variant.Filled"
+			Color="Color.Error"
+			OnClick="DisableForm">Отменить</MudButton>
+	}
+</MudCardActions>
+
+@code {
+	private bool formDisabled = true;
+	private VueUpdateClientModel updateClientModel = new VueUpdateClientModel();
+
+	protected override async Task OnInitializedAsync()
+	{
+		ReloadClientData();
+	}
+
+	private async void ReloadClientData()
+	{
+		var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+		if (!getClientIdResult.Successful)
+		{
+			NavigationManager.NavigateTo("/logout");
+		}
+
+		var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+		if (!getClientResult.Successful)
+		{
+			NavigationManager.NavigateTo("/logout");
+		}
+
+		var clientModel = getClientResult.Result;
+
+		updateClientModel.Name = clientModel.Name;
+		updateClientModel.Surname = clientModel.Surname;
+		updateClientModel.Patronymic = clientModel.Patronymic;
+		updateClientModel.PhotoId = clientModel.PhotoId;
+
+		if (clientModel.PhotoId != null)
+		{
+			var photo = PhotoService.GetPhoto(clientModel.PhotoId.Value);
+		}
+	}
+
+	private void EnableForm()
+	{
+		formDisabled = false;
+	}
+
+	private void DisableForm()
+	{
+		ReloadClientData();
+		formDisabled = true;
+	}
+
+	private async Task OnValidSubmit()
+	{
+		
+	}
+}
