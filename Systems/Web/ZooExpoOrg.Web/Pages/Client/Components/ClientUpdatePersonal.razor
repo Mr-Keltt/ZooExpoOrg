@@ -6,7 +6,7 @@
 @inject IPhotoService PhotoService
 @inject NavigationManager NavigationManager
 
-<MudForm Disabled="@formDisabled" Class="mt-2">
+<MudForm Disabled="@formDisabled" Class="mt-2" Model="@updateClientModel">
 	<MudTextField T="string" 
 		@bind-Value="updateClientModel.Name"
 		Label="Имя"
@@ -23,7 +23,7 @@
 		/>
 
 	<MudPaper Class="pa-2 mt-2">
-		@if (updateClientModel.PhotoId == null)
+		@if (imageSrc == null)
 		{
 			<MudSkeleton 
 				SkeletonType="SkeletonType.Rectangle" 
@@ -33,7 +33,7 @@
 		else
 		{
 			<MudImage 
-				Src="" 
+				@bind-Src="imageSrc"
 				Width="200" 
 				Height="150" 
 				Alt="Ваше фото" 
@@ -42,21 +42,50 @@
 		}
 	</MudPaper>
 
-	<MudFileUpload T="IBrowserFile" Accept=".png, .jpg" MaximumFileCount="100">
+	<MudFileUpload 
+		T="IBrowserFile" 
+		Accept=".png, .jpg" 
+		FilesChanged="UploadImage" 
+		MaximumFileCount="1">
 		<ButtonTemplate>
 			<MudButton 
+				HtmlTag="label"
+				for="@context.Id"
 				Style="width: 100%"
 				Variant="@(formDisabled ? Variant.Outlined : Variant.Filled)"
 				Color="@(formDisabled ? Color.Default : Color.Primary)"
-				Size="Size.Medium">Изменить фото</MudButton>
+				Size="Size.Medium"
+				>Изменить фото</MudButton>
 		</ButtonTemplate>
 	</MudFileUpload>
+
+	@if (!formDisabled)
+	{
+		<MudCardActions>
+			<MudButton 
+				Class="mt-2"
+				Size="Size.Medium"
+				Variant="Variant.Filled"
+				Color="Color.Primary"
+				OnClick="OnValidSubmit">Применить</MudButton>
+
+			<MudSpacer />
+
+			<MudButton 
+				Class="mt-2"
+				Size="Size.Medium"
+				Variant="Variant.Filled"
+				Color="Color.Error"
+				OnClick="DisableForm">Отменить</MudButton>
+		</MudCardActions>
+	}
 </MudForm>
 
-<MudCardActions>
-	@if (formDisabled)
-	{
+@if (formDisabled)
+{
+	<MudCardActions>
 		<MudSpacer />
+
 		<MudButton 
 			Class="mt-2"
 			Size="Size.Medium"
@@ -64,37 +93,18 @@
 			Color="Color.Primary"
 			OnClick="EnableForm"
 			>Редактировать</MudButton>
-	}
-	else
-	{
-		<MudButton 
-			Class="mt-2"
-			Size="Size.Medium"
-			Variant="Variant.Filled"
-			Color="Color.Primary"
-			OnClick="OnValidSubmit">Применить</MudButton>
+	</MudCardActions>
+}
 
-		<MudSpacer />
-
-		<MudButton 
-			Class="mt-2"
-			Size="Size.Medium"
-			Variant="Variant.Filled"
-			Color="Color.Error"
-			OnClick="DisableForm">Отменить</MudButton>
-	}
-</MudCardActions>
 
 @code {
+	private Guid currentClientId;
 	private bool formDisabled = true;
 	private VueUpdateClientModel updateClientModel = new VueUpdateClientModel();
+	private VueCreatePhotoModel createPhotoModel = new VueCreatePhotoModel();
+	private string imageSrc;
 
 	protected override async Task OnInitializedAsync()
-	{
-		ReloadClientData();
-	}
-
-	private async void ReloadClientData()
 	{
 		var getClientIdResult = await GetIdHelper.GetCurrentClientId();
 
@@ -103,7 +113,16 @@
 			NavigationManager.NavigateTo("/logout");
 		}
 
-		var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+		currentClientId = getClientIdResult.Id;
+
+		ReloadClientData();
+
+		StateHasChanged();
+	}
+
+	private async void ReloadClientData()
+	{
+		var getClientResult = await ClientService.GetClient(currentClientId);
 
 		if (!getClientResult.Successful)
 		{
@@ -115,12 +134,14 @@
 		updateClientModel.Name = clientModel.Name;
 		updateClientModel.Surname = clientModel.Surname;
 		updateClientModel.Patronymic = clientModel.Patronymic;
-		updateClientModel.PhotoId = clientModel.PhotoId;
+		//updateClientModel.PhotoId = clientModel.PhotoId.Value;
 
 		if (clientModel.PhotoId != null)
 		{
 			var photo = PhotoService.GetPhoto(clientModel.PhotoId.Value);
 		}
+
+		StateHasChanged();
 	}
 
 	private void EnableForm()
@@ -132,6 +153,25 @@
 	{
 		ReloadClientData();
 		formDisabled = true;
+	}
+
+	private async void UploadImage(IBrowserFile image)
+	{
+		createPhotoModel = new VueCreatePhotoModel();
+
+		var imageName = image.Name;
+		var imageExtension = Path.GetExtension(imageName);
+
+		createPhotoModel.OwnerId = currentClientId;
+		createPhotoModel.LocationId = currentClientId;
+		createPhotoModel.ImageMimeType = imageExtension.Substring(1);
+		createPhotoModel.ImageData = await ImageHelper.ConvertToByteArray(image);
+
+		string imageDataString = Convert.ToBase64String(createPhotoModel.ImageData);
+
+		imageSrc = $"data:image/jpeg; base64,{imageDataString}";
+
+		StateHasChanged();
 	}
 
 	private async Task OnValidSubmit()

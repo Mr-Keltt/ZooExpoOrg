@@ -16,12 +16,12 @@ f
     <MudGrid Justify="Justify.Center" Class="pa-10">
         <MudItem xs="10" sm="8">
             <MudPaper Class="pa-4">
-                <EditForm Model="@clientModel" OnValidSubmit="OnValidSubmit">
+                <EditForm Model="@createClientModel" OnValidSubmit="OnValidSubmit">
     
                     <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Укажите личные данные</MudText>
     
                     <MudTextField T="string"
-                                    @bind-Value="clientModel.Name" For="@(() => clientModel.Name)"
+                                    @bind-Value="createClientModel.Name" For="@(() => createClientModel.Name)"
                                     Label="Имя" 
                                     Required="true" 
                                     RequiredError="Имя обязательно"
@@ -32,7 +32,7 @@ f
                     </MudAlert>
     
                     <MudTextField T="string"
-                                    @bind-Value="clientModel.Surname" For="@(() => clientModel.Surname)"
+                                    @bind-Value="createClientModel.Surname" For="@(() => createClientModel.Surname)"
                                     Label="Фамилия" 
                                     Required="true" 
                                     RequiredError="Фамилия обязательна"
@@ -43,7 +43,7 @@ f
                     </MudAlert>
     
                     <MudTextField T="string"
-                                    @bind-Value="clientModel.Patronymic" For="@(() => clientModel.Patronymic)"
+                                    @bind-Value="createClientModel.Patronymic" For="@(() => createClientModel.Patronymic)"
                                     Label="Отчество" 
                                     Required="false" 
                                     HelperText="Введите ваше отчество"/>
@@ -54,8 +54,8 @@ f
     
                     <MudRadioGroup
                         T="Gender"
-                        @bind-Value="clientModel.Gender" 
-                        For="@(() => clientModel.Gender)"
+                        @bind-Value="createClientModel.Gender" 
+                        For="@(() => createClientModel.Gender)"
                         Required="true" 
                         RequiredError="Выберете пол"
                         HelperText="Укажите ваш пол"
@@ -65,8 +65,8 @@ f
                     </MudRadioGroup>
     
                     <MudDatePicker 
-                        @bind-Date="clientModel.BirthDate"
-                        For="@(() => clientModel.BirthDate)" 
+                        @bind-Date="createClientModel.BirthDate"
+                        For="@(() => createClientModel.BirthDate)" 
                         Required="true" 
                         RequiredError="Дата рождения обязательна"
                         Label="Дата рождения" 
@@ -83,7 +83,7 @@ f
                         <MudButton Variant="Variant.Filled"
                             Color="Color.Primary"
                             Size="Size.Medium"
-                            ButtonType="ButtonType.Submit">Далeе</MudButton>
+                            ButtonType="ButtonType.Submit">Готово</MudButton>
                     </MudCardActions>
                 </EditForm>
             </MudPaper>
@@ -92,7 +92,7 @@ f
 </div>
 
 @code {
-    private VueCreateClientModel clientModel = new VueCreateClientModel();
+    private VueCreateClientModel createClientModel = new VueCreateClientModel();
     private ClientValidationErorr errorModel = new ClientValidationErorr();
 
     protected override async Task OnInitializedAsync()
@@ -120,14 +120,14 @@ f
             throw new Exception("Account not found.");
         }
 
-        clientModel.UserId = getIdClientResult.Id;
+        createClientModel.UserId = getIdClientResult.Id;
 
-        if (clientModel.Patronymic == null)
+        if (createClientModel.Patronymic == null)
         {
-            clientModel.Patronymic = "";
+            createClientModel.Patronymic = "";
         }
 
-        var clientCreateResult = await ClientService.AddClient(clientModel);
+        var clientCreateResult = await ClientService.AddClient(createClientModel);
 
         if (!clientCreateResult.Successful)
         {
@@ -167,7 +167,7 @@ f
         }
         else
         {
-            NavigationManager.NavigateTo("/client/update");
+            NavigationManager.NavigateTo("/");
         }
     }
 
