@@ -13,8 +13,6 @@ public class UpdateClientModel
     public string Surname { get; set; }
 
     public string Patronymic { get; set; }
-
-    public Guid? PhotoId { get; set; }
 }
 
 public class UpdateClientModelProfile : Profile
@@ -40,8 +38,6 @@ public class UpdateClientModelValidator : AbstractValidator<UpdateClientModel>
             .MaximumLength(50).WithMessage("Surname must not exceed 50 characters.");
         RuleFor(x => x.Patronymic)
             .MaximumLength(50).WithMessage("Patronymic must not exceed 50 characters.");
-        RuleFor(model => model.PhotoId)
-            .Must(BeValidGuidOrNull).WithMessage("Invalid PhotoId format.");
     }
 
     private bool BeValidGuidOrNull(Guid? photoId)

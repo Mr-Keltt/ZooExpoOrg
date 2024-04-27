@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Exceptions;
+using ZooExpoOrg.Common.Extensions;
 using ZooExpoOrg.Common.Validator;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
@@ -28,13 +29,13 @@ public class PhotoService : IPhotoService
         this.createPhotoModelValidator = createPhotoModelValidator;
     }
 
-    public async Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid ownerId)
+    public async Task<IEnumerable<PhotoModel>> GetAllLocationById(Guid locationId)
     {
         using var db = await dbContextFactory.CreateDbContextAsync();
 
-        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == ownerId);
-        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == ownerId);
-        var client = await db.Clients.FirstOrDefaultAsync(x => x.Uid == ownerId);
+        var animal = await db.Animals.FirstOrDefaultAsync(x => x.Uid == locationId);
+        var exposition = await db.Expositions.FirstOrDefaultAsync(x => x.Uid == locationId);
+        var client = await db.Clients.FirstOrDefaultAsync(x => x.Uid == locationId);
 
         ICollection<PhotoEntity> photos = null;
 
@@ -93,11 +94,11 @@ public class PhotoService : IPhotoService
         else if (animal != null)
         {
             location = animal.Photos;
-        }
+		}
         else if (exposition != null)
         {
             location = exposition.Photos;
-        }
+		}
         else
         {
             throw new ProcessException($"Location (ID = {model.LocationId}) not found.");
@@ -109,7 +110,15 @@ public class PhotoService : IPhotoService
 
         owner.Photos.Add(photo);
 
-        location.Add(photo);
+        if (client != null)
+        {
+            location.Clear();
+			location.Add(photo);
+		}
+        else
+        {
+			location.Add(photo);
+		}
 
         db.SaveChanges();
 

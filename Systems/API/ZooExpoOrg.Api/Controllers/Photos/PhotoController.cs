@@ -34,10 +34,10 @@ public class PhotoController : ControllerBase
         this.rightVerifier = rightVerifier;
     }
 
-    [HttpGet("owned/{ownerId:Guid}")]
-    public async Task<IActionResult> GetAllOwnedById([FromRoute] Guid ownerId)
+    [HttpGet("located/{locationId:Guid}")]
+    public async Task<IActionResult> GetAllLocatedById([FromRoute] Guid locationId)
     {
-        var result = await photoService.GetAllLocationById(ownerId);
+        var result = await photoService.GetAllLocationById(locationId);
 
         if (result == null)
             return NotFound();

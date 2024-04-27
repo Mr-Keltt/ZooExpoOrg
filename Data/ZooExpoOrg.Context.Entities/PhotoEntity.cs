@@ -16,7 +16,5 @@ public class PhotoEntity : BaseEntity
     public int? ExpositionId { get; set; }
     public virtual ExpositionEntity? Exposition { get; set; }
 
-    public byte[] ImageData { get; set; }
-
-    public string ImageMimeType { get; set; }
+    public string StringImageData { get; set; }
 }

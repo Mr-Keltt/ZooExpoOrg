@@ -15,9 +15,9 @@ public class PhotoService : IPhotoService
         this.httpClient = httpClient;
     }
 
-    public async Task<GetModelResult<List<VuePhotoModel>>> GetPhotosOwned(Guid ownerId)
+    public async Task<GetModelResult<List<VuePhotoModel>>> GetPhotosLocated(Guid locationId)
     {
-        var response = await httpClient.GetAsync($"v1/photo/owned/{ownerId}");
+        var response = await httpClient.GetAsync($"v1/photo/located/{locationId}");
 
         var getResultHelper = new GetResultHelper<List<VuePhotoModel>>();
 

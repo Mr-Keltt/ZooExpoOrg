@@ -12,9 +12,7 @@ public class CreatePhotoModel
 
     public Guid LocationId { get; set; }
 
-    public byte[] ImageData { get; set; }
-
-    public string ImageMimeType { get; set; }
+    public string StringImageData { get; set; }
 }
 
 public class CreatePhotoModelProfile : Profile
@@ -86,10 +84,8 @@ public class CreatePhotoModelValidator : AbstractValidator<CreatePhotoModel>
             .NotEmpty().WithMessage("OwnerId cannot be empty.");
         RuleFor(x => x.LocationId)
             .NotEmpty().WithMessage("LocationId cannot be empty.");
-        RuleFor(x => x.ImageData)
+        RuleFor(x => x.StringImageData)
             .NotNull().WithMessage("ImageData cannot be null.")
             .NotEmpty().WithMessage("ImageData cannot be empty.");
-        RuleFor(x => x.ImageMimeType)
-            .NotEmpty().WithMessage("ImageMimeType cannot be empty.");
     }
 }

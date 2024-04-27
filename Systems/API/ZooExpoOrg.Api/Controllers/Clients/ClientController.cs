@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Clients;
+using ZooExpoOrg.Services.Photos;
 using Microsoft.IdentityModel.Tokens;
 using ZooExpoOrg.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -24,21 +25,24 @@ public class ClientController : Controller
     private readonly IMapper mapper;
     private readonly IRightVerifierService rightVerifier;
     private readonly IExpositionsNotificationManagerService expositionsNotificationManager;
+	private readonly IPhotoService phopoService;
 
-    public ClientController(
+	public ClientController(
         IAppLogger logger, 
         IClientService clientService, 
         IMapper mapper,
         IRightVerifierService rightVerifier,
-        IExpositionsNotificationManagerService expositionsNotificationManager
-        )
+        IExpositionsNotificationManagerService expositionsNotificationManager,
+		IPhotoService phopoService
+		)
     {
         this.logger = logger;
         this.clientService = clientService;
         this.mapper = mapper;
         this.rightVerifier = rightVerifier;
         this.expositionsNotificationManager = expositionsNotificationManager;
-    }
+		this.phopoService = phopoService;
+	}
 
     [HttpGet("")]
     public async Task<IActionResult> Get()
@@ -77,7 +81,17 @@ public class ClientController : Controller
 
             var result = await clientService.Create(mapper.Map<CreateClientModel>(model));
 
-            return Ok(mapper.Map<PresintationClientModel>(result));
+            var photo = new CreatePhotoModel()
+            {
+                LocationId = result.Id,
+                OwnerId = result.Id,
+                StringImageData = BaseImages.UserImage
+			};
+
+            await phopoService.Create(photo);
+
+
+			return Ok(mapper.Map<PresintationClientModel>(result));
         }
         catch (ProcessException e)
         {

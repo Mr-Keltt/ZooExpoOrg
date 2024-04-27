@@ -23,7 +23,7 @@
 		/>
 
 	<MudPaper Class="pa-2 mt-2">
-		@if (imageSrc == null)
+		@if (imageSrc == "")
 		{
 			<MudSkeleton 
 				SkeletonType="SkeletonType.Rectangle" 
@@ -102,7 +102,7 @@
 	private bool formDisabled = true;
 	private VueUpdateClientModel updateClientModel = new VueUpdateClientModel();
 	private VueCreatePhotoModel createPhotoModel = new VueCreatePhotoModel();
-	private string imageSrc;
+	private string imageSrc = "";
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -134,11 +134,14 @@
 		updateClientModel.Name = clientModel.Name;
 		updateClientModel.Surname = clientModel.Surname;
 		updateClientModel.Patronymic = clientModel.Patronymic;
-		//updateClientModel.PhotoId = clientModel.PhotoId.Value;
 
-		if (clientModel.PhotoId != null)
+		var getPhotoResult = await PhotoService.GetPhotosLocated(currentClientId);
+
+		if (getPhotoResult.Successful)
 		{
-			var photo = PhotoService.GetPhoto(clientModel.PhotoId.Value);
+			var photo = getPhotoResult.Result[0];
+
+			imageSrc = photo.StringImageData;
 		}
 
 		StateHasChanged();
@@ -157,19 +160,29 @@
 
 	private async void UploadImage(IBrowserFile image)
 	{
-		createPhotoModel = new VueCreatePhotoModel();
-
 		var imageName = image.Name;
 		var imageExtension = Path.GetExtension(imageName);
 
+		var imageData = await ImageHelper.ConvertToByteArray(image);
+
+		string imageDataString = Convert.ToBase64String(imageData);
+		string imageMimeType = "";
+
+		switch (imageExtension)
+		{
+			case ".jpg":
+				imageMimeType = "jpeg";
+				break;
+			case ".png":
+				imageMimeType = "png";
+				break;
+		}
+
+		imageSrc = $"data:image/{imageMimeType}; base64,{imageDataString}";
+
 		createPhotoModel.OwnerId = currentClientId;
 		createPhotoModel.LocationId = currentClientId;
-		createPhotoModel.ImageMimeType = imageExtension.Substring(1);
-		createPhotoModel.ImageData = await ImageHelper.ConvertToByteArray(image);
-
-		string imageDataString = Convert.ToBase64String(createPhotoModel.ImageData);
-
-		imageSrc = $"data:image/jpeg; base64,{imageDataString}";
+		createPhotoModel.StringImageData = imageSrc;
 
 		StateHasChanged();
 	}

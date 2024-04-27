@@ -20,8 +20,6 @@ public class VueClientModel
 
     public DateTime BirthDate { get; set; }
 
-    public Guid? PhotoId { get; set; }
-
     public virtual IEnumerable<Guid> Photos { get; set; }
 
     public virtual IEnumerable<Guid> OwnedPhotos { get; set; }
