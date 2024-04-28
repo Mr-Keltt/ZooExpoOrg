@@ -90,8 +90,14 @@ public class CreateAnimalModelValidator : AbstractValidator<CreateAnimalModel>
             .NotEmpty().WithMessage("Description is required.")
             .MaximumLength(10000).WithMessage("Description must not exceed 10000 characters.");
 
+        RuleFor(x => x.Type)
+            .IsInEnum().WithMessage("Invalid type value.");
+
+        RuleFor(x => x.Gender)
+            .IsInEnum().WithMessage("Invalid gender value.");
+
         RuleFor(x => x.BirthDate)
-            .NotEmpty().WithMessage("BirthDate is required.")
+            .NotNull().NotEmpty().WithMessage("BirthDate is required.")
             .Must(BeAValidDate).WithMessage("BirthDate must be a valid date.");
 
         RuleFor(x => x.Height)

@@ -1,0 +1,244 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Pages.Animals;
+@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IAnimalService AnimalService
+@inject NavigationManager NavigationManager
+@page "/animal/create"
+
+@attribute [Authorize]
+
+<MudGrid Justify="Justify.Center" Class="pa-10">
+    <MudItem xs="10" sm="8">
+        <MudPaper Class="pa-4">
+            <EditForm Model="@createAnimalModel" OnValidSubmit="OnValidSubmit">
+                <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Новое животное</MudText>
+    
+                <MudTextField T="string"
+                                @bind-value="createAnimalModel.Name" 
+                                For="@(() => createAnimalModel.Name)"
+                                Label="Имя" 
+                                Required="true" 
+                                RequiredError="Имя обязательно"
+                                HelperText="Введите имя живтного"/>
+
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.Name != "" ? "my-3 d-block" : "d-none")">
+                    @errorModel.Name
+                </MudAlert>
+
+                <MudTextField T="string"
+                                Variant="Variant.Text"
+                                @bind-Value="createAnimalModel.Description" 
+                                For="@(() => createAnimalModel.Description)"
+                                Label="Описание" 
+                                Required="true" 
+                                RequiredError="Описание обязательно"
+                                HelperText="Введите описание животного"/>
+
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.Description != "" ? "mt-3 d-block" : "d-none")">
+                    @errorModel.Description
+                </MudAlert>
+
+                <MudSelect T="string"
+                                @bind-Value="animalType" 
+                                For="@(() => animalType)"
+                                Label="Вид животного" 
+                                Required="true" 
+                                RequiredError="Вид обязателен"
+                                HelperText="Укажите вид животного">
+                    <MudSelectItem Value="@("Собака")" />
+                    <MudSelectItem Value="@("Кошка")" />
+                    <MudSelectItem Value="@("Попугай")" />
+                    <MudSelectItem Value="@("Рыбка")" />
+                </MudSelect>
+
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.Type != "" ? "my-3 d-block" : "d-none")">
+                    @errorModel.Type
+                </MudAlert>
+
+                <MudRadioGroup T="Gender"
+                                @bind-Value="createAnimalModel.Gender" 
+                                For="@(() => createAnimalModel.Gender)"
+                                Required="true" 
+                                RequiredError="Пол обязателен"
+                                Class="mt-2">
+                    <MudRadio Option="Gender.Male" Color="Color.Primary">Самец</MudRadio>
+                    <MudRadio Option="Gender.Female" Color="Color.Primary">Самка</MudRadio>
+                </MudRadioGroup>
+    
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.Gender != "" ? "my-3 d-block" : "d-none")">
+                    @errorModel.Gender
+                </MudAlert>
+
+                <MudDatePicker @bind-Date="createAnimalModel.BirthDate"
+                                For="@(() => createAnimalModel.BirthDate)" 
+                                Required="true" 
+                                RequiredError="Дата рождения обязательна"
+                                Label="Дата рождения" 
+                                HelperText="Укажите вашу дату рождения"
+                                MaxDate="DateTime.Today"/>
+    
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.BirthDate != "" ? "my-3 d-block" : "d-none")">
+                    @errorModel.BirthDate
+                </MudAlert>
+    
+                <MudNumericField @bind-Value="createAnimalModel.Height" 
+                                For="@(() => createAnimalModel.Height)" 
+                                Label="Рост" 
+                                Variant="Variant.Text" 
+                                HideSpinButtons="true"
+                                Min="0" 
+                                Max="300"
+                                HelperText="Укажите рост животного" />
+
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.Height != "" ? "my-3 d-block" : "d-none")">
+                        @errorModel.Height
+                </MudAlert>
+
+                <MudNumericField @bind-Value="createAnimalModel.Weight" 
+                                For="@(() => createAnimalModel.Weight)" 
+                                Label="Вес" 
+                                Variant="Variant.Text"
+                                HideSpinButtons="true"
+                                Min="0" 
+                                Max="300"
+                                HelperText="Укажите вес животного" />
+
+                <MudAlert Severity="Severity.Error" Class="@(errorModel.Weight != "" ? "my-3 d-block" : "d-none")">
+                    @errorModel.Weight
+                </MudAlert>
+
+                <MudCardActions>
+                    <MudSpacer />
+    
+                    <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Size="Size.Medium"
+                        ButtonType="ButtonType.Submit">Добавить</MudButton>
+                </MudCardActions>
+
+            </EditForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    Guid currentClientId;
+    private VueCreateAnimalModel createAnimalModel = new VueCreateAnimalModel();
+    private AnimalValidationErorr errorModel = new AnimalValidationErorr();
+
+    private string animalType = "Собака";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var getClientResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientResult.Successful)
+        {
+            NavigationManager.NavigateTo("/client/create");
+        }
+
+        currentClientId = getClientResult.Id;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        errorModel.Name = "";
+        errorModel.Description = "";
+        errorModel.Type = "";
+        errorModel.Gender = "";
+        errorModel.BirthDate = "";
+        errorModel.Height = "";
+        errorModel.Weight = "";
+
+        createAnimalModel.OwnerId = currentClientId;
+
+        switch (animalType)
+        {
+            case "Собака":
+                createAnimalModel.Type = AnimalType.Dog;
+                break;
+            case "Кошка":
+                createAnimalModel.Type = AnimalType.Cat;
+                break;
+            case "Попугай":
+                createAnimalModel.Type = AnimalType.Parrot;
+                break;
+            case "Рыбка":
+                createAnimalModel.Type = AnimalType.Fish;
+                break;
+        }
+
+        if (createAnimalModel.Height == null)
+        {
+            createAnimalModel.Height = 0;
+        }
+
+        if (createAnimalModel.Weight == null)
+        {
+            createAnimalModel.Weight = 0;
+        } 
+
+        var animalCreateResult = await AnimalService.AddAnimal(createAnimalModel);
+
+        if (!animalCreateResult.Successful)
+        {
+            foreach (ManageModelError error in animalCreateResult.FieldErrors)
+            {
+                switch (error.Message)
+                {
+                    case "OwnerId is required.":
+                        throw new Exception("Владелец обязателен");
+                        break;
+                    case "Name is required.":
+                        errorModel.Name = "Имя обязательно";
+                        break;
+                    case "Name must not exceed 50 characters.":
+                        errorModel.Name = "Имя слишком длинное";
+                        break;
+                    case "Description is required.":
+                        errorModel.Description = "Описание обязательно";
+                        break;
+                    case "Description must not exceed 10000 characters.":
+                        errorModel.Description = "Описание слишком длинное";
+                        break;
+                    case "Type is required.":
+                        errorModel.Type = "Вид обязателен";
+                        break;
+                    case "Gender is required.":
+                        errorModel.Gender = "Пол обязателен";
+                        break;
+                    case "BirthDate is required.":
+                        errorModel.BirthDate = "Дата рждения обязательна";
+                        break;
+                    case "BirthDate must be a valid date.":
+                        if (errorModel.BirthDate != "Дата рждения обязательна")
+                        {
+                            errorModel.BirthDate = "Неверный формат даты";
+                        }
+                        break;
+                    case "Height is required.":
+                        errorModel.Height = "Рост обязателен";
+                        break;
+                    case "Height must be greater than -1.":
+                        errorModel.Height = "Рост не может быть меньше 0";
+                        break;
+                    case "Weight is required.":
+                        errorModel.Weight = "Вес обязателен";
+                        break;
+                    case "Weight must be greater than -1.":
+                        errorModel.Weight = "Вес не может быть меньше 0";
+                        break;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/animals");
+        }
+    }
+}

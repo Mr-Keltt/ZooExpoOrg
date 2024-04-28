@@ -1,0 +1,17 @@
+﻿@inject NavigationManager NavigationManager
+
+<div>
+	<MudFab 
+		OnClick="@(() => NavigationManager.NavigateTo(Url))"
+		Class="add-button"
+		Color="Color.Secondary" 
+		StartIcon="@Icons.Material.Filled.Add" 
+		Style="position: fixed;
+				bottom: 20px;
+				right: 20px;"/>
+</div>
+
+@code {
+	[Parameter]
+	public string Url { get; set; }
+}

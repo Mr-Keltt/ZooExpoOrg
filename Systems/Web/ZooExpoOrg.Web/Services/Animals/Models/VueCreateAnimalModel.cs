@@ -14,7 +14,7 @@ public class VueCreateAnimalModel
 
     public Gender Gender { get; set; }
 
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
 
     public int? Height { get; set; }
 

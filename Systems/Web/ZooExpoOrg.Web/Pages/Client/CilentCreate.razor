@@ -57,8 +57,7 @@ f
                         @bind-Value="createClientModel.Gender" 
                         For="@(() => createClientModel.Gender)"
                         Required="true" 
-                        RequiredError="Выберете пол"
-                        HelperText="Укажите ваш пол"
+                        RequiredError="Пол обязателен"
                         Class="mt-2">
                         <MudRadio Value="Gender.Male" Color="Color.Primary">Мужской</MudRadio>
                         <MudRadio Option="Gender.Female" Color="Color.Primary">Женский</MudRadio>
@@ -142,7 +141,7 @@ f
                         errorModel.Name = "Имя слишком длинное";
                         break;
                     case "Surname is required.":
-                        errorModel.Surname = "Фамилия обязательно";
+                        errorModel.Surname = "Фамилия обязательна";
                         break;
                     case "Surname must not exceed 50 characters.":
                         errorModel.Surname = "Фамилия слишком длинная";
@@ -170,5 +169,4 @@ f
             NavigationManager.NavigateTo("/");
         }
     }
-
 }

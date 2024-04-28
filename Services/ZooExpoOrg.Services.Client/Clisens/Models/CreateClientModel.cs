@@ -75,7 +75,7 @@ public class CreateClientModelValidator : AbstractValidator<CreateClientModel>
         RuleFor(x => x.Gender)
             .IsInEnum().WithMessage("Invalid gender value.");
         RuleFor(x => x.BirthDate)
-            .NotEmpty().WithMessage("BirthDate is required.")
+            .NotNull().NotEmpty().WithMessage("BirthDate is required.")
             .Must(BeAValidDate).WithMessage("Invalid date format.");
     }
 

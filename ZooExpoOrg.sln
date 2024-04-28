@@ -77,7 +77,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Web", "Systems\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Context", "Data\ZooExpoOrg.Context\ZooExpoOrg.Context.csproj", "{9204EAE5-1E96-48DE-95A6-08A8533C70B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooExpoOrg.Services.EmailService", "Services\ZooExpoOrg.Services.EmailService\ZooExpoOrg.Services.EmailService.csproj", "{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZooExpoOrg.Services.EmailService", "Services\ZooExpoOrg.Services.EmailService\ZooExpoOrg.Services.EmailService.csproj", "{137F533F-AFE8-4D80-9BAF-278DD8B5E0B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -114,7 +114,14 @@ public static class DbSeeder
             Gender = Common.Enumerables.Gender.Male,
         });
 
-        var calClient = await clientService.Create(new CreateClientModel()
+		await photoService.Create(new CreatePhotoModel()
+		{
+			OwnerId = bobClient.Id,
+			LocationId = bobClient.Id,
+			StringImageData = UserDemoImages.Images[1]
+		});
+
+		var calClient = await clientService.Create(new CreateClientModel()
         {
             UserId = calUser.Id,
             Name = "Кэл",
