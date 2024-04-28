@@ -58,18 +58,18 @@ public class PhotoController : ControllerBase
 
     [HttpPost("")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Create(CreatePhotoModel model)
+    public async Task<IActionResult> Create(PresintationCreatePhotoModel model)
     {
         try
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
+            
             if (!(await rightVerifier.VerifRightsOfCreatePhoto(jwtToken, model.OwnerId, model.LocationId)))
             {
                 return BadRequest("Access denied.");
             }
 
-            var result = await photoService.Create(model);
+            var result = await photoService.Create(mapper.Map<CreatePhotoModel>(model));
 
             return Ok(mapper.Map<PresintationPhotoModel>(result));
         }

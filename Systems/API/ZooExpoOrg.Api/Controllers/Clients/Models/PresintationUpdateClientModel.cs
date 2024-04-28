@@ -19,6 +19,6 @@ public class PresintationUpdateClientModelProfile : Profile
 {
     public PresintationUpdateClientModelProfile()
     {
-        CreateMap<PresintationClientModel, UpdateClientModel>();
+        CreateMap<PresintationUpdateClientModel, UpdateClientModel>();
     }
 }

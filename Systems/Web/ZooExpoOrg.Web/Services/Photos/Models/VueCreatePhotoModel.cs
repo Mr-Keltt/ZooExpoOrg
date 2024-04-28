@@ -2,9 +2,9 @@
 
 public class VueCreatePhotoModel
 {
-    public Guid OwnerId;
+    public Guid OwnerId { get; set; }
 
-    public Guid LocationId { get; set; }
+	public Guid LocationId { get; set; }
 
     public string StringImageData { get; set; }
 }

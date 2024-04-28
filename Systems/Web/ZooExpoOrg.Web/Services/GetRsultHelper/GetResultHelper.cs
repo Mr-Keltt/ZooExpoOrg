@@ -37,19 +37,16 @@ public class GetResultHelper<T> where T : new()
             return manageModelResult;
         }
 
-        var res = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(res);
+        var сontent = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(сontent);
 
-        manageModelResult.FieldErrors = await response.Content.ReadFromJsonAsync<List<ManageModelError>>() ?? new List<ManageModelError>();
-
-        if (manageModelResult.FieldErrors.IsNullOrEmpty())
+        if (сontent[0] == '[')
+        {
+			manageModelResult.FieldErrors = await response.Content.ReadFromJsonAsync<List<ManageModelError>>() ?? new List<ManageModelError>();
+		}
+        else
         {
             manageModelResult = await response.Content.ReadFromJsonAsync<ManageModelResult<T>>() ?? new ManageModelResult<T>();
-
-            for (int i = 0; i < manageModelResult.FieldErrors.Count; i++)
-            {
-                manageModelResult.FieldErrors[i].ErrorMessage = manageModelResult.FieldErrors[i].Message;
-            }
         }
 
         manageModelResult.Successful = false;

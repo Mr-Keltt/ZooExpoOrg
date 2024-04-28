@@ -73,6 +73,8 @@
 
 		if (accountModel.Id == null)
 		{
+			Console.WriteLine("Не нашел акаунт");
+
 			NavigationManager.NavigateTo("/logout");
 		}
 	}

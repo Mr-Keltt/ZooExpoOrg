@@ -16,7 +16,7 @@ public class AccountService : IAccountService
 
     public async Task<GetModelResult<List<AccountModel>>> GetUsers()
     {
-        var response = await httpClient.GetAsync("v1/account");
+        var response = await httpClient.GetAsync("v1/account/all");
 
         var getResultHelper = new GetResultHelper<List<AccountModel>>();
 

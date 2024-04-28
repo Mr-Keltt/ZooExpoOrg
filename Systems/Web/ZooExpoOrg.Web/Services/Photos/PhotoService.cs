@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Net.Http;
-using System.Net.Http.Json;
-using ZooExpoOrg.Web.Services.Comments;
+﻿using System.Net.Http.Json;
 using ZooExpoOrg.Web.Services.GetRsultHelper;
 
 namespace ZooExpoOrg.Web.Services.Photos;
@@ -35,7 +32,8 @@ public class PhotoService : IPhotoService
 
     public async Task<ManageModelResult<VuePhotoModel>> AddPhoto(VueCreatePhotoModel model)
     {
-        var requestContent = JsonContent.Create(model);
+		var requestContent = JsonContent.Create(model);
+
         var response = await httpClient.PostAsync("v1/photo", requestContent);
 
         var getResultHelper = new GetResultHelper<VuePhotoModel>();

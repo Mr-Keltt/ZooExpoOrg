@@ -116,6 +116,7 @@
 	private VueCreatePhotoModel createPhotoModel = new VueCreatePhotoModel();
 	private ClientValidationErorr errorModel = new ClientValidationErorr();
 	private string imageSrc = "";
+	private string curImageSrc = "";
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -173,6 +174,8 @@
 
 	private async void UploadImage(IBrowserFile image)
 	{
+		curImageSrc = imageSrc;
+
 		var imageName = image.Name;
 		var imageExtension = Path.GetExtension(imageName);
 
@@ -212,6 +215,11 @@
 		}
 
 		var clientCreateResult = await ClientService.UpdateClients(currentClientId, updateClientModel);
+
+		if (imageSrc != curImageSrc)
+		{
+			await PhotoService.AddPhoto(createPhotoModel);
+		}
 
 		if (!clientCreateResult.Successful)
 		{

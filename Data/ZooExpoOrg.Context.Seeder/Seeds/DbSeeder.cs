@@ -50,8 +50,9 @@ public static class DbSeeder
 
         var alise = await context.Users.FirstOrDefaultAsync(x => x.UserName == "alise");
         var bob = await context.Users.FirstOrDefaultAsync(x => x.UserName == "bob");
+		var cal = await context.Users.FirstOrDefaultAsync(x => x.UserName == "cal");
 
-        if (alise != null || bob != null)
+		if (alise != null || bob != null || cal != null)
             return;
 
         var accountService = scope.ServiceProvider.GetService<IAccountService>();
@@ -71,14 +72,14 @@ public static class DbSeeder
             Password = "123"
         });
 
-        var bobUser = await accountService.Create(new RegisterAccountModel()
+		var bobUser = await accountService.Create(new RegisterAccountModel()
         {
             UserName = "bob",
             Email = "bob@mail.com",
             Password = "123"
         });
 
-        var calUser = await accountService.Create(new RegisterAccountModel()
+		var calUser = await accountService.Create(new RegisterAccountModel()
         {
             UserName = "cal",
             Email = "cal@mail.com",
