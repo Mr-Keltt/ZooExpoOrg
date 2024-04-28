@@ -1,0 +1,261 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Pages.Exposition;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
+@using ZooExpoOrg.Web.Shared.Components
+
+@inject IGetIdHelperService GetIdHelper
+@inject IExpositionService ExpositionService
+@inject NavigationManager NavigationManager
+@page "/exposition/create"
+
+@attribute [Authorize]
+
+<div style="height: 1700px; overflow-x: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <EditForm Model="@createExpositionModel" OnValidSubmit="OnValidSubmit">
+                    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Новая выставка</MudText>
+        
+                    <MudTextField T="string"
+                                    @bind-value="createExpositionModel.Title" 
+                                    For="@(() => createExpositionModel.Title)"
+                                    Label="Название" 
+                                    Required="true" 
+                                    RequiredError="Название обязательно"
+                                    HelperText="Введите название выставки"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.Title" />
+    
+                    <MudTextField T="string"
+                                    Variant="Variant.Text"
+                                    @bind-Value="createExpositionModel.Description" 
+                                    For="@(() => createExpositionModel.Description)"
+                                    Label="Описание" 
+                                    Required="true" 
+                                    RequiredError="Описание обязательно"
+                                    HelperText="Введите описание выставки"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.Description" />
+    
+                    <MudSelect T="string"
+                                    @bind-Value="animalType" 
+                                    For="@(() => animalType)"
+                                    Label="Вид животных" 
+                                    Required="true" 
+                                    RequiredError="Вид обязателен"
+                                    HelperText="Укажите вид животных">
+                        <MudSelectItem Value="@("Собака")" />
+                        <MudSelectItem Value="@("Кошка")" />
+                        <MudSelectItem Value="@("Попугай")" />
+                        <MudSelectItem Value="@("Рыбка")" />
+                    </MudSelect>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.ParticipantsType" />
+    
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="my-2">Место проведения</MudText>
+    
+                    <MudTextField T="string"
+                                    @bind-value="createExpositionModel.Country" 
+                                    For="@(() => createExpositionModel.Country)"
+                                    Label="Страна" 
+                                    Required="true" 
+                                    RequiredError="Страна обязательна"
+                                    HelperText="Введите страну"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.Country" />
+    
+                    <MudTextField T="string"
+                                    @bind-value="createExpositionModel.City" 
+                                    For="@(() => createExpositionModel.City)"
+                                    Label="Город" 
+                                    Required="true" 
+                                    RequiredError="Город обязателен"
+                                    HelperText="Введите город"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.City" />
+    
+                    <MudTextField T="string"
+                                    @bind-value="createExpositionModel.Street" 
+                                    For="@(() => createExpositionModel.Street)"
+                                    Label="Улица" 
+                                    Required="true" 
+                                    RequiredError="Улица обязательна"
+                                    HelperText="Введите улицу"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.Street" />
+    
+                    <MudTextField T="string"
+                                    @bind-value="createExpositionModel.HouseNumber" 
+                                    For="@(() => createExpositionModel.HouseNumber)"
+                                    Label="Номер дома" 
+                                    HelperText="Введите номер дома"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.HouseNumber" />
+    
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="my-2">Дата проведения</MudText>
+    
+                    <MudDatePicker @bind-Date="createExpositionModel.DateStart"
+                                    For="@(() => createExpositionModel.DateStart)" 
+                                    Required="true" 
+                                    RequiredError="Дата начала обязательна"
+                                    Label="Дата начала" 
+                                    HelperText="Укажите дату начала выставки"
+                                    MinDate="DateTime.Today.AddDays(1)"/>
+        
+                    <ErrorAlert ErrorMesage="@errorModel.DateStart" />
+        
+                    <MudDatePicker @bind-Date="createExpositionModel.DateEnd"
+                                    For="@(() => createExpositionModel.DateEnd)" 
+                                    Required="true" 
+                                    RequiredError="Дата окончения обязательна"
+                                    Label="Дата оконания" 
+                                    HelperText="Укажите дату оконания выставки"
+                                    MinDate="@(createExpositionModel.DateStart != null ? createExpositionModel.DateStart : DateTime.Today.AddDays(1))"/>
+    
+                    <ErrorAlert ErrorMesage="@errorModel.DateEnd" />
+    
+                    <MudCardActions>
+                        <MudSpacer />
+        
+                        <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            Size="Size.Medium"
+                            ButtonType="ButtonType.Submit">Добавить</MudButton>
+                    </MudCardActions>
+    
+                </EditForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    Guid currentClientId;
+    private VueCreateExpositionModel createExpositionModel = new VueCreateExpositionModel();
+    private ExpositionValidationErorr errorModel = new ExpositionValidationErorr();
+
+    private string animalType = "Собака";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var getClientResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientResult.Successful)
+        {
+            NavigationManager.NavigateTo("/client/create");
+        }
+
+        currentClientId = getClientResult.Id;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        errorModel.Title = "";
+        errorModel.Description = "";
+        errorModel.Title = "";
+        errorModel.Country = "";
+        errorModel.City = "";
+        errorModel.Street = "";
+        errorModel.HouseNumber = "";
+        errorModel.DateStart = "";
+        errorModel.DateEnd = "";
+
+        createExpositionModel.OrganizerId = currentClientId;
+
+        switch (animalType)
+        {
+            case "Собака":
+                createExpositionModel.ParticipantsType = AnimalType.Dog;
+                break;
+            case "Кошка":
+                createExpositionModel.ParticipantsType = AnimalType.Cat;
+                break;
+            case "Попугай":
+                createExpositionModel.ParticipantsType = AnimalType.Parrot;
+                break;
+            case "Рыбка":
+                createExpositionModel.ParticipantsType = AnimalType.Fish;
+                break;
+        }
+
+        var ExpositionCreateResult = await ExpositionService.AddExposition(createExpositionModel);
+
+        if (!ExpositionCreateResult.Successful)
+        {
+            foreach (ManageModelError error in ExpositionCreateResult.FieldErrors)
+            {
+                switch (error.Message)
+                {
+                    case "OrganizerId is required.":
+                        throw new Exception("Организатор обязателен");
+                        break;
+                    case "Title is required.":
+                        errorModel.Title = "Название обязательно";
+                        break;
+                    case "Title must not exceed 100 characters.":
+                        errorModel.Title = "Название слишком длинное";
+                        break;
+                    case "Description is required.":
+                        errorModel.Description = "Описание обязательно";
+                        break;
+                    case "Description must be less than 10000 characters.":
+                        errorModel.Description = "Описание слишком длинное";
+                        break;
+                    case "Invalid ParticipantsType value.":
+                        errorModel.ParticipantsType = "Недопустимый тип участников.";
+                        break;
+                    case "Country is required.":
+                        errorModel.Country = "Страна обязательна";
+                        break;
+                    case "Country must not exceed 100 characters.":
+                        errorModel.Country = "Слишком длинное название страны";
+                        break;
+                    case "City is required.":
+                        errorModel.City = "Город обязателен";
+                        break;
+                    case "City must not exceed 100 characters.":
+                        errorModel.City = "Слишком длинное название города";
+                        break;
+                    case "Street is required.":
+                        errorModel.Street = "Улица обязательна";
+                        break;
+                    case "Street must not exceed 100 characters.":
+                        errorModel.Street = "Слишком длинное название улици";
+                        break;
+                    case "HouseNumber must not exceed 50 characters.":
+                        errorModel.HouseNumber = "Слишком длинный номер дома";
+                        break;
+                    case "DateStart is required.":
+                        errorModel.DateStart = "Дата начала обязательна";
+                        break;
+                    case "DateStart must be a valid date.":
+                        if (errorModel.DateStart != "Дата начала обязательна")
+                        {
+                            errorModel.DateStart = "Неверный формат даты";
+                        }
+                        break;
+                    case "DateEnd is required.":
+                        errorModel.DateEnd = "Дата окончания обязательна";
+                        break;
+                    case "DateEnd must be a valid date.":
+                        if (errorModel.DateEnd != "Дата окончания обязательна")
+                        {
+                            errorModel.DateEnd = "Неверный формат даты";
+                        }
+                        break;
+                    case "DateEnd must be greater than or equal to DateStart.":
+                        errorModel.DateEnd = "Дата окончания не может быть меньше даты начала";
+                        break;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/expositions");
+        }
+    }
+}

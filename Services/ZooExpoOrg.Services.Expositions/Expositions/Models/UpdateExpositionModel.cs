@@ -90,6 +90,6 @@ public class UpdateExpositionModelValidator : AbstractValidator<UpdateExposition
 
     private bool BeAValidDate(DateTime date)
     {
-        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
+        return date > DateTime.Now;
     }
 }

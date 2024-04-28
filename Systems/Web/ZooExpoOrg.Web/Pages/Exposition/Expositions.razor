@@ -2,14 +2,14 @@
 @using ZooExpoOrg.Web.Shared.Components
 @using ZooExpoOrg.Web.Shared.Layouts;
 
-@page "/animals"
+@page "/expositions"
 @layout MainLayout
 
 @attribute [Authorize]
 
-<h2>Мои животные</h2>
+<h2>Мои выставки</h2>
 
-<AddButton Url="/animal/create" />
+<AddButton Url="/exposition/create" />
 
 @code {
 

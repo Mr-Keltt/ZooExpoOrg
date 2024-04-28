@@ -1,0 +1,8 @@
+﻿<MudAlert Severity="Severity.Error" Class="@(ErrorMesage != "" ? "my-3 d-block" : "d-none")">
+    @ErrorMesage
+</MudAlert>
+
+@code {
+    [Parameter]
+    public string ErrorMesage { get; set; }
+}
