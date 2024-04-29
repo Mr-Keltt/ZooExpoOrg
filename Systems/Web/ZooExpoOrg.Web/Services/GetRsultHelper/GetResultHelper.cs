@@ -1,9 +1,5 @@
-﻿
-using Microsoft.IdentityModel.Tokens;
-using System.Net.Http.Json;
-using System.Text.Json;
-using ZooExpoOrg.Web.Services.Accounts;
-using ZooExpoOrg.Web.Services.GetRsultHelper.Models;
+﻿using System.Net.Http.Json;
+
 
 namespace ZooExpoOrg.Web.Services.GetRsultHelper;
 

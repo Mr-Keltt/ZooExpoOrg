@@ -1,10 +1,50 @@
-﻿@using ZooExpoOrg.Web.Shared.Layouts;
+﻿@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IExpositionService ExpositionService
+@inject NavigationManager NavigationManager
 
 @page "/"
 @layout MainLayout
 
-<PageTitle>Home</PageTitle>
+<MudGrid Justify="Justify.Center" Class="pa-10">
+    <MudItem xs="10" sm="8">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h4" GutterBottom="true"><b>Выставки</b></MudText>
 
-<h1>Hello, world!</h1>
+            @if (expositions.Count > 0)
+            {
+                @foreach (VueExpositionModel exposition in expositions)
+                {
+                <ExpositionCard Exposition="@exposition"/>
+                }
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
-Welcome to your new app.
+@code {
+    private List<VueExpositionModel> expositions = new List<VueExpositionModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ExpositionDataReload();
+    }
+
+    private async Task ExpositionDataReload()
+    {
+        var getExpositionsResult = await ExpositionService.GetExpositions();
+
+        if (!getExpositionsResult.Successful)
+        {
+            return;
+        }
+
+        expositions = getExpositionsResult.Result;
+
+        StateHasChanged();
+    }
+}

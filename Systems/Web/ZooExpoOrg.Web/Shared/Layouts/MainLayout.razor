@@ -22,7 +22,7 @@
             Edge="Edge.Start" 
             OnClick="@DrawerToggleAsync" 
             Size="Size.Large"/>
-        <MudText Typo="Typo.h4" Class="ml-3">ZooExpoOrg</MudText>
+        <MudText Typo="Typo.h4" Class="ml-3"><b>ZooExpoOrg</b></MudText>
         <MudSpacer />
 
         <AuthorizeView>
@@ -36,7 +36,11 @@
         
         <UserMenu />
     </MudAppBar>
-    <MudDrawer @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer @bind-Open="drawerOpen" 
+                ClipMode="DrawerClipMode.Always" 
+                Elevation="2"
+                Variant="@DrawerVariant.Temporary"
+                DisableOverlay="true">
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
