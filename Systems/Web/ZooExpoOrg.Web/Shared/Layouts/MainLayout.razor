@@ -1,6 +1,7 @@
 ﻿@using ZooExpoOrg.Web.Services.Clients;
 @using ZooExpoOrg.Web.Services.Configuration
 @using Microsoft.AspNetCore.Components.Authorization
+@using ZooExpoOrg.Web.Services.Expositions;
 @using ZooExpoOrg.Web.Services.GetIdHelper;
 @using ZooExpoOrg.Web.Shared.Components
 
@@ -10,6 +11,7 @@
 @inject IClientService ClientService
 @inject IGetIdHelperService GetIdHelper
 @inject ISnackbar Snackbar
+@inject IExpositionService ExpositionService
 @inject NavigationManager NavigationManager
 
 <MudThemeProvider />
@@ -60,10 +62,14 @@
 
             await ReloadClientData();
 
-            if (client == null && !await UserIsAdmin())
+            var getUserIdResult = await GetIdHelper.GetCurrentUserId();
+
+            if (client == null && !await UserIsAdmin() && getUserIdResult.Successful)
             {
                 NavigationManager.NavigateTo("/client/create");
             }
+
+            await HavePhoto();
         }
         catch (Exception ex)
         {
@@ -108,5 +114,29 @@
         }
 
         return true;
+    }
+
+    private async Task HavePhoto()
+    {
+        List<VueExpositionModel> expositions = new List<VueExpositionModel>();
+
+        foreach (var expositionId in client.OrganizedExpositions)
+        {
+            var getExpositionResult = await ExpositionService.GetExposition(expositionId);
+
+            if (getExpositionResult.Successful)
+            {
+                expositions.Add(getExpositionResult.Result);
+            }
+        }
+
+        foreach (var exposition in expositions)
+        {
+            if (exposition.Photos.Count == 0)
+            {
+                NavigationManager.NavigateTo($"/exposition/{exposition.Id}/manage-photos");
+                return;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using ZooExpoOrg.Web.Services.Accounts;
 using ZooExpoOrg.Web.Services.Clients;
@@ -65,14 +66,22 @@ public class GetIdHelperService : IGetIdHelperService
 
     public async Task<GetIdResult> GetCurrentUserId(CancellationToken cancellationToken = default)
     {
+        GetIdResult getIdResult = new GetIdResult();
+
         string jwtToken = await localStorage.GetItemAsync<string>(NavigationMenuVisibleKey, cancellationToken);
+        
+        if (jwtToken.IsNullOrEmpty())
+        {
+            getIdResult.Successful = false;
+            getIdResult.ErrorMesage = "The user is not logged in.";
+
+            return getIdResult;
+        }
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtSecurityToken = tokenHandler.ReadToken(jwtToken) as JwtSecurityToken;
 
         var userIdString = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
-
-        GetIdResult getIdResult = new GetIdResult();
 
         if (Guid.TryParse(userIdString, out Guid userId))
         {

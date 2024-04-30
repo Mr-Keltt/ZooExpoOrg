@@ -1,4 +1,5 @@
-﻿@using ZooExpoOrg.Web.Services.Expositions;
+﻿@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
 @using ZooExpoOrg.Web.Services.GetIdHelper;
 @using ZooExpoOrg.Web.Services.Photos;
 
@@ -37,17 +38,23 @@
     </MudCardContent>
 
     <MudCardActions>
-        <ExpositionActionButton Exposition="@Exposition"/>
+        <ExpositionActionButton Exposition="@Exposition" Client="@Client"/>
 
         <MudSpacer />
 
-        <MudButton Variant="Variant.Text" Color="Color.Primary">Показать больше</MudButton>
+        <MudButton 
+            Variant="Variant.Text" 
+            Color="Color.Primary"
+            OnClick="@(() => NavigationManager.NavigateTo($"exposition/{Exposition.Id}"))">Показать больше</MudButton>
     </MudCardActions>
 </MudCard>
 
 @code {
     [Parameter]
     public VueExpositionModel Exposition { get; set; }
+
+    [Parameter]
+    public VueClientModel Client { get; set; }
 
     public List<VuePhotoModel> photos = new List<VuePhotoModel>();
     private string status = "";

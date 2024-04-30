@@ -4,6 +4,7 @@
 @using ZooExpoOrg.Web.Services.Expositions;
 @using ZooExpoOrg.Web.Services.GetIdHelper;
 @using ZooExpoOrg.Web.Services.GetRsultHelper;
+@using ZooExpoOrg.Web.Services.Photos;
 @using ZooExpoOrg.Web.Shared.Components
 
 @inject IGetIdHelperService GetIdHelper
@@ -117,14 +118,14 @@
                                     MinDate="@(createExpositionModel.DateStart != null ? createExpositionModel.DateStart : DateTime.Today.AddDays(1))"/>
     
                     <ErrorAlert ErrorMesage="@errorModel.DateEnd" />
-    
+
                     <MudCardActions>
                         <MudSpacer />
         
                         <MudButton Variant="Variant.Filled"
                             Color="Color.Primary"
                             Size="Size.Medium"
-                            ButtonType="ButtonType.Submit">Добавить</MudButton>
+                            ButtonType="ButtonType.Submit">Создать</MudButton>
                     </MudCardActions>
     
                 </EditForm>
@@ -134,9 +135,10 @@
 </div>
 
 @code {
-    Guid currentClientId;
     private VueCreateExpositionModel createExpositionModel = new VueCreateExpositionModel();
     private ExpositionValidationErorr errorModel = new ExpositionValidationErorr();
+
+    Guid currentClientId;
 
     private string animalType = "Собака";
 

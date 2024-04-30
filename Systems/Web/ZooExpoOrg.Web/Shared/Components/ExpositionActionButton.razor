@@ -19,63 +19,39 @@
 	[Parameter]
 	public VueExpositionModel Exposition { get; set; }
 
-	private VueClientModel currentClient = new VueClientModel();
+	[Parameter]
+	public VueClientModel Client { get; set; }
+	
 	private string displayText = "";
 	private Variant displayVariant = Variant.Filled;
 	private Color displayColor = Color.Secondary;
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
-		{
-			await GetCuresntClient();
-			await SettingButton();
-		}
-		catch(Exception e)
-		{
-			
-		}
-	}
+		await SettingButton();
 
-	private async Task GetCuresntClient()
-	{
-		var getClientIdResult = await GetIdHelper.GetCurrentClientId();
-
-		if (!getClientIdResult.Successful)
-		{
-			return;
-		}
-
-		var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
-
-		if (!getClientResult.Successful)
-		{
-			return;
-		}
-
-		currentClient = getClientResult.Result;
+		StateHasChanged();
 	}
 
 	private async Task SettingButton()
 	{
-		if (currentClient.Id == null)
+		if (Client == null)
 		{
 			return;
 		}
 
-		var clientOrganizedExpositions = currentClient.OrganizedExpositions;
+		var clientOrganizedExpositions = Client.OrganizedExpositions;
 
 		if (clientOrganizedExpositions.Contains(Exposition.Id))
 		{
-			displayText = "Редактировать";
+			displayText = "";
 			displayVariant = Variant.Filled;
 			displayColor = Color.Primary;
 
-			StateHasChanged();
 			return;
 		}
 
-		var clientSubscriptions = currentClient.Subscriptions;
+		var clientSubscriptions = Client.Subscriptions;
 
 		if (clientSubscriptions.Contains(Exposition.Id))
 		{
@@ -89,8 +65,6 @@
 			displayVariant = Variant.Filled;
 			displayColor = Color.Secondary;
 		}
-
-		StateHasChanged();
 	}
 
 	private async Task Action()
@@ -101,14 +75,30 @@
 		}
 		else if (displayText == "Подписаться")
 		{
-			await ExpositionService.Subscribe(Exposition.Id, currentClient.Id);
+			await ExpositionService.Subscribe(Exposition.Id, Client.Id);
 		}
 		else if (displayText == "Вы подписаны")
 		{
-			await ExpositionService.Unsubscribe(Exposition.Id, currentClient.Id);
+			await ExpositionService.Unsubscribe(Exposition.Id, Client.Id);
 		}
 
-		await GetCuresntClient();
+		await ReloadClientData();
 		await SettingButton();
+
+		StateHasChanged();
+	}
+
+	private async Task ReloadClientData()
+	{
+		var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+		if (!getClientIdResult.Successful)
+		{
+			return;
+		}
+
+		var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+		Client = getClientResult.Result;
 	}
 }

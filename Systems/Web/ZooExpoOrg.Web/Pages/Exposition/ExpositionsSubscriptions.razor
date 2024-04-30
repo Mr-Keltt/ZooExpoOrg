@@ -15,63 +15,39 @@
 
 @attribute [Authorize]
 
-<MudGrid Justify="Justify.Center" Class="pa-10">
-    <MudItem xs="10" sm="8">
-        <MudPaper Class="pa-4">
-            <MudText Typo="Typo.h4" GutterBottom="true"><b>Мои подписки</b></MudText>
-
-            @if (expositions.Count > 0)
-            {
-                @foreach (VueExpositionModel exposition in expositions)
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.h4" GutterBottom="true"><b>Мои подписки</b></MudText>
+    
+                @if (expositions.Count > 0)
                 {
-                        <ExpositionCard Exposition="@exposition"/>
+                    @foreach (VueExpositionModel exposition in expositions)
+                    {
+                        <ExpositionCard Exposition="@exposition" Client="@client"/>
+                    }
                 }
-            }
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
 
 <AddButton Url="/exposition/create" />
 
 @code {
     private List<VueExpositionModel> expositions = new List<VueExpositionModel>();
-    private VueClientModel currentClient = new VueClientModel();
+    private VueClientModel client;
 
     protected override async Task OnInitializedAsync()
     {
-        await GetCuresntClient();
-        await ExpositionDataReload();
+        await ReloadClientData();
+        await ReloadExpositionData();
     }
 
-    private async Task GetCuresntClient()
+    private async Task ReloadExpositionData()
     {
-        try
-        {
-            var getClientIdResult = await GetIdHelper.GetCurrentClientId();
-
-            if (!getClientIdResult.Successful)
-            {
-                return;
-            }
-
-            var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
-
-            if (!getClientResult.Successful)
-            {
-                return;
-            }
-
-            currentClient = getClientResult.Result;
-        }
-        catch (Exception e)
-        {
-            return;
-        }
-    }
-
-    private async Task ExpositionDataReload()
-    {
-        foreach (var expositionId in currentClient.Subscriptions)
+        foreach (var expositionId in client.Subscriptions)
         {
             var getExpositionResult = await ExpositionService.GetExposition(expositionId);
 
@@ -82,5 +58,19 @@
         }
 
         StateHasChanged();
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
     }
 }
