@@ -25,24 +25,24 @@ public class ClientController : Controller
     private readonly IMapper mapper;
     private readonly IRightVerifierService rightVerifier;
     private readonly IExpositionsNotificationManagerService expositionsNotificationManager;
-	private readonly IPhotoService phopoService;
+    private readonly IPhotoService phopoService;
 
-	public ClientController(
-        IAppLogger logger, 
-        IClientService clientService, 
+    public ClientController(
+        IAppLogger logger,
+        IClientService clientService,
         IMapper mapper,
         IRightVerifierService rightVerifier,
         IExpositionsNotificationManagerService expositionsNotificationManager,
-		IPhotoService phopoService
-		)
+        IPhotoService phopoService
+        )
     {
         this.logger = logger;
         this.clientService = clientService;
         this.mapper = mapper;
         this.rightVerifier = rightVerifier;
         this.expositionsNotificationManager = expositionsNotificationManager;
-		this.phopoService = phopoService;
-	}
+        this.phopoService = phopoService;
+    }
 
     [HttpGet("")]
     public async Task<IActionResult> Get()
@@ -86,12 +86,12 @@ public class ClientController : Controller
                 LocationId = result.Id,
                 OwnerId = result.Id,
                 StringImageData = BaseImages.UserImage
-			};
+            };
 
             await phopoService.Create(photo);
 
 
-			return Ok(mapper.Map<PresintationClientModel>(result));
+            return Ok(mapper.Map<PresintationClientModel>(result));
         }
         catch (ProcessException e)
         {
@@ -167,6 +167,27 @@ public class ClientController : Controller
             }
 
             await clientService.Delete(id);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    public async Task<IActionResult> GetNotificationsReceivedById(Guid recipientId)
+    {
+        try
+        {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, recipientId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            await expositionsNotificationManager.GetAllNotificationsReceivedById(recipientId);
 
             return Ok();
         }

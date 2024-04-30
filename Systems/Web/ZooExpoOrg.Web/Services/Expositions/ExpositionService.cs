@@ -112,4 +112,6 @@ public class ExpositionService : IExpositionService
 
         return await getResultHelper.GetDeleteModelResult(response, "Exposition");
     }
+
+
 }
