@@ -1,0 +1,197 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.Photos;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject IAnimalService AnimalService
+@inject IPhotoService PhotoService
+@inject NavigationManager NavigationManager
+
+@page "/animal/{id}"
+
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Style="overflow: hidden;" Class="pa-4">
+                <div class="d-flex">
+
+                    <MudPaper 
+                        Elevation="3" 
+                        Class="rounded-lg" 
+                        Style="width: 400px; height:400px;">
+                        <MudCarousel Class="mud-width-full rounded-lg" 
+                                    Style="width: 400px; height:400px; overflow: hidden;" 
+                                    ShowBullets="true" 
+                                    AutoCycle="true"
+                                    TData="object"
+                                    ShowArrows="false">
+                            @if (animalPhotos.Count > 0)
+                            {
+                                @foreach (VuePhotoModel photo in animalPhotos)
+                                {
+                                    <MudCarouselItem Transition="Transition.Slide" 
+                                                        Color="@Color.Primary" 
+                                                        Style="overflow: hidden;">
+                                        <MudImage Width="400" Height="400" Src="@photo.StringImageData" ObjectFit="ObjectFit.Fill"/>
+                                    </MudCarouselItem>
+                                }
+                            }
+                        </MudCarousel>
+                    </MudPaper>
+
+                    <div Class="pl-4">
+                        <MudText Typo="Typo.h4" Class="ma-0" GutterBottom="true"><b>@animal.Name</b></MudText>
+                        <MudText Typo="Typo.body1">@animalType</MudText>
+                        <MudText Typo="Typo.body1">@animalGender</MudText>
+                        <MudText Typo="Typo.body1">@animalAge</MudText>
+                    </div>
+                </div>
+
+                <MudText Typo="Typo.h5" GutterBottom="true" Class="mt-4"><b>Описание</b></MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@animal.Description</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private VueAnimalModel animal = new VueAnimalModel();
+    public List<VuePhotoModel> animalPhotos = new List<VuePhotoModel>();
+    private VueClientModel client;
+
+    private string animalType = "";
+    private string animalGender = "";
+    private string animalAge = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadClientData();
+        await GetAnimalType();
+        await ReloadAnimalData();
+        await GetPhotos();
+        await GetAnimalGender();
+        await GetAnimalAge();
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadAnimalData()
+    {
+        Guid animalId;
+
+        if (Guid.TryParse(Id, out animalId))
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (!getAnimalResult.Successful)
+            {
+                return;
+            }
+
+            animal = getAnimalResult.Result;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/notfound");
+        }
+    }
+
+    private async Task GetPhotos()
+    {
+        var getPhotoResult = await PhotoService.GetPhotosLocated(animal.Id);
+
+        if (!getPhotoResult.Successful)
+        {
+            return;
+        }
+
+        animalPhotos = getPhotoResult.Result;
+    }
+
+    private async Task GetAnimalType()
+    {
+        switch(animal.Type)
+        {
+            case AnimalType.Dog:
+                animalType = "Собака";
+                break;
+            case AnimalType.Cat:
+                animalType = "Кошека";
+                break;
+            case AnimalType.Parrot:
+                animalType = "Попугай";
+                break;
+            case AnimalType.Fish:
+                animalType = "Рыбока";
+                break;
+        }
+    }
+
+    private async Task GetAnimalGender()
+    {
+        switch (animal.Gender)
+        {
+            case Gender.Male:
+                animalGender = "Самец";
+                break;
+            case Gender.Female:
+                animalGender = "Самка";
+                break;
+        }
+    }
+
+    private async Task GetAnimalAge()
+    {
+        DateTime now = DateTime.Today;
+        int ageYears = now.Year - animal.BirthDate.Year;
+
+        if (now < animal.BirthDate.AddYears(ageYears))
+        {
+            ageYears--;
+        }
+
+        string ageText;
+        if (ageYears == 0)
+        {
+            ageText = $"Дата рождения: {animal.BirthDate.ToString("dd.MM.yy")}";
+        }
+        else if (ageYears == 1 || ageYears % 10 == 1 && ageYears != 11)
+        {
+            ageText = $"{ageYears} год";
+        }
+        else if ((ageYears >= 2 && ageYears <= 4) || (ageYears % 10 >= 2 && ageYears % 10 <= 4 && (ageYears < 10 || ageYears > 20)))
+        {
+            ageText = $"{ageYears} года";
+        }
+        else
+        {
+            ageText = $"{ageYears} лет";
+        }
+
+        animalAge = ageText;
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
+    }
+}

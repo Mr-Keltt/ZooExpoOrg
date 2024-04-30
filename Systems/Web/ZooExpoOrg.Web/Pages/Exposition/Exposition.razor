@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Authorization;
 @using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Services.Animals;
 @using ZooExpoOrg.Web.Services.Clients;
 @using ZooExpoOrg.Web.Services.Expositions;
 @using ZooExpoOrg.Web.Services.GetIdHelper;
@@ -11,6 +12,7 @@
 @inject IClientService ClientService
 @inject IExpositionService ExpositionService
 @inject IPhotoService PhotoService
+@inject IAnimalService AnimalService
 @inject NavigationManager NavigationManager
 
 @page "/exposition/{id}"
@@ -44,7 +46,7 @@
                 </MudPaper>
 
                 <MudGrid Class="pa-4">
-                    <MudItem xs="12">
+                    <MudItem xs="12" Style="word-wrap: break-word; word-break: break-all;">
                         <MudText Typo="Typo.h4" Class="ma-0" GutterBottom="true"><b>@exposition.Title</b></MudText>
                         <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Darken3};")">@expositionParticipantsType</MudText>
                         <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Darken1};")">ДАТЫ ПРОВЕДЕНИЯ: @expositionDateEvent</MudText>
@@ -80,7 +82,7 @@
                                 <td style="width:200px">
                                     <MudText Typo="Typo.body1" GutterBottom="true"><b>Страна</b></MudText>
                                 </td>
-                                <td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
                                     <MudText Typo="Typo.body1" GutterBottom="true">@exposition.Country</MudText>
                                 </td>
                             </tr>
@@ -89,7 +91,7 @@
                                 <td style="width:200px">
                                     <MudText Typo="Typo.body1" GutterBottom="true"><b>Город</b></MudText>
                                 </td>
-                                <td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
                                     <MudText Typo="Typo.body1" GutterBottom="true">@exposition.City</MudText>
                                 </td>
                             </tr>
@@ -98,7 +100,7 @@
                                 <td style="width:200px">
                                     <MudText Typo="Typo.body1" GutterBottom="true"><b>Улица</b></MudText>
                                 </td>
-                                <td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
                                     <MudText Typo="Typo.body1" GutterBottom="true">@exposition.Street</MudText>
                                 </td>
                             </tr>
@@ -107,7 +109,7 @@
                                 <td style="width:200px">
                                     <MudText Typo="Typo.body1" GutterBottom="true"><b>Дом</b></MudText>
                                 </td>
-                                <td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
                                     <MudText Typo="Typo.body1" GutterBottom="true">@exposition.HouseNumber</MudText>
                                 </td>
                             </tr>
@@ -116,6 +118,14 @@
 
                     <MudItem xs="12">
                         <MudText Typo="Typo.h5" GutterBottom="true"><b>Участники</b></MudText>
+                    
+                        @if (animals.Count > 0)
+                        {
+                            @foreach (VueAnimalModel animal in animals)
+                            {
+                                <AnimalCard Animal="@animal"/>
+                            }
+                        }
                     </MudItem>
                 </MudGrid>
             </MudPaper>
@@ -130,6 +140,7 @@
     private VueExpositionModel exposition = new VueExpositionModel();
     public List<VuePhotoModel> expositionPhotos = new List<VuePhotoModel>();
     private VueClientModel client;
+    private List<VueAnimalModel> animals = new List<VueAnimalModel>();
 
     private string expositionParticipantsType = "";
     private string expositionDateEvent = "";
@@ -141,6 +152,22 @@
         await ReloadExpositionData();
         await GetPhotos();
         await GetDateEvent();
+        await ReloadAnimalData();
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadAnimalData()
+    {
+        foreach (var animalId in exposition.Participants)
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (getAnimalResult.Successful)
+            {
+                animals.Add(getAnimalResult.Result);
+            }
+        }
 
         StateHasChanged();
     }

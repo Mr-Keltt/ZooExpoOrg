@@ -1,27 +1,27 @@
 ﻿@using Microsoft.AspNetCore.Authorization;
 @using ZooExpoOrg.Web.Common.Enumerables;
 @using ZooExpoOrg.Web.Pages.Exposition;
+@using ZooExpoOrg.Web.Services.Animals;
 @using ZooExpoOrg.Web.Services.Clients;
-@using ZooExpoOrg.Web.Services.Expositions;
 @using ZooExpoOrg.Web.Services.GetIdHelper;
 @using ZooExpoOrg.Web.Services.GetRsultHelper;
 @using ZooExpoOrg.Web.Services.Photos;
 @using ZooExpoOrg.Web.Shared.Components
 
 @inject IGetIdHelperService GetIdHelper
-@inject IExpositionService ExpositionService
+@inject IAnimalService AnimalService
 @inject IPhotoService PhotoService
 @inject NavigationManager NavigationManager
-@page "/exposition/{id}/manage-photos"
+@page "/animal/{id}/manage-photos"
 
 @attribute [Authorize]
 
 <div style="overflow-x: hidden;">
     <MudGrid Justify="Justify.Center" Class="pa-10">
         <MudItem xs="10" sm="8">
-            <MudPaper Class="pa-4" 
-                    Style="word-wrap: break-word; word-break: break-all;">
-                <MudText Typo="Typo.h5" GutterBottom="true" Class="my-2">Добавьте фотографии для выставки @exposition.Title</MudText>
+            <MudPaper Class="pa-4"
+                     Style="word-wrap: break-word; word-break: break-all;">
+                <MudText Typo="Typo.h5" GutterBottom="true" Class="my-2">Добавьте фотографии для животного @animal.Name</MudText>
 
                 <ContainerСontrolledImges @ref="containerСontrolledImges"/>
 
@@ -64,16 +64,16 @@
 
     private ContainerСontrolledImges containerСontrolledImges;
 
-    private VueExpositionModel exposition = new VueExpositionModel();
+    private VueAnimalModel animal = new VueAnimalModel();
     private Guid clientId;
     private string addPhotos = "";
 
     protected override async Task OnInitializedAsync()
     {
         await GetClientId();
-        await ReloadExpositionData();
+        await ReloadAnimalData();
 
-        if (clientId != exposition.OrganizerId)
+        if (clientId != animal.OwnerId)
         {
             NavigationManager.NavigateTo("/");
         }
@@ -83,7 +83,7 @@
 
     private async Task GetCurPhotos()
     {
-        var getCurPhotosResult = await PhotoService.GetPhotosLocated(exposition.Id);
+        var getCurPhotosResult = await PhotoService.GetPhotosLocated(animal.Id);
 
         if (!getCurPhotosResult.Successful)
         {
@@ -110,20 +110,20 @@
         clientId = getClientResult.Id;
     }
 
-    private async Task ReloadExpositionData()
+    private async Task ReloadAnimalData()
     {
-        Guid expositionId;
+        Guid animalId;
 
-        if (Guid.TryParse(Id, out expositionId))
+        if (Guid.TryParse(Id, out animalId))
         {
-            var getExpositionResult = await ExpositionService.GetExposition(expositionId);
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
 
-            if (!getExpositionResult.Successful)
+            if (!getAnimalResult.Successful)
             {
                 return;
             }
 
-            exposition = getExpositionResult.Result;
+            animal = getAnimalResult.Result;
         }
         else
         {
@@ -156,7 +156,7 @@
         VueCreatePhotoModel createPhotoModel = new VueCreatePhotoModel()
             {
                 OwnerId = clientId,
-                LocationId = exposition.Id,
+                LocationId = animal.Id,
                 StringImageData = imageSrc,
             };
 

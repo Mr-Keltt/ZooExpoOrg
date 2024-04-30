@@ -31,7 +31,7 @@
         </MudCarousel>
     </MudPaper>
 
-    <MudCardContent>
+    <MudCardContent Style="word-wrap: break-word; word-break: break-all;">
         <MudText Typo="Typo.h5"><b>@Exposition.Title</b></MudText>
         <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Darken1};")">@status</MudText>
         <MudText Typo="Typo.h6">@description</MudText>
@@ -97,13 +97,13 @@
 
     private async Task GetDescription()
     {
-        if (Exposition.Description.Length < 300)
+        if (Exposition.Description.Length < 200)
         {
             description = Exposition.Description;
         }
         else
         {
-            description = $"{Exposition.Description.Substring(0, 297)}...";
+            description = $"{Exposition.Description.Substring(0, 197)}...";
         }
     }
 }

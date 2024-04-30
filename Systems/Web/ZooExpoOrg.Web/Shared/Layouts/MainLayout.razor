@@ -1,4 +1,5 @@
-﻿@using ZooExpoOrg.Web.Services.Clients;
+﻿@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
 @using ZooExpoOrg.Web.Services.Configuration
 @using Microsoft.AspNetCore.Components.Authorization
 @using ZooExpoOrg.Web.Services.Expositions;
@@ -12,6 +13,7 @@
 @inject IGetIdHelperService GetIdHelper
 @inject ISnackbar Snackbar
 @inject IExpositionService ExpositionService
+@inject IAnimalService AnimalService
 @inject NavigationManager NavigationManager
 
 <MudThemeProvider />
@@ -135,6 +137,27 @@
             if (exposition.Photos.Count == 0)
             {
                 NavigationManager.NavigateTo($"/exposition/{exposition.Id}/manage-photos");
+                return;
+            }
+        }
+
+        List<VueAnimalModel> animals = new List<VueAnimalModel>();
+
+        foreach (var animalId in client.Animals)
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (getAnimalResult.Successful)
+            {
+                animals.Add(getAnimalResult.Result);
+            }
+        }
+
+        foreach (var animal in animals)
+        {
+            if (animal.Photos.Count() == 0)
+            {
+                NavigationManager.NavigateTo($"/animal/{animal.Id}/manage-photos");
                 return;
             }
         }

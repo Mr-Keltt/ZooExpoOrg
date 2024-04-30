@@ -1,0 +1,77 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject IAnimalService AnimalService
+@inject NavigationManager NavigationManager
+
+@page "/animal/owned"
+@layout MainLayout
+
+@attribute [Authorize]
+
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.h4" GutterBottom="true"><b>Мои животные</b></MudText>
+
+                @if (animals.Count > 0)
+                {
+                    @foreach (VueAnimalModel animal in animals)
+                    {
+                        <AnimalCard Animal="@animal"/>
+                    }
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+<AddButton Url="/animal/create" />
+
+@code {
+    private List<VueAnimalModel> animals = new List<VueAnimalModel>();
+    private VueClientModel client = new VueClientModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadClientData();
+        await ReloadAnimalData();
+    }
+
+    private async Task ReloadAnimalData()
+    {
+        foreach (var animalId in client.Animals)
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (getAnimalResult.Successful)
+            {
+                animals.Add(getAnimalResult.Result);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
+    }
+}
