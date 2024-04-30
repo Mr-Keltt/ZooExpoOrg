@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu Color="Color.Inherit" Icon="@Icons.Material.Filled.Face" Size="Size.Large" AnchorOrigin="Origin.BottomRight" >
+            <MudMenuItem Link="/client/update"><MudText>Акаунт</MudText></MudMenuItem>
+            <MudMenuItem Link="/logout"><MudText Color="Color.Error">Выйти</MudText></MudMenuItem>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudMenu Color="Color.Inherit" Icon="@Icons.Material.Filled.Face" Size="Size.Large" AnchorOrigin="Origin.BottomRight" >
+            <MudMenuItem Link="/login">Войти</MudMenuItem>
+        </MudMenu>
+    </NotAuthorized>
+</AuthorizeView>
+

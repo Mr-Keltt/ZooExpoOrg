@@ -11,8 +11,7 @@ public static class PhotosContextConfiguration
         {
             entity.ToTable("photos");
 
-            entity.Property(ap => ap.ImageData).IsRequired();
-            entity.Property(ap => ap.ImageMimeType).IsRequired();
+            entity.Property(ap => ap.StringImageData).HasMaxLength(1000000).IsRequired();
         });
     }
 }

@@ -480,16 +480,13 @@ namespace ZooExpoOrg.Context.Migrations.PgSql.Migrations
                     b.Property<int?>("ExpositionId")
                         .HasColumnType("integer");
 
-                    b.Property<byte[]>("ImageData")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("ImageMimeType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("StringImageData")
+                        .IsRequired()
+                        .HasMaxLength(1000000)
+                        .HasColumnType("character varying(1000000)");
 
                     b.Property<Guid>("Uid")
                         .HasColumnType("uuid");

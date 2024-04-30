@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ZooExpoOrg.Common.Enumerables;
+using ZooExpoOrg.Context.Seeder.Seeds;
 using ZooExpoOrg.Services.Accounts;
 using ZooExpoOrg.Services.Animals.Achievements;
 using ZooExpoOrg.Services.Animals.Animals;
@@ -49,8 +50,9 @@ public static class DbSeeder
 
         var alise = await context.Users.FirstOrDefaultAsync(x => x.UserName == "alise");
         var bob = await context.Users.FirstOrDefaultAsync(x => x.UserName == "bob");
+		var cal = await context.Users.FirstOrDefaultAsync(x => x.UserName == "cal");
 
-        if (alise != null || bob != null)
+		if (alise != null || bob != null || cal != null)
             return;
 
         var accountService = scope.ServiceProvider.GetService<IAccountService>();
@@ -70,14 +72,14 @@ public static class DbSeeder
             Password = "123"
         });
 
-        var bobUser = await accountService.Create(new RegisterAccountModel()
+		var bobUser = await accountService.Create(new RegisterAccountModel()
         {
             UserName = "bob",
             Email = "bob@mail.com",
             Password = "123"
         });
 
-        var calUser = await accountService.Create(new RegisterAccountModel()
+		var calUser = await accountService.Create(new RegisterAccountModel()
         {
             UserName = "cal",
             Email = "cal@mail.com",
@@ -100,9 +102,8 @@ public static class DbSeeder
         {
             OwnerId = aliseClient.Id,
             LocationId = aliseClient.Id,
-            ImageData = new byte[1],
-            ImageMimeType = "img"
-        });
+            StringImageData = UserDemoImages.Images[1]
+        }); 
 
         var bobClient = await clientService.Create(new CreateClientModel()
         {
@@ -113,7 +114,14 @@ public static class DbSeeder
             Gender = Common.Enumerables.Gender.Male,
         });
 
-        var calClient = await clientService.Create(new CreateClientModel()
+		await photoService.Create(new CreatePhotoModel()
+		{
+			OwnerId = bobClient.Id,
+			LocationId = bobClient.Id,
+			StringImageData = UserDemoImages.Images[1]
+		});
+
+		var calClient = await clientService.Create(new CreateClientModel()
         {
             UserId = calUser.Id,
             Name = "Кэл",
@@ -126,9 +134,8 @@ public static class DbSeeder
         {
             OwnerId = calClient.Id,
             LocationId = calClient.Id,
-            ImageData = new byte[1],
-            ImageMimeType = "img"
-        });
+			StringImageData = UserDemoImages.Images[2]
+		});
 
         // Create animals
 
@@ -152,9 +159,8 @@ public static class DbSeeder
             {
                 OwnerId = bobClient.Id,
                 LocationId = bobAnimals[0].Id,
-                ImageData = new byte[1],
-                ImageMimeType = "img"
-            });
+                StringImageData = AnimalDemoImages.DogImages[1 - i % 2]
+			});
         }
 
         await achievementsService.Create(new CreateAchievementModel()
@@ -183,9 +189,8 @@ public static class DbSeeder
             {
                 OwnerId = bobClient.Id,
                 LocationId = bobAnimals[1].Id,
-                ImageData = new byte[1],
-                ImageMimeType = "img"
-            });
+				StringImageData = AnimalDemoImages.DogImages[i%2]
+			});
         }
 
         bobAnimals.Add(await animalService.Create(new CreateAnimalModel()
@@ -206,9 +211,8 @@ public static class DbSeeder
             {
                 OwnerId = bobClient.Id,
                 LocationId = bobAnimals[2].Id,
-                ImageData = new byte[1],
-                ImageMimeType = "img"
-            });
+                StringImageData = AnimalDemoImages.ParrotImages[i % 2]
+			});
         }
 
         var calAnimals = new List<AnimalModel>();
@@ -231,9 +235,8 @@ public static class DbSeeder
             {
                 OwnerId = calClient.Id,
                 LocationId = calAnimals[0].Id,
-                ImageData = new byte[1],
-                ImageMimeType = "img"
-            });
+                StringImageData = AnimalDemoImages.DogImages[1 - i % 2]
+			});
         }
 
         calAnimals.Add(await animalService.Create(new CreateAnimalModel()
@@ -254,9 +257,8 @@ public static class DbSeeder
             {
                 OwnerId = calClient.Id,
                 LocationId = calAnimals[1].Id,
-                ImageData = new byte[1],
-                ImageMimeType = "img"
-            });
+                StringImageData = AnimalDemoImages.CatImages[i % 2]
+			});
         }
 
         // Create expositions
@@ -281,9 +283,8 @@ public static class DbSeeder
             {
                 OwnerId = aliseClient.Id,
                 LocationId = aliseExposition.Id,
-                ImageData = new byte[1],
-                ImageMimeType = "img"
-            });
+                StringImageData = ExpoDemoImages.Images[i % 2]
+			});
         }
 
         await expositionService.Subscribe(

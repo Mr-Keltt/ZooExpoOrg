@@ -3,12 +3,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Services.Logger;
 using ZooExpoOrg.Services.Clients;
+using ZooExpoOrg.Services.Photos;
 using Microsoft.IdentityModel.Tokens;
 using ZooExpoOrg.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.RightVerifier;
 using ZooExpoOrg.Services.ExpositionsNotificationManager;
+using FluentValidation;
 
 namespace ZooExpoOrg.Api.Controllers.Clients;
 
@@ -23,13 +25,15 @@ public class ClientController : Controller
     private readonly IMapper mapper;
     private readonly IRightVerifierService rightVerifier;
     private readonly IExpositionsNotificationManagerService expositionsNotificationManager;
+    private readonly IPhotoService phopoService;
 
     public ClientController(
-        IAppLogger logger, 
-        IClientService clientService, 
+        IAppLogger logger,
+        IClientService clientService,
         IMapper mapper,
         IRightVerifierService rightVerifier,
-        IExpositionsNotificationManagerService expositionsNotificationManager
+        IExpositionsNotificationManagerService expositionsNotificationManager,
+        IPhotoService phopoService
         )
     {
         this.logger = logger;
@@ -37,6 +41,7 @@ public class ClientController : Controller
         this.mapper = mapper;
         this.rightVerifier = rightVerifier;
         this.expositionsNotificationManager = expositionsNotificationManager;
+        this.phopoService = phopoService;
     }
 
     [HttpGet("")]
@@ -76,11 +81,25 @@ public class ClientController : Controller
 
             var result = await clientService.Create(mapper.Map<CreateClientModel>(model));
 
+            var photo = new CreatePhotoModel()
+            {
+                LocationId = result.Id,
+                OwnerId = result.Id,
+                StringImageData = BaseImages.UserImage
+            };
+
+            await phopoService.Create(photo);
+
+
             return Ok(mapper.Map<PresintationClientModel>(result));
         }
         catch (ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 
@@ -104,6 +123,10 @@ public class ClientController : Controller
         catch (ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 
@@ -144,6 +167,27 @@ public class ClientController : Controller
             }
 
             await clientService.Delete(id);
+
+            return Ok();
+        }
+        catch (ProcessException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    public async Task<IActionResult> GetNotificationsReceivedById(Guid recipientId)
+    {
+        try
+        {
+            string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!(await rightVerifier.VerifRightsOfManagClient(jwtToken, recipientId)))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            await expositionsNotificationManager.GetAllNotificationsReceivedById(recipientId);
 
             return Ok();
         }

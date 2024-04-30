@@ -1,4 +1,7 @@
-﻿namespace ZooExpoOrg.Services.Accounts;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ZooExpoOrg.Services.Accounts;
 
 public interface IAccountService
 {
@@ -6,5 +9,5 @@ public interface IAccountService
 
 
     Task<IEnumerable<AccountModel>> GetAll();
-    Task<AccountModel> Create(RegisterAccountModel model);
+    Task<AccountModel> Create(RegisterAccountModel model, HttpContext httpContext = default, IUrlHelper urlHelper = default);
 }

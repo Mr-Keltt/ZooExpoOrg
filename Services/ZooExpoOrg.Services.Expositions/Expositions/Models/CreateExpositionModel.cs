@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
+using ZooExpoOrg.Common.Helpers;
 using ZooExpoOrg.Context;
 using ZooExpoOrg.Context.Entities;
 
@@ -49,7 +50,9 @@ public class CreateExpositionModelProfile : Profile
             .ForMember(dest => dest.Participants, opt => opt.Ignore())
             .ForMember(dest => dest.Photos, opt => opt.Ignore())
             .ForMember(dest => dest.Comments, opt => opt.Ignore())
-            .ForMember(dest => dest.Subscribers, opt => opt.Ignore());
+            .ForMember(dest => dest.Subscribers, opt => opt.Ignore())
+            .ForMember(dest => dest.DateStart, opt => opt.Ignore())
+            .ForMember(dest => dest.DateEnd, opt => opt.Ignore());
     }
 
     public class CreateExpositionModelActions : IMappingAction<CreateExpositionModel, ExpositionEntity>
@@ -77,6 +80,8 @@ public class CreateExpositionModelProfile : Profile
             destination.Photos = new List<PhotoEntity>();
             destination.Comments = new List<CommentEntity>();
             destination.Subscribers = new List<ClientEntity>();
+            destination.DateStart = DateHelper.ConvertToUTC(source.DateStart);
+            destination.DateEnd = DateHelper.ConvertToUTC(source.DateEnd);
         }
     }
 }
@@ -117,6 +122,6 @@ public class CreateExpositionModelValidator : AbstractValidator<CreateExposition
 
     private bool BeAValidDate(DateTime date)
     {
-        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
+        return date > DateTime.Now;
     }
 }

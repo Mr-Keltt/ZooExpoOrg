@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -68,7 +69,7 @@ public class ExpositionController : Controller
 
     [HttpPost("")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Create(CreateExpositionModel model)
+    public async Task<IActionResult> Create(PresintationCreateExpositionModel model)
     {
         try
         {
@@ -79,7 +80,7 @@ public class ExpositionController : Controller
                 return BadRequest("Access denied.");
             }
 
-            var exposition = await expositionService.Create(model);
+            var exposition = await expositionService.Create(mapper.Map<CreateExpositionModel>(model));
 
             return Ok(mapper.Map<PresintationExpositionModel>(exposition));
         }
@@ -87,11 +88,15 @@ public class ExpositionController : Controller
         {
             return NotFound(e.Message);
         }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
+        }
     }
 
     [HttpPut("{id:Guid}")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Update(Guid id, UpdateExpositionModel model)
+    public async Task<IActionResult> Update(Guid id, PresintationUpdateExpositionModel model)
     {
         try
         {
@@ -102,13 +107,17 @@ public class ExpositionController : Controller
                 return BadRequest("Access denied.");
             }
 
-            await expositionService.Update(id, model);
+            await expositionService.Update(id, mapper.Map<UpdateExpositionModel>(model));
 
             return Ok();
         }
         catch(ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 

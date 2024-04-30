@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Common.Enumerables;
+using ZooExpoOrg.Common.Helpers;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Services.Logger;
 
@@ -28,6 +29,7 @@ public class CreateClientModelProfile : Profile
     {
         CreateMap<CreateClientModel, ClientEntity>()
             .BeforeMap<CreateClientModelActions>()
+            .ForMember(dest => dest.BirthDate, opt => opt.Ignore())
             .ForMember(dest => dest.Photos, opt => opt.Ignore())
             .ForMember(dest => dest.OwnedPhotos, opt => opt.Ignore())
             .ForMember(dest => dest.Subscriptions, opt => opt.Ignore())
@@ -45,6 +47,7 @@ public class CreateClientModelProfile : Profile
 
         public void Process(CreateClientModel source, ClientEntity destination, ResolutionContext context)
         {
+            destination.BirthDate = DateHelper.ConvertToUTC(source.BirthDate);
             destination.Photos = new List<PhotoEntity>();
             destination.OwnedPhotos = new List<PhotoEntity>();
             destination.Subscriptions = new List<ExpositionEntity>();
@@ -72,12 +75,12 @@ public class CreateClientModelValidator : AbstractValidator<CreateClientModel>
         RuleFor(x => x.Gender)
             .IsInEnum().WithMessage("Invalid gender value.");
         RuleFor(x => x.BirthDate)
-            .NotEmpty().WithMessage("BirthDate is required.")
+            .NotNull().NotEmpty().WithMessage("BirthDate is required.")
             .Must(BeAValidDate).WithMessage("Invalid date format.");
     }
 
     private bool BeAValidDate(DateTime date)
     {
-        return date < DateTime.Now && date > DateTime.Now.AddYears(-150); // Assuming birth date should not be in future and not more than 150 years old.
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }

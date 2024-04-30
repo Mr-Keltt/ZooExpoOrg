@@ -13,14 +13,12 @@ public class PresintationUpdateClientModel
     public string Surname { get; set; }
 
     public string Patronymic { get; set; }
-
-    public Guid? PhotoId { get; set; }
 }
 
 public class PresintationUpdateClientModelProfile : Profile
 {
     public PresintationUpdateClientModelProfile()
     {
-        CreateMap<PresintationClientModel, UpdateClientModel>();
+        CreateMap<PresintationUpdateClientModel, UpdateClientModel>();
     }
 }

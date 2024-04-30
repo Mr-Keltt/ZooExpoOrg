@@ -8,6 +8,7 @@ public static class Bootstrapper
     {
         services.AddSingleton<IExpositionsNotificationManagerService, ExpositionsNotificationManagerService>();
         services.AddAutoMapper(typeof(CreateNotificationModelProfile));
+        services.AddAutoMapper(typeof(NotificationModelProfile));
 
         return services;
     }

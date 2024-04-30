@@ -1,0 +1,171 @@
+﻿@page "/client/create"
+@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Services.Clients;
+@using System.ComponentModel.DataAnnotations
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject NavigationManager NavigationManager
+
+
+<div style="height: 900px; overflow-x: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <EditForm Model="@createClientModel" OnValidSubmit="OnValidSubmit">
+    
+                    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Укажите личные данные</MudText>
+    
+                    <MudTextField T="string"
+                                    @bind-Value="createClientModel.Name" For="@(() => createClientModel.Name)"
+                                    Label="Имя" 
+                                    Required="true" 
+                                    RequiredError="Имя обязательно"
+                                    HelperText="Введите ваше имя"/>
+                    
+                    <MudAlert Severity="Severity.Error" Class="@(errorModel.Name != "" ? "my-3 d-block" : "d-none")">
+                        @errorModel.Name
+                    </MudAlert>
+    
+                    <MudTextField T="string"
+                                    @bind-Value="createClientModel.Surname" For="@(() => createClientModel.Surname)"
+                                    Label="Фамилия" 
+                                    Required="true" 
+                                    RequiredError="Фамилия обязательна"
+                                    HelperText="Введите вашу фамилию"/>
+    
+                    <MudAlert Severity="Severity.Error" Class="@(errorModel.Surname != "" ? "mt-3 d-block" : "d-none")">
+                        @errorModel.Surname
+                    </MudAlert>
+    
+                    <MudTextField T="string"
+                                    @bind-Value="createClientModel.Patronymic" For="@(() => createClientModel.Patronymic)"
+                                    Label="Отчество" 
+                                    Required="false" 
+                                    HelperText="Введите ваше отчество"/>
+    
+                    <MudAlert Severity="Severity.Error" Class="@(errorModel.Patronymic != "" ? "my-3 d-block" : "d-none")">
+                        @errorModel.Patronymic
+                    </MudAlert>
+    
+                    <MudRadioGroup
+                        T="Gender"
+                        @bind-Value="createClientModel.Gender" 
+                        For="@(() => createClientModel.Gender)"
+                        Required="true" 
+                        RequiredError="Пол обязателен"
+                        Class="mt-2">
+                        <MudRadio Value="Gender.Male" Color="Color.Primary">Мужской</MudRadio>
+                        <MudRadio Option="Gender.Female" Color="Color.Primary">Женский</MudRadio>
+                    </MudRadioGroup>
+    
+                    <MudDatePicker 
+                        @bind-Date="createClientModel.BirthDate"
+                        For="@(() => createClientModel.BirthDate)" 
+                        Required="true" 
+                        RequiredError="Дата рождения обязательна"
+                        Label="Дата рождения" 
+                        HelperText="Укажите вашу дату рождения"
+                        MaxDate="DateTime.Today"/>
+    
+                    <MudAlert Severity="Severity.Error" Class="@(errorModel.BirthDate != "" ? "my-3 d-block" : "d-none")">
+                        @errorModel.BirthDate
+                    </MudAlert>
+    
+                    <MudCardActions>
+                        <MudSpacer />
+    
+                        <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            Size="Size.Medium"
+                            ButtonType="ButtonType.Submit">Готово</MudButton>
+                    </MudCardActions>
+                </EditForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    private VueCreateClientModel createClientModel = new VueCreateClientModel();
+    private ClientValidationErorr errorModel = new ClientValidationErorr();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (getClientIdResult.Successful)
+        {
+            NavigationManager.NavigateTo("/client/update");
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        errorModel.Name = "";
+        errorModel.Surname = "";
+        errorModel.Patronymic = "";
+        errorModel.Gender = "";
+        errorModel.BirthDate = "";
+
+        var getIdClientResult = await GetIdHelper.GetCurrentUserId();
+
+        if (!getIdClientResult.Successful)
+        {
+            throw new Exception("Account not found.");
+        }
+
+        createClientModel.UserId = getIdClientResult.Id;
+
+        if (createClientModel.Patronymic == null)
+        {
+            createClientModel.Patronymic = "";
+        }
+
+        var clientCreateResult = await ClientService.AddClient(createClientModel);
+
+        if (!clientCreateResult.Successful)
+        {
+            foreach (ManageModelError error in clientCreateResult.FieldErrors)
+            {
+                switch (error.Message)
+                {
+                    case "Name is required.":
+                        errorModel.Name = "Имя обязательно";
+                        break;
+                    case "Name must not exceed 50 characters.":
+                        errorModel.Name = "Имя слишком длинное";
+                        break;
+                    case "Surname is required.":
+                        errorModel.Surname = "Фамилия обязательна";
+                        break;
+                    case "Surname must not exceed 50 characters.":
+                        errorModel.Surname = "Фамилия слишком длинная";
+                        break;
+                    case "Patronymic must not exceed 50 characters.":
+                        errorModel.Patronymic = "Отчество слишком длинное";
+                        break;
+                    case "Invalid gender value.":
+                        errorModel.Gender = "Пол обязателен";
+                        break;
+                    case "BirthDate is required.":
+                        errorModel.BirthDate = "Дата рждения обязательна";
+                        break;
+                    case "Invalid date format.":
+                        if (errorModel.BirthDate != "Дата рждения обязательна")
+                        {
+                            errorModel.BirthDate = "Неверный формат даты";
+                        }
+                        break;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

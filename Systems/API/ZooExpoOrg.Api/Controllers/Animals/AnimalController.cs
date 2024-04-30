@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using ZooExpoOrg.Common.Security;
 using ZooExpoOrg.Services.RightVerifier;
+using FluentValidation;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -90,6 +91,10 @@ public class AnimalController : ControllerBase
         {
             return NotFound(e.Message);
         }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
+        }
     }
 
     [HttpPut("{id:Guid}")]
@@ -112,6 +117,10 @@ public class AnimalController : ControllerBase
         catch (ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 

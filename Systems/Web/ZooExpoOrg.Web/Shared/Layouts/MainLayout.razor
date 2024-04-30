@@ -1,0 +1,165 @@
+﻿@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Configuration
+@using Microsoft.AspNetCore.Components.Authorization
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Shared.Components
+
+@inherits LayoutComponentBase
+
+@inject IConfigurationService ConfigurationService
+@inject IClientService ClientService
+@inject IGetIdHelperService GetIdHelper
+@inject ISnackbar Snackbar
+@inject IExpositionService ExpositionService
+@inject IAnimalService AnimalService
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton 
+            Icon="@Icons.Material.Filled.Menu" 
+            Color="Color.Inherit" 
+            Edge="Edge.Start" 
+            OnClick="@DrawerToggleAsync" 
+            Size="Size.Large"/>
+        <MudText Typo="Typo.h4" Class="ml-3"><b>ZooExpoOrg</b></MudText>
+        <MudSpacer />
+
+        <AuthorizeView>
+            <Authorized>
+                @if (client != null)
+                {
+                    <MudText Typo="Typo.h6" Class="ml-3">@client.Name</MudText>
+                }
+            </Authorized>
+        </AuthorizeView>
+        
+        <UserMenu />
+    </MudAppBar>
+    <MudDrawer @bind-Open="drawerOpen" 
+                ClipMode="DrawerClipMode.Always" 
+                Elevation="2"
+                Variant="@DrawerVariant.Temporary"
+                DisableOverlay="true">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool drawerOpen = true;
+    private VueClientModel client;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            drawerOpen = await ConfigurationService.GetNavigationMenuVisibleAsync();
+
+            await ReloadClientData();
+
+            var getUserIdResult = await GetIdHelper.GetCurrentUserId();
+
+            if (client == null && !await UserIsAdmin() && getUserIdResult.Successful)
+            {
+                NavigationManager.NavigateTo("/client/create");
+            }
+
+            await HavePhoto();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task DrawerToggleAsync()
+    {
+        drawerOpen = !drawerOpen;
+        await ConfigurationService.SetNavigationMenuVisibleAsync(drawerOpen);
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
+    }
+
+    private async Task<bool> UserIsAdmin()
+    {
+        var getAdminIdResuly = await GetIdHelper.GetAdminId();
+
+        var getUserIdResult = await GetIdHelper.GetCurrentUserId();
+
+        if (!getAdminIdResuly.Successful || !getUserIdResult.Successful)
+        {
+            return false;
+        }
+
+        if (getAdminIdResuly.Id != getUserIdResult.Id)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task HavePhoto()
+    {
+        List<VueExpositionModel> expositions = new List<VueExpositionModel>();
+
+        foreach (var expositionId in client.OrganizedExpositions)
+        {
+            var getExpositionResult = await ExpositionService.GetExposition(expositionId);
+
+            if (getExpositionResult.Successful)
+            {
+                expositions.Add(getExpositionResult.Result);
+            }
+        }
+
+        foreach (var exposition in expositions)
+        {
+            if (exposition.Photos.Count == 0)
+            {
+                NavigationManager.NavigateTo($"/exposition/{exposition.Id}/manage-photos");
+                return;
+            }
+        }
+
+        List<VueAnimalModel> animals = new List<VueAnimalModel>();
+
+        foreach (var animalId in client.Animals)
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (getAnimalResult.Successful)
+            {
+                animals.Add(getAnimalResult.Result);
+            }
+        }
+
+        foreach (var animal in animals)
+        {
+            if (animal.Photos.Count() == 0)
+            {
+                NavigationManager.NavigateTo($"/animal/{animal.Id}/manage-photos");
+                return;
+            }
+        }
+    }
+}

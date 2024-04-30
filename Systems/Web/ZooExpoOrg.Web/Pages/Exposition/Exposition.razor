@@ -1,0 +1,271 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.Photos;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject IExpositionService ExpositionService
+@inject IPhotoService PhotoService
+@inject IAnimalService AnimalService
+@inject NavigationManager NavigationManager
+
+@page "/exposition/{id}"
+
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Style="overflow: hidden;" >
+                <MudPaper 
+                    Elevation="3" 
+                    Class="rounded-lg" 
+                    Style="width: 100%">
+                    <MudCarousel Class="mud-width-full rounded-lg" 
+                                Style="height:400px; overflow: hidden;" 
+                                ShowBullets="true" 
+                                AutoCycle="true"
+                                TData="object"
+                                ShowArrows="false">
+                        @if (expositionPhotos.Count > 0)
+                        {
+                            @foreach (VuePhotoModel photo in expositionPhotos)
+                            {
+                                <MudCarouselItem Transition="Transition.Slide" 
+                                                    Color="@Color.Primary" 
+                                                    Style="overflow: hidden;">
+                                    <MudImage Src="@photo.StringImageData" ObjectFit="ObjectFit.Cover"/>
+                                </MudCarouselItem>
+                            }
+                        }
+                    </MudCarousel>
+                </MudPaper>
+
+                <MudGrid Class="pa-4">
+                    <MudItem xs="12" Style="word-wrap: break-word; word-break: break-all;">
+                        <MudText Typo="Typo.h4" Class="ma-0" GutterBottom="true"><b>@exposition.Title</b></MudText>
+                        <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Darken3};")">@expositionParticipantsType</MudText>
+                        <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Darken1};")">ДАТЫ ПРОВЕДЕНИЯ: @expositionDateEvent</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <div class="d-flex flex-grow-1">
+                            @if (client != null)
+                            {
+                                <ExpositionActionButton Exposition="@exposition" Client="@client"/>
+                                <MudButton Variant="Variant.Filled" 
+                                            Color="Color.Primary"
+                                            OnClick="@(() => {popupOn = true; StateHasChanged();})"
+                                            Class="ml-3">Добавить участника</MudButton>
+                            }
+                        </div>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        
+                            <MudText Typo="Typo.h5" GutterBottom="true"><b>Описание</b></MudText>
+                            <MudText Typo="Typo.body1" GutterBottom="true">@exposition.Description</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h5" GutterBottom="true"><b>Место проведения</b></MudText>
+                        
+
+                        <MudSimpleTable 
+                            Elevation="0" 
+                            Style="overflow-x: auto;"
+                            Square="true">
+                            <tr>
+                                <td style="width:200px">
+                                    <MudText Typo="Typo.body1" GutterBottom="true"><b>Страна</b></MudText>
+                                </td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
+                                    <MudText Typo="Typo.body1" GutterBottom="true">@exposition.Country</MudText>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width:200px">
+                                    <MudText Typo="Typo.body1" GutterBottom="true"><b>Город</b></MudText>
+                                </td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
+                                    <MudText Typo="Typo.body1" GutterBottom="true">@exposition.City</MudText>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width:200px">
+                                    <MudText Typo="Typo.body1" GutterBottom="true"><b>Улица</b></MudText>
+                                </td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
+                                    <MudText Typo="Typo.body1" GutterBottom="true">@exposition.Street</MudText>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width:200px">
+                                    <MudText Typo="Typo.body1" GutterBottom="true"><b>Дом</b></MudText>
+                                </td>
+                                <td Style="word-wrap: break-word; word-break: break-all;">
+                                    <MudText Typo="Typo.body1" GutterBottom="true">@exposition.HouseNumber</MudText>
+                                </td>
+                            </tr>
+                        </MudSimpleTable>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h5" GutterBottom="true"><b>Участники</b></MudText>
+                    
+                        @if (animals.Count > 0)
+                        {
+                            @foreach (VueAnimalModel animal in animals)
+                            {
+                                <AnimalCard Animal="@animal"/>
+                            }
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@if (popupOn)
+{
+    <MudPaper Style="overflow-x: hidden;
+                        position: fixed;
+                        width: 80%;
+                        height: 80%;
+                        z-index: 100" 
+                Class="pa-4 rounded-xl">
+        <MudAppBar Elevation="1">
+            <MudSpacer />
+
+            <MudFab Color="Color.Secondary" 
+                    StartIcon="@Icons.Material.Filled.Close" 
+                    Size="Size.Medium"
+                    OnClick="@(() => {popupOn = false; StateHasChanged();})"/>
+        </MudAppBar>
+    </MudPaper>
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private VueExpositionModel exposition = new VueExpositionModel();
+    public List<VuePhotoModel> expositionPhotos = new List<VuePhotoModel>();
+    private VueClientModel client;
+    private List<VueAnimalModel> animals = new List<VueAnimalModel>();
+
+    private string expositionParticipantsType = "";
+    private string expositionDateEvent = "";
+
+    private bool popupOn = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadClientData();
+        await GetParticipantsType();
+        await ReloadExpositionData();
+        await GetPhotos();
+        await GetDateEvent();
+        await ReloadAnimalData();
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadAnimalData()
+    {
+        foreach (var animalId in exposition.Participants)
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (getAnimalResult.Successful)
+            {
+                animals.Add(getAnimalResult.Result);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadExpositionData()
+    {
+        Guid expositionId;
+
+        if (Guid.TryParse(Id, out expositionId))
+        {
+            var getExpositionResult = await ExpositionService.GetExposition(expositionId);
+
+            if (!getExpositionResult.Successful)
+            {
+                return;
+            }
+
+            exposition = getExpositionResult.Result;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/notfound");
+        }
+    }
+
+    private async Task GetPhotos()
+    {
+        var getPhotoResult = await PhotoService.GetPhotosLocated(exposition.Id);
+
+        if (!getPhotoResult.Successful)
+        {
+            return;
+        }
+
+        expositionPhotos = getPhotoResult.Result;
+    }
+
+    private async Task GetParticipantsType()
+    {
+        switch(exposition.ParticipantsType)
+        {
+            case AnimalType.Dog:
+                expositionParticipantsType = "Выстовка собак";
+                break;
+           case AnimalType.Cat:
+                expositionParticipantsType = "Выстовка кошек";
+                break;
+           case AnimalType.Parrot:
+                expositionParticipantsType = "Выстовка попугаев";
+                break;
+            case AnimalType.Fish:
+                expositionParticipantsType = "Выстовка рыбок";
+                break;
+        }
+    }
+
+    private async Task GetDateEvent()
+    {
+        var dataStart = exposition.DateStart.ToString("dd.MM.yy");
+        var dataEnd = exposition.DateEnd.ToString("dd.MM.yy");
+
+        expositionDateEvent = $"{dataStart} - {dataEnd}";
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
+    }
+}

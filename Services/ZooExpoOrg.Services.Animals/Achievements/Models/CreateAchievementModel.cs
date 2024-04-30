@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
 using FluentValidation;
+using ZooExpoOrg.Common.Helpers;
 
 namespace ZooExpoOrg.Services.Animals.Achievements;
 
@@ -23,6 +24,7 @@ public class CreateAchievementModelProfile : Profile
     {
         CreateMap<CreateAchievementModel, AchievementEntity>()
             .BeforeMap<CreateAchievementModelActions>()
+            .ForMember(dest => dest.DateAward, opt => opt.Ignore())
             .ForMember(dest => dest.AnimalId, opt => opt.Ignore());
     }
 
@@ -46,6 +48,7 @@ public class CreateAchievementModelProfile : Profile
                 throw new NullReferenceException(); 
             }
 
+            destination.DateAward = DateHelper.ConvertToUTC(source.DateAward);
             destination.AnimalId = animal.Id;
         }
     }
@@ -70,6 +73,6 @@ public class CreateAchievementModelValidator : AbstractValidator<CreateAchieveme
 
     private bool BeAValidDate(DateTime date)
     {
-        return date != default(DateTime);
+        return date < DateTime.Now && date > DateTime.Now.AddYears(-150);
     }
 }

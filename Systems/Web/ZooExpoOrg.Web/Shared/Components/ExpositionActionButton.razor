@@ -1,0 +1,104 @@
+﻿@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject IExpositionService ExpositionService
+@inject NavigationManager NavigationManager
+
+<MudButton Variant="@displayVariant"
+			Color="@displayColor"
+			Class="@(displayText != "" ? "d-block" : "d-none")"
+			OnClick="@Action">
+	@displayText
+</MudButton>
+
+@code {
+	[Parameter]
+	public VueExpositionModel Exposition { get; set; }
+
+	[Parameter]
+	public VueClientModel Client { get; set; }
+	
+	private string displayText = "";
+	private Variant displayVariant = Variant.Filled;
+	private Color displayColor = Color.Secondary;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await SettingButton();
+
+		StateHasChanged();
+	}
+
+	private async Task SettingButton()
+	{
+		if (Client == null)
+		{
+			return;
+		}
+
+		var clientOrganizedExpositions = Client.OrganizedExpositions;
+
+		if (clientOrganizedExpositions.Contains(Exposition.Id))
+		{
+			displayText = "";
+			displayVariant = Variant.Filled;
+			displayColor = Color.Primary;
+
+			return;
+		}
+
+		var clientSubscriptions = Client.Subscriptions;
+
+		if (clientSubscriptions.Contains(Exposition.Id))
+		{
+			displayText = "Вы подписаны";
+			displayVariant = Variant.Outlined;
+			displayColor = Color.Warning;
+		}
+		else
+		{
+			displayText = "Подписаться";
+			displayVariant = Variant.Filled;
+			displayColor = Color.Secondary;
+		}
+	}
+
+	private async Task Action()
+	{
+		if (displayText == "Редактировать")
+		{
+			return;
+		}
+		else if (displayText == "Подписаться")
+		{
+			await ExpositionService.Subscribe(Exposition.Id, Client.Id);
+		}
+		else if (displayText == "Вы подписаны")
+		{
+			await ExpositionService.Unsubscribe(Exposition.Id, Client.Id);
+		}
+
+		await ReloadClientData();
+		await SettingButton();
+
+		StateHasChanged();
+	}
+
+	private async Task ReloadClientData()
+	{
+		var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+		if (!getClientIdResult.Successful)
+		{
+			return;
+		}
+
+		var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+		Client = getClientResult.Result;
+	}
+}

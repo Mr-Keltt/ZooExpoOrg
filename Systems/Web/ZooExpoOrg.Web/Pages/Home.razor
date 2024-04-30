@@ -1,0 +1,71 @@
+﻿@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IExpositionService ExpositionService
+@inject IClientService ClientService
+@inject NavigationManager NavigationManager
+
+@page "/"
+@layout MainLayout
+
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.h4" GutterBottom="true"><b>Выставки</b></MudText>
+    
+                @if (expositions.Count > 0)
+                {
+                    @foreach (VueExpositionModel exposition in expositions)
+                    {
+                        <ExpositionCard Exposition="@exposition" Client="client"/>
+                    }
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    private List<VueExpositionModel> expositions = new List<VueExpositionModel>();
+    private VueClientModel client;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadExpositionData();
+        await ReloadClientData();
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadExpositionData()
+    {
+        var getExpositionsResult = await ExpositionService.GetExpositions();
+
+        if (!getExpositionsResult.Successful)
+        {
+            return;
+        }
+
+        expositions = getExpositionsResult.Result;
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
+    }
+}

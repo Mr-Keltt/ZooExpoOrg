@@ -1,0 +1,167 @@
+﻿@using ZooExpoOrg.Web.Services.Photos;
+
+@inject IPhotoService PhotoService
+
+@if (newPhotos.Count + photos.Count > 0)
+{
+	<MudPaper >
+		<div style="display: flex; flex-wrap: wrap;">
+			@foreach (var photo in photos)
+			{
+				@if (photo.StringImageData == "")
+				{
+						<MudSkeleton 
+						SkeletonType="SkeletonType.Rectangle" 
+						Width="200px"
+						Height="200px"/>
+				}
+				else
+				{
+					<MudPaper Class="ma-2 pa-4">
+	
+						<MudImage Src="@photo.StringImageData"
+									Width="200" 
+									Height="200" 
+									ObjectFit="ObjectFit.Cover"
+									Alt="Фото" 
+									Elevation="25" 
+									Class="rounded-lg mr-2" />
+
+						<MudFab Size="Size.Small"
+								Color="Color.Dark" 
+								StartIcon="@Icons.Material.Filled.Close" 
+								OnClick="(() => RemovePhoto(photos.IndexOf(photo)))"/>
+					</MudPaper>
+				}
+			}
+
+			@foreach (var photo in newPhotos)
+			{
+				@if (photo.StringImageData == "")
+				{
+									<MudSkeleton 
+						SkeletonType="SkeletonType.Rectangle" 
+						Width="200px"
+						Height="200px"/>
+				}
+				else
+				{
+					<MudPaper Class="ma-2 pa-4">
+
+						<MudImage Src="@photo.StringImageData"
+									Width="200" 
+									Height="200" 
+									ObjectFit="ObjectFit.Cover"
+									Alt="Фото" 
+									Elevation="25" 
+									Class="rounded-lg mr-2" />
+
+						<MudFab Size="Size.Small"
+								Color="Color.Dark" 
+								StartIcon="@Icons.Material.Filled.Close" 
+								OnClick="(() => RemoveNewPhoto(newPhotos.IndexOf(photo)))"/>
+					</MudPaper>
+				}
+			}
+		</div>
+	</MudPaper>
+}
+
+@code {
+	[Parameter]
+	public int MaxPhotos { get; set; }
+
+	public List<VueCreatePhotoModel> newPhotos = new List<VueCreatePhotoModel>();
+	public List<VuePhotoModel> photos = new List<VuePhotoModel>();
+	public List<Guid> deletedPhotosIds = new List<Guid>();
+
+	private int pointer = 0;
+
+	protected override async Task OnInitializedAsync()
+	{
+		MaxPhotos = 20;
+	}
+
+	public async Task AddPhoto(VuePhotoModel photo)
+	{
+		photos.Add(photo);
+
+		StateHasChanged();
+	}
+
+	public async Task AddNewPhoto(VueCreatePhotoModel photo)
+	{
+		if (photos.Count + newPhotos.Count > MaxPhotos)
+		{
+			newPhotos[pointer++] = photo;
+
+			if (pointer >= MaxPhotos)
+			{
+				pointer = 0;
+			}
+		}
+
+		newPhotos.Add(photo);
+
+		StateHasChanged();
+	}
+
+	private async Task RemovePhoto(int number)
+	{
+		deletedPhotosIds.Add(photos[number].Id);
+
+		photos.RemoveAt(number);
+
+		pointer = 0;
+
+		StateHasChanged();
+	}
+
+	private async Task RemoveNewPhoto(int number)
+	{
+		newPhotos.RemoveAt(number);
+
+		pointer = 0;
+
+		StateHasChanged();
+	}
+
+	public async Task ApplyChanges()
+	{
+		if (newPhotos.Count + photos.Count == 0)
+		{
+			throw new Exception("The list of photos is empty.");
+		}
+
+		foreach (var photoId in deletedPhotosIds)
+		{
+			await PhotoService.DeletePhoto(photoId);
+		}
+
+		deletedPhotosIds.Clear();
+
+		if (newPhotos.Count == 0)
+		{
+			return;
+		}
+
+		var getCurPhotosResult = await PhotoService.GetPhotosLocated(newPhotos[0].LocationId);
+
+		if (!getCurPhotosResult.Successful)
+		{
+			throw new Exception("Something went wrong.");
+		}
+
+		foreach (var photo in newPhotos)
+		{
+			var curPhoto = getCurPhotosResult.Result.FirstOrDefault(x => x.StringImageData == photo.StringImageData);
+
+			if (curPhoto != null)
+			{
+				continue;
+			}
+
+			await PhotoService.AddPhoto(photo);
+		}
+	}
+}

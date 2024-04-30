@@ -18,7 +18,7 @@ public class PresintationCreateClientModel
 
     public Gender Gender { get; set; }
 
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
 }
 
 public class PresintationCreateClientModelProfile : Profile

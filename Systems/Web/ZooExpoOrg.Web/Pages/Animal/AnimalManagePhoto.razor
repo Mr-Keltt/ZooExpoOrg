@@ -1,0 +1,190 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Pages.Exposition;
+@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.GetRsultHelper;
+@using ZooExpoOrg.Web.Services.Photos;
+@using ZooExpoOrg.Web.Shared.Components
+
+@inject IGetIdHelperService GetIdHelper
+@inject IAnimalService AnimalService
+@inject IPhotoService PhotoService
+@inject NavigationManager NavigationManager
+@page "/animal/{id}/manage-photos"
+
+@attribute [Authorize]
+
+<div style="overflow-x: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4"
+                     Style="word-wrap: break-word; word-break: break-all;">
+                <MudText Typo="Typo.h5" GutterBottom="true" Class="my-2">Добавьте фотографии для животного @animal.Name</MudText>
+
+                <ContainerСontrolledImges @ref="containerСontrolledImges"/>
+
+                <MudFileUpload 
+	            	T="IBrowserFile" 
+	            	Accept=".png, .jpg" 
+                    SuppressOnChangeWhenInvalid="true"
+	            	FilesChanged="UploadImage" 
+	            	MaximumFileCount="1">
+                    <ButtonTemplate>
+                        <MudButton 
+	            			HtmlTag="label"
+	            			for="@context.Id"
+	            			Style="width: 100%"
+	            			Variant="Variant.Filled"
+	            			Color="Color.Primary"
+	            			Size="Size.Medium"
+	            			>Добавить фото</MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+
+                <ErrorAlert ErrorMesage="@addPhotos" />
+
+                <MudCardActions>
+                    <MudSpacer />
+
+                    <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Size="Size.Medium"
+                        OnClick="OnValidSubmit">Применить</MudButton>
+                </MudCardActions>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private ContainerСontrolledImges containerСontrolledImges;
+
+    private VueAnimalModel animal = new VueAnimalModel();
+    private Guid clientId;
+    private string addPhotos = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClientId();
+        await ReloadAnimalData();
+
+        if (clientId != animal.OwnerId)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        await GetCurPhotos();
+    }
+
+    private async Task GetCurPhotos()
+    {
+        var getCurPhotosResult = await PhotoService.GetPhotosLocated(animal.Id);
+
+        if (!getCurPhotosResult.Successful)
+        {
+            return;
+        }
+
+        foreach (var photo in getCurPhotosResult.Result)
+        {
+            await containerСontrolledImges.AddPhoto(photo);
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task GetClientId()
+    {
+        var getClientResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientResult.Successful)
+        {
+            NavigationManager.NavigateTo("/client/create");
+        }
+
+        clientId = getClientResult.Id;
+    }
+
+    private async Task ReloadAnimalData()
+    {
+        Guid animalId;
+
+        if (Guid.TryParse(Id, out animalId))
+        {
+            var getAnimalResult = await AnimalService.GetAnimal(animalId);
+
+            if (!getAnimalResult.Successful)
+            {
+                return;
+            }
+
+            animal = getAnimalResult.Result;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/notfound");
+        }
+    }
+
+    private async void UploadImage(IBrowserFile image)
+    {
+        var imageName = image.Name;
+        var imageExtension = Path.GetExtension(imageName);
+
+        var imageData = await ImageHelper.ConvertToByteArray(image);
+
+        string imageDataString = Convert.ToBase64String(imageData);
+        string imageMimeType = "";
+
+        switch (imageExtension)
+        {
+            case ".jpg":
+                imageMimeType = "jpeg";
+                break;
+            case ".png":
+                imageMimeType = "png";
+                break;
+        }
+
+        var imageSrc = $"data:image/{imageMimeType}; base64,{imageDataString}";
+
+        VueCreatePhotoModel createPhotoModel = new VueCreatePhotoModel()
+            {
+                OwnerId = clientId,
+                LocationId = animal.Id,
+                StringImageData = imageSrc,
+            };
+
+        await containerСontrolledImges.AddNewPhoto(createPhotoModel);
+
+        addPhotos = "";
+
+        StateHasChanged();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            await containerСontrolledImges.ApplyChanges();
+
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            if (e.Message == "The list of photos is empty.")
+            {
+                addPhotos = "Добавте хотя бы одну фотографию.";
+            }
+            else
+            {
+                addPhotos = "Что то пошло не так.";
+            }
+        }
+    }
+}

@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using ZooExpoOrg.Web.Pages.Auth
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(SimpleLayout)">
+                <Authorizing>
+                    <text>Пожалуйста, подождите, мы авторизуем вас...</text>
+                </Authorizing>
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated is true)
+                    {
+                        <p>У вас нет разрешения находиться здесь.</p>
+                    }
+                    else
+                    {
+                        <Login/>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <PageTitle>Не найдено</PageTitle>
+            <LayoutView Layout="@typeof(SimpleLayout)">
+                <p role="alert">К сожалению, по этому адресу ничего нет.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

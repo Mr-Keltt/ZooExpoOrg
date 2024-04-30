@@ -21,6 +21,7 @@ COPY ["Services/ZooExpoOrg.Services.Client/ZooExpoOrg.Services.Client.csproj", "
 COPY ["Services/ZooExpoOrg.Services.Comments/ZooExpoOrg.Services.Comments.csproj", "Services/ZooExpoOrg.Services.Comments/"]
 COPY ["Services/ZooExpoOrg.Services.Expositions/ZooExpoOrg.Services.Expositions.csproj", "Services/ZooExpoOrg.Services.Expositions/"]
 COPY ["Services/ZooExpoOrg.Services.Photos/ZooExpoOrg.Services.Photos.csproj", "Services/ZooExpoOrg.Services.Photos/"]
+COPY ["Services/ZooExpoOrg.Services.EmailService/ZooExpoOrg.Services.EmailService.csproj", "Services/ZooExpoOrg.Services.EmailService/"]
 COPY ["Services/ZooExpoOrg.Services.ExpositionsNotificationManager/ZooExpoOrg.Services.ExpositionsNotificationManager.csproj", "Services/ZooExpoOrg.Services.ExpositionsNotificationManager/"]
 COPY ["Services/ZooExpoOrg.Services.RabbitMq/ZooExpoOrg.Services.RabbitMq.csproj", "Services/ZooExpoOrg.Services.RabbitMq/"]
 COPY ["Services/ZooExpoOrg.Services.RightVerifier/ZooExpoOrg.Services.RightVerifier.csproj", "Services/ZooExpoOrg.Services.RightVerifier/"]

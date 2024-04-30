@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooExpoOrg.Context.Entities;
 using ZooExpoOrg.Context;
 using FluentValidation;
+using ZooExpoOrg.Common.Helpers;
 
 namespace ZooExpoOrg.Services.Comments;
 
@@ -25,7 +26,8 @@ public class CreateCommentModelProfile : Profile
             .BeforeMap<CreateCommentModelActions>()
             .ForMember(dest => dest.AnimalId, opt => opt.Ignore())
             .ForMember(dest => dest.ExpositionId, opt => opt.Ignore())
-            .ForMember(dest => dest.AuthorId, opt => opt.Ignore());
+            .ForMember(dest => dest.AuthorId, opt => opt.Ignore())
+            .ForMember(dest => dest.DateWriting, opt => opt.Ignore());
     }
 
     public class CreateCommentModelActions : IMappingAction<CreateCommentModel, CommentEntity>
@@ -67,6 +69,7 @@ public class CreateCommentModelProfile : Profile
             }
 
             destination.AuthorId = client.Id;
+            destination.DateWriting = DateHelper.ConvertToUTC(source.DateWriting);
         }
     }
 }

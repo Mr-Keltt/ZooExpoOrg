@@ -10,9 +10,7 @@ public class PresintationCreatePhotoModel
 
     public Guid LocationId { get; set; }
 
-    public byte[] ImageData { get; set; }
-
-    public string ImageMimeType { get; set; }
+	public string stringImageData { get; set; }
 }
 
 public class PresintationCreatePhotoModelProfile : Profile

@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Data;
 using FluentValidation;
 using ZooExpoOrg.Services.Animals.Achievements;
+using ZooExpoOrg.Common.Helpers;
 
 namespace ZooExpoOrg.Services.Animals.Animals;
 
@@ -42,6 +43,7 @@ public class CreateAnimalModelProfile : Profile
             .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
             .ForMember(dest => dest.Height, opt => opt.MapFrom(src => src.Height))
             .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Weight))
+            .ForMember(dest => dest.BirthDate, opt => opt.Ignore())
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore());
     }
 
@@ -65,7 +67,8 @@ public class CreateAnimalModelProfile : Profile
                 throw new NullReferenceException();
             }
 
-            destination.OwnerId = owner.Id;     
+            destination.OwnerId = owner.Id;
+            destination.BirthDate = DateHelper.ConvertToUTC(source.BirthDate);
             destination.Comments = new List<CommentEntity>();
             destination.Photos = new List<PhotoEntity>();
             destination.Achievements = new List<AchievementEntity>();
@@ -87,8 +90,14 @@ public class CreateAnimalModelValidator : AbstractValidator<CreateAnimalModel>
             .NotEmpty().WithMessage("Description is required.")
             .MaximumLength(10000).WithMessage("Description must not exceed 10000 characters.");
 
+        RuleFor(x => x.Type)
+            .IsInEnum().WithMessage("Invalid type value.");
+
+        RuleFor(x => x.Gender)
+            .IsInEnum().WithMessage("Invalid gender value.");
+
         RuleFor(x => x.BirthDate)
-            .NotEmpty().WithMessage("BirthDate is required.")
+            .NotNull().NotEmpty().WithMessage("BirthDate is required.")
             .Must(BeAValidDate).WithMessage("BirthDate must be a valid date.");
 
         RuleFor(x => x.Height)

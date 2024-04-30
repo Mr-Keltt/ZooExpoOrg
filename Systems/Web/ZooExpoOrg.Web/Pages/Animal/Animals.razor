@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@page "/animals"
+@layout MainLayout
+
+@attribute [Authorize]
+
+<h2>Мои животные</h2>
+
+<AddButton Url="/animal/create" />
+
+@code {
+
+}

@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.Expositions;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Shared.Components
+@using ZooExpoOrg.Web.Shared.Layouts;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IClientService ClientService
+@inject IExpositionService ExpositionService
+@inject NavigationManager NavigationManager
+
+@page "/exposition/organizeds"
+@layout MainLayout
+
+@attribute [Authorize]
+
+<div style="overflow: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.h4" GutterBottom="true"><b>Мои выставки</b></MudText>
+    
+                @if (expositions.Count > 0)
+                {
+                    @foreach (VueExpositionModel exposition in expositions)
+                    {
+                        <ExpositionCard Exposition="@exposition" Client="@client"/>
+                    }
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+<AddButton Url="/exposition/create" />
+
+@code {
+    private List<VueExpositionModel> expositions = new List<VueExpositionModel>();
+    private VueClientModel client = new VueClientModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadClientData();
+        await ReloadExpositionData();
+    }
+
+    private async Task ReloadExpositionData()
+    {
+        foreach (var expositionId in client.OrganizedExpositions)
+        {
+            var getExpositionResult = await ExpositionService.GetExposition(expositionId);
+
+            if (getExpositionResult.Successful)
+            {
+                expositions.Add(getExpositionResult.Result);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task ReloadClientData()
+    {
+        var getClientIdResult = await GetIdHelper.GetCurrentClientId();
+
+        if (!getClientIdResult.Successful)
+        {
+            return;
+        }
+
+        var getClientResult = await ClientService.GetClient(getClientIdResult.Id);
+
+        client = getClientResult.Result;
+    }
+}

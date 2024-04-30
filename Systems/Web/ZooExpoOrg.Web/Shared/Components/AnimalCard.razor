@@ -1,0 +1,118 @@
+﻿@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Services.Animals;
+@using ZooExpoOrg.Web.Services.Clients;
+@using ZooExpoOrg.Web.Services.GetIdHelper;
+@using ZooExpoOrg.Web.Services.Photos;
+
+@inject IGetIdHelperService GetIdHelper
+@inject IAnimalService AnimalService
+@inject IPhotoService PhotoService
+@inject NavigationManager NavigationManager
+
+<MudCard Elevation="3" Class="rounded-lg mb-3">
+    <div class="d-flex">
+        <MudPaper Elevation="3" Class="rounded-lg">
+            <MudCarousel Class="mud-width-full rounded-lg" 
+                        Style="width:250px; height:250px; overflow: hidden;" 
+                        ShowBullets="true" 
+                        AutoCycle="true"
+                        TData="object"
+                        ShowArrows="false">
+                    @if (photos.Count > 0)
+                    {
+                        @foreach (VuePhotoModel photo in photos)
+                        {
+                            <MudCarouselItem Transition="Transition.Slide" 
+                                            Color="@Color.Primary" 
+                                            Style="overflow: hidden; width: 100%; height: 100%">
+                                <MudImage Src="@photo.StringImageData" 
+                                            Width="250" 
+                                            Height="250"
+                                            ObjectFit="ObjectFit.Fill"/>
+                            </MudCarouselItem>
+                        }
+                    }
+            </MudCarousel>
+        </MudPaper>
+
+        <div style="position: relative; width: 100%; height: 250px;">
+            <MudCardContent Style="word-wrap: break-word; word-break: break-all;">
+                <MudText Typo="Typo.h5"><b>@Animal.Name</b></MudText>
+                <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Darken1};")">@type</MudText>
+                <MudText Typo="Typo.h6">@description</MudText>
+            </MudCardContent>
+
+            <MudCardActions Style="position: absolute; bottom: 0; right: 0;">
+                <MudSpacer />
+
+                <MudButton 
+                    Variant="Variant.Text" 
+                    Color="Color.Primary"
+
+                    OnClick="@(() => NavigationManager.NavigateTo($"animal/{Animal.Id}"))">Показать больше</MudButton>
+            </MudCardActions>
+        </div>
+    </div>
+</MudCard>
+
+@code {
+    [Parameter]
+    public VueAnimalModel Animal { get; set; }
+
+    [Parameter]
+    public VueClientModel Client { get; set; }
+
+    public List<VuePhotoModel> photos = new List<VuePhotoModel>();
+    private string type = "";
+    private string description = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPhotos();
+        await GetType();
+        await GetDescription();
+    }
+
+    private async Task GetPhotos()
+    {
+        var getPhotoResult = await PhotoService.GetPhotosLocated(Animal.Id);
+
+        if (!getPhotoResult.Successful)
+        {
+            return;
+        }
+
+        photos = getPhotoResult.Result;
+    }
+
+    private async Task GetType()
+    {
+        switch (Animal.Type)
+        {
+            case AnimalType.Dog:
+                type = "Собака";
+                break;
+            case AnimalType.Cat:
+                type = "Кошка";
+                break;
+            case AnimalType.Parrot:
+                type = "Попугай";
+                break;
+            case AnimalType.Fish:
+                type = "Рыбка";
+                break;
+        }
+    }
+
+    private async Task GetDescription()
+    {
+        if (Animal.Description.Length < 100)
+        {
+            description = Animal.Description;
+        }
+        else
+        {
+            description = $"{Animal.Description.Substring(0, 97)}...";
+        }
+    }
+}

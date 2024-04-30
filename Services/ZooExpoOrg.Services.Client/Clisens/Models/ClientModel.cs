@@ -24,8 +24,6 @@ public class ClientModel
 
     public DateTime BirthDate { get; set; }
 
-    public Guid? PhotoId { get; set; }
-
     public virtual ICollection<Guid> Photos { get; set; }
 
     public virtual ICollection<Guid> OwnedPhotos { get; set; }

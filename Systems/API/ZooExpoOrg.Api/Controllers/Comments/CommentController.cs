@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Common.Exceptions;
@@ -13,7 +14,7 @@ namespace ZooExpoOrg.Api.Controllers.Comments;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Technical")]
-[Route("v{version:apiVersion}/comments")]
+[Route("v{version:apiVersion}/comment")]
 public class CommentController : Controller
 {
     private readonly IAppLogger logger;
@@ -34,7 +35,7 @@ public class CommentController : Controller
         this.rightVerifier = rightVerifier;
     }
 
-    [HttpGet("location/{locationId:Guid}")]
+    [HttpGet("located/{locationId:Guid}")]
     public async Task<IActionResult> GetLocatedIn(Guid locationId)
     {
         try
@@ -89,6 +90,10 @@ public class CommentController : Controller
         {
             return NotFound(e.Message);
         }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
+        }
     }
 
     [HttpPut("{id:Guid}")]
@@ -111,6 +116,10 @@ public class CommentController : Controller
         catch (ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 

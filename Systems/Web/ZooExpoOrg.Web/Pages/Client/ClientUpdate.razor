@@ -1,0 +1,53 @@
+﻿@page "/client/update"
+@using Microsoft.AspNetCore.Authorization;
+@using ZooExpoOrg.Web.Common.Enumerables;
+@using ZooExpoOrg.Web.Pages.Client.Components
+
+@attribute [Authorize]
+
+<div style="height: 900px; overflow-x: hidden;">
+    <MudGrid Justify="Justify.Center" Class="pa-10">
+        <MudItem xs="10" sm="8">
+            <MudPaper Class="pa-4">
+                <MudGrid Justify="Justify.Center">
+                    <MudItem lg="6">
+                        <MudButton  
+                            Size="Size.Medium"
+                            Style="width: 100%;"
+                            Color="Color.Primary"
+                            Variant="@(vueData == ClientUpdateVueData.Personal ? Variant.Filled : Variant.Text)"
+                            OnClick="@(x => switchVueData(ClientUpdateVueData.Personal))">Личные данные</MudButton>
+                    </MudItem>
+
+                    <MudItem lg="6">
+                        <MudButton  
+                            Size="Size.Medium"
+                            Style="width: 100%;"
+                            Color="Color.Primary"
+                            Variant="@(vueData == ClientUpdateVueData.Account ? Variant.Filled : Variant.Text)"
+                            OnClick="@(x => switchVueData(ClientUpdateVueData.Account))">Данные акаунта</MudButton>
+                    </MudItem>
+                </MudGrid>
+
+                @if (vueData == ClientUpdateVueData.Personal)
+                {
+                    <ClientUpdatePersonal />
+                }
+                else
+                {
+                    <ClientUpdateAcount />
+                }
+
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    private ClientUpdateVueData vueData = ClientUpdateVueData.Personal;
+
+    private void switchVueData(ClientUpdateVueData newVueData)
+    {
+        vueData = newVueData;
+    }
+}

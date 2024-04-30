@@ -97,4 +97,32 @@ public class ExpositionsNotificationManagerService : IExpositionsNotificationMan
 
         db.SaveChanges();
     }
+
+    public async Task<NotificationModel> GetAllNotificationsReceivedById(Guid recipientId)
+    {
+        using var db = dbContextFactory.CreateDbContext();
+
+        var allNotifications = db.Notifications.ToList();
+
+        var resNotifications = new List<NotificationEntity>();
+
+        foreach (var notification in allNotifications)
+        {
+            var recipient = notification.Recipients.FirstOrDefault(x => x.Uid == recipientId);
+
+            if (recipient == null)
+            {
+                continue;
+            }
+
+            resNotifications.Add(notification);
+        }
+
+        if (!resNotifications.Any())
+        {
+            throw new ProcessException($"Notifications (Gifted = {recipientId}) not found.");
+        }
+
+        return mapper.Map<NotificationModel>(resNotifications);
+    }
 }

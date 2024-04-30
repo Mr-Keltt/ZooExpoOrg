@@ -2,6 +2,7 @@
 
 using Asp.Versioning;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZooExpoOrg.Common.Exceptions;
@@ -33,10 +34,10 @@ public class PhotoController : ControllerBase
         this.rightVerifier = rightVerifier;
     }
 
-    [HttpGet("owned/{ownerId:Guid}")]
-    public async Task<IActionResult> GetAllOwnedById([FromRoute] Guid ownerId)
+    [HttpGet("located/{locationId:Guid}")]
+    public async Task<IActionResult> GetAllLocatedById([FromRoute] Guid locationId)
     {
-        var result = await photoService.GetAllLocationById(ownerId);
+        var result = await photoService.GetAllLocationById(locationId);
 
         if (result == null)
             return NotFound();
@@ -57,24 +58,28 @@ public class PhotoController : ControllerBase
 
     [HttpPost("")]
     [Authorize(AppScopes.UseScope)]
-    public async Task<IActionResult> Create(CreatePhotoModel model)
+    public async Task<IActionResult> Create(PresintationCreatePhotoModel model)
     {
         try
         {
             string jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
+            
             if (!(await rightVerifier.VerifRightsOfCreatePhoto(jwtToken, model.OwnerId, model.LocationId)))
             {
                 return BadRequest("Access denied.");
             }
 
-            var result = await photoService.Create(model);
+            var result = await photoService.Create(mapper.Map<CreatePhotoModel>(model));
 
             return Ok(mapper.Map<PresintationPhotoModel>(result));
         }
         catch (ProcessException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Errors);
         }
     }
 
